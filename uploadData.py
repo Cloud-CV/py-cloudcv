@@ -2,34 +2,35 @@ import threading
 import time
 import redis
 
-from poster.encode import multipart_encode
-from poster.streaminghttp import register_openers
-
 import urllib2, json, requests, pprint, re
 
 from os import listdir
 from os.path import isfile, join
 
-register_openers()
+
 
 exitFlag = 0
 socketid = ''
 
 class UploadData (threading.Thread):
     
-    def __init__(self, pathname, imagepath):
+    def __init__(self, pathname, imagepath, executable):
         threading.Thread.__init__(self)
+        
         self.pathname = pathname
         self.imagepath = imagepath
+        self.executable = executable
+
         self.r = redis.StrictRedis(host='localhost', port=6379, db=0)
         self.ps = self.r.pubsub()
         self.ps.subscribe('intercomm')
+        
         redisThread = RedisListenForPostThread(self.ps, self.r)
         redisThread.start()
               
     def run(self):
         print "\n\nStarting Post Request"
-        send_post_request(self.pathname, self.imagepath, self.ps, self.r)
+        send_post_request(self.pathname, self.imagepath, self.ps, self.r, self.executable)
         print "\nExiting From the Post Request Thread"
 
 '''Redis Connection for Inter Thread Communication'''
@@ -88,10 +89,9 @@ def files_in_directory(dir):
     return onlyfiles
 
 #send post requests containing images to the server    
-def send_post_request(pathname, imagepath, ps, r):
+def send_post_request(pathname, imagepath, ps, r, executable):
     global socketid
 
-    register_openers()
     params={}
     params_data={}
     
@@ -112,7 +112,8 @@ def send_post_request(pathname, imagepath, ps, r):
     params_data['token']=token
     params_data['count']=str(len(files))
     params_data['socketid']=''
-    
+    params_data['executable']=executable
+     
     while(True):
         if socketid != '':
             params_data['socketid']=socketid
