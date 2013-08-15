@@ -1,5 +1,9 @@
 from uploadData import UploadData
 from socketConnection import SocketIOConnection
+from colorama import init
+from colorama import Fore
+
+init()
 
 import sys
 
@@ -8,13 +12,16 @@ def pCloudCV(imagepath, resultpath, executable):
     ud = UploadData(imagepath,resultpath, executable)
     ud.start()
     print "Starting Uploading Data"
-    sioc=SocketIOConnection()
+    sioc=SocketIOConnection(executable, resultpath)
     sioc.start()
 
 if __name__ == "__main__":
     imagepath = None
     resultpath = None
     executable = None
+    
+    print Fore.RESET
+
     try:
         if sys.argv[1] == '-I' and sys.argv[2]!=None:
             imagepath = sys.argv[2]
@@ -29,7 +36,7 @@ if __name__ == "__main__":
         if sys.argv[5] == '-E' and sys.argv[6]!=None:
             executable = sys.argv[6]
         else:
-            print 'Executable Not Mentioned. Options: 1. "ImageStitching" 2. "VOCRelease5"'
+            print 'Executable Not Mentioned. Options: 1. "ImageStitch" 2. "VOCRelease5"'
 
         if(imagepath!=None and resultpath!=None and executable!=None):
             pCloudCV(imagepath, resultpath, executable)
