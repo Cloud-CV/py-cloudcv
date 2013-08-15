@@ -1,7 +1,10 @@
 from socketIO_client import SocketIO
 import threading
 import redis
+from colorama import init
+from colorama import Fore, Back, Style
 
+init()
 socketio = None
 
 class SocketIOConnection(threading.Thread):
@@ -34,7 +37,8 @@ class SocketIOConnection(threading.Thread):
             self.socketIO.emit('send_message','give output')
 
         if('data' in message):
-            print '\n\n', message['data']
+            print Fore.GREEN +'\n\n', message['data']
+            print Fore.RESET
             self.r.publish('intercomm', '***end***')
             
 

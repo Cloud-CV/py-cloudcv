@@ -7,10 +7,14 @@ import urllib2, json, requests, pprint, re
 from os import listdir
 from os.path import isfile, join
 
+from colorama import init
+from colorama import Fore, Back, Style
 
+from poster.encode import multipart_encode
 
 exitFlag = 0
 socketid = ''
+init()
 
 class UploadData (threading.Thread):
     
@@ -132,6 +136,7 @@ def send_post_request(pathname, imagepath, ps, r, executable):
     try:	
 	request = requests.post("http://godel.ece.vt.edu/cloudcv/matlab/", params_data, files=params)
 	
-	print "Text:   "+request.text+"\n\n\n" 
+	print Fore.BLUE + "Text:   "+request.text+"\n\n\n"
+        print Fore.RESET
     except Exception as e:
 	print e
