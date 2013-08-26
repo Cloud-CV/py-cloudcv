@@ -47,17 +47,17 @@ class ConfigParser:
         name=None
 
         i=0
-        while(i<arg.length()):
+        while(i<len(arg)):
             if(arg[i]=='-E'):
                 name = arg[i+1]
             if(arg[i]=='-I'):
                 sourcepath = arg[i+1]
             if(arg[i]=='-O'):
                 resultpath = arg[i+1]
-
+            i+=2
         if(name!=None):
             self.exec_name = name
-            self.readConfigFile(self,'config.json')
+            self.readConfigFile('config.json')
             self.changePath()
             self.setParams()
 
@@ -103,8 +103,3 @@ class ConfigParser:
                 
 
 
-c = ConfigParser()
-c.readConfigFile('config.json')
-c.changeSourcePath('/home/dexter','ImageStitch')
-c.changeOutputPath('/home/dexter','ImageStitch')
-c.writeToConfigFile('config2.json')
