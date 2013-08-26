@@ -1,0 +1,19 @@
+[
+    {
+        "name": "ImageStitch",
+        "params" :{
+            "path" : " ",
+            "output" : " "    
+        }
+    },
+    
+    {
+        "name": "VOCRelease5",
+        "params" :{
+            "path" : " ",
+            "model" : [" "],
+            "output" : " "
+        }
+    }
+]
+
