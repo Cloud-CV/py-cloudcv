@@ -10,10 +10,10 @@ def test1():
 
 def test2():
     c = ConfigParser()
-    list=['-I','/home/dexter/Pictures/test_download/1','-E','VOCRelease5','-O','/home/dexter/Pictures/test_download']
+    list=['-I','/home/dexter/Pictures/test_download/1','-O','/home/dexter/Pictures/test_download']
     c.parseArguments(list)
     c.getParams()
-
+    c.writeToConfigFile('config3.json')
 
 
 

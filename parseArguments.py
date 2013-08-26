@@ -33,8 +33,9 @@ class ConfigParser:
     
     def readConfigFile(self,file):
         data_file = open(file,'r').read()
-        self.data = json.loads(data_file)
-        
+        complete_data = json.loads(data_file)
+        self.data = complete_data['config']
+        self.exec_name = complete_data['exec']
     
     def writeToConfigFile(self, file):
         data_file = open(file,'w')
@@ -55,22 +56,29 @@ class ConfigParser:
             if(arg[i]=='-O'):
                 resultpath = arg[i+1]
             i+=2
-        if(name!=None):
-            self.exec_name = name
+        try:
+            
             self.readConfigFile('config.json')
             self.changePath()
             self.setParams()
 
-        try:
+            if(name!=None):
+                self.exec_name = name
+            elif(self.exec_name==None):
+                raise ArgumentError(0)
+            elif(name==None and self.exec_name!=None):
+                name=self.exec_name
+
             if(sourcepath!=None):
                 self.changeSourcePath(sourcepath,name)
-            elif(sourcepath==None):
-                raise ArugmentError(1)
+            elif(self.source_path==None):
+                raise ArgumentError(1)
 
             if(resultpath!=None):
                 self.changeOutputPath(resultpath,name)
-            elif(output_path==None):
+            elif(self.output_path==None):
                 raise ArgumentError(2)
+
         except ArgumentError as e:
             log('W',str(e))
     
@@ -86,7 +94,7 @@ class ConfigParser:
 
         except ArgumentError as e:   
             log('W',str(e))
-  
+            raise SystemExit
 
     def changeOutputPath(self, path, execname):
         try:
@@ -100,6 +108,16 @@ class ConfigParser:
 
         except ArgumentError as e:
             log('W', str(e))
-                
+            raise SystemExit
 
 
+    def verify(self):
+        if(self.exec_name==' '):
+            log('W', 'Undefined Executable Name. Please try again')
+            raise SystemExit
+        if(self.source_path == ' '):
+            log('W', 'Empty Input Folder Path. Please try again')
+            raise SystemExit
+        if(self.output_path == ' '):
+            log('W', 'Empty Output Path. Please try again')
+            raise SystemExit

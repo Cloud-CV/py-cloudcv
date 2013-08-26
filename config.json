@@ -1,3 +1,6 @@
+{
+    "exec" : "VOCRelease5",
+"config":
 [
     {
         "name": "ImageStitch",
@@ -16,4 +19,4 @@
         }
     }
 ]
-
+}
