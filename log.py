@@ -4,10 +4,12 @@ init()
 
 def log(logType,e):
     if(logType=='W'):
-        print Fore.RED+str(e)+'\n\n'
+        print Fore.RED+str(e)+'\n'
         print Fore.RESET
     if(logType == 'I'):
-        print str(e)+'\n\n'
+        print Fore.MAGENTA
+        print str(e)+'\n'
+        print Fore.RESET
 
 
 class ArgumentError(Exception):

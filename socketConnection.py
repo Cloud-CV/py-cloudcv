@@ -4,108 +4,116 @@ import redis
 from colorama import init
 from colorama import Fore, Back, Style
 import requests
+from parseArguments import ConfigParser
+from log import log
 
 init()
 socketio = None
 
 class SocketIOConnection(threading.Thread):
     
-    executable = ''
-    imagepath = ''
-
+    _executable = ''
+    _imagepath = ''
+    _redis_obj = None
+    _pubsub_obj = None
+   
     def __init__(self, executable, imagepath):
         threading.Thread.__init__(self)
-        self.r = redis.StrictRedis(host='localhost', port=6379, db=0)
-        self.ps = self.r.pubsub()
-        self.ps.subscribe('intercomm2')
-        self.executable = str(executable)
-        self.imagepath = str(imagepath)
         
-        redisThread = RedisListen(self.ps, self.r)
-        redisThread.start()
+        self._executable = str(executable)
+        self._imagepath = str(imagepath)
+        
+        redis_thread = self.setupRedis()
+        redis_thread.start()
 
-    
+    def setupRedis(self):
+        self._redis_obj = redis.StrictRedis(host='localhost', port=6379, db=0)
+        self._pubsub_obj = self._redis_obj.pubsub()
+        self._pubsub_obj.subscribe('intercomm2')
+        
+        redis_thread = RedisListen(self._pubsub_obj, self._redis_obj)
+        return redis_thread 
+ 
     def run(self):
-        print "Starting Socket Connection Thread"
-        self.setupSocketIO(self.r)
-        print "Exiting Socket Connection Thread"
+        log('I','Starting Socket Connection Thread')
+        self.setupSocketIO()
+        log('I','Exiting Socket Connection Thread')
         
 
     def connection(self, *args):
-        print 'on Connection: ', args
+        pass
     
     def on_aaa_response(self, *args):
         message = args[0]
-        
-        #print 'on Message', str(message)
 
         if('socketid' in message):
-                self.r.publish('intercomm', message['socketid'])
+                self._redis_obj.publish('intercomm', message['socketid'])
+                self._socketid = message['socketid']
+
         if('name' in message):
-            self.socketIO.emit('send_message',self.executable)
+            self._socket_io.emit('send_message',self._executable)
+
 
         if('data' in message):
-            print Fore.GREEN +'\n\n', message['data']
-            print Fore.RESET
-            #self.r.publish('intercomm', '***end***')
+            log('I',message['data'])
+
+
         if('picture' in message):
-            print Fore.RED + '\n\n', message['picture']
+            log('I',message['picture'])
             file = requests.get(message['picture'])
             
-            with open(self.imagepath+'/result.jpg', 'wb') as f:
+            with open(self._imagepath+'/result'+str(self._socketid)+'.jpg', 'wb') as f:
                 f.write(file.content)
             
-            print 'Image Saved: '+self.imagepath+'/result.jpg'
-            print Fore.RESET    
-            self.r.publish('intercomm', '***end***')
+            log('I','Image Saved: '+self._imagepath+'/result.jpg')
+            self._redis_obj.publish('intercomm', '***end***')
+
 
         if('mat' in message):
-            print Fore.RED+ '\n\n', message['mat']
-            
+            log('I',message['mat'])
             file = requests.get(message['mat'])
-            with open(self.imagepath+'/result.mat', 'wb') as f:
+            with open(self._imagepath+'/result.mat', 'wb') as f:
                 f.write(file.content)
-            print '\n\n Mat File Saved: '+self.imagepath+'/result.mat'
-            print Fore.RESET
-            self.r.publish('intercomm', '***end***') 
+            log('I','Mat File Saved: '+self._imagepath+'/result.mat')
+            self._redis_obj.publish('intercomm', '***end***') 
 
-    def setupSocketIO(self, r):
+    def setupSocketIO(self):
         global socketio
 
         try:
-            self.socketIO = SocketIO('godel.ece.vt.edu', 8000)
-            self.socketIO.on('connect', self.connection)
-
-            self.socketIO.on('message', self.on_aaa_response)
+            self._socket_io = SocketIO('godel.ece.vt.edu', 8000)
+            self._socket_io.on('connect', self.connection)
+            self._socket_io.on('message', self.on_aaa_response)
             
-            socketio=self.socketIO
+            socketio=self._socket_io
 
-            self.socketIO.wait()
+            self._socket_io.wait()
+
         except Exception as e:
-            print "\n\nConnection Refused, Exiting\n\n"
-            print str(e)
+            log('W',e)
             raise SystemExit
             
 class RedisListen(threading.Thread):
     def __init__(self, ps, r):
         threading.Thread.__init__(self)
-        self.r = r
-        self.ps = ps
+        self._redis_obj = r
+        self._pubsub_obj = ps
+
     def run(self):
-    	print 'Listening Listing to Redis Channel'
+    	log('I','Listening Listing to Redis Channel')
         while(True):
-            shouldEnd = listenToChannel(self.ps, self.r)
+            shouldEnd = self.listenToChannel(self._pubsub_obj, self._redis_obj)
             if(shouldEnd):
                 break
-        print 'Ending Listing to Redis Channel'
+        log('I','Ending Listing to Redis Channel')
 
-def listenToChannel(ps, r):
-    global socketio
+    def listenToChannel(self, ps, r):
+        global socketio
 
-    for item in ps.listen():
-        if item['type'] == 'message':
-            if '***endcomplete***' in item['data']:
-                socketio.disconnect()
-                return True
-    return False
+        for item in ps.listen():
+            if item['type'] == 'message':
+                if '***endcomplete***' in item['data']:
+                    socketio.disconnect()
+                    return True
+        return False
    
