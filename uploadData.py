@@ -65,7 +65,7 @@ class UploadData (threading.Thread):
         params_data['count']=str(len(files))
         params_data['socketid']=''
         params_data['executable']=self._exec_name
-        #params_data['exec_params'] = self._params
+        params_data['exec_params'] = self._params
          
         while(True):
             if socketid != '':
