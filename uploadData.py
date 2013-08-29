@@ -12,30 +12,104 @@ from colorama import Fore, Back, Style
 
 from poster.encode import multipart_encode
 
+from log import log
+
 exitFlag = 0
 socketid = ''
 init()
 
 class UploadData (threading.Thread):
-    
-    def __init__(self, pathname, imagepath, executable):
+   
+    def __init__(self, config_parser):
         threading.Thread.__init__(self)
         
-        self.pathname = pathname
-        self.imagepath = imagepath
-        self.executable = executable
+        self._source_path = config_parser.source_path
+        self._output_path = config_parser.output_path
+        self._exec_name = config_parser.exec_name
+        self._params = config_parser.params
 
-        self.r = redis.StrictRedis(host='localhost', port=6379, db=0)
-        self.ps = self.r.pubsub()
-        self.ps.subscribe('intercomm')
+        self._redis_obj = redis.StrictRedis(host='localhost', port=6379, db=0)
+        self._pubsub = self._redis_obj.pubsub()
+        self._pubsub.subscribe('intercomm')
         
-        redisThread = RedisListenForPostThread(self.ps, self.r)
+        redisThread = RedisListenForPostThread(self._pubsub, self._redis_obj)
         redisThread.start()
               
     def run(self):
-        print "\n\nStarting Post Request"
-        send_post_request(self.pathname, self.imagepath, self.ps, self.r, self.executable)
-        print "\nExiting From the Post Request Thread"
+        log('I','Starting Post Request')
+        self.sendPostRequest()
+        log('I','Exiting From the Post Request Thread')
+
+    #send post requests containing images to the server    
+    def sendPostRequest(self):
+        global socketid
+
+        params_for_request={}
+        params_data={}
+        
+        token = self.getRequest('http://godel.ece.vt.edu/cloudcv/matlab')
+        
+        if(token == None):
+            print 'token not found'
+            raise SystemExit
+        
+        
+        files = self.filesInDirectory(self._source_path)
+        
+        i=0
+        for f in files:
+            params_for_request['file'+str(i)]=open(self._source_path+'/'+f, 'rb')
+            i+=1
+        
+        params_data['token']=token
+        params_data['count']=str(len(files))
+        params_data['socketid']=''
+        params_data['executable']=self._exec_name
+        #params_data['exec_params'] = self._params
+         
+        while(True):
+            if socketid != '':
+                params_data['socketid']=socketid
+                break
+            else:
+                time.sleep(1)
+                print '\nwaiting for socket connection to complete'
+                 
+        log('I',str(params_for_request))
+        log('I',str(params_data)) 
+        datagen, headers = multipart_encode(params_for_request)
+        
+        try:	
+            request = requests.post("http://godel.ece.vt.edu/cloudcv/matlab/", params_data, files=params_for_request)
+            log('I','Text:   '+request.text)
+        except Exception as e:
+            log('W',e)
+
+    #get request to obtain csrf token
+    def getRequest(self,url):
+        token='' 
+        try:
+            data = requests.get(url) 
+            for line in data:
+            
+                m = re.search('(META:{\'CSRF_COOKIE\': \')((\\w)+)(\',)', line)
+                if(m!=None):
+                    token = m.group(2)
+        
+        except Exception as e:
+            log('W',e)
+        
+        return token
+
+
+    #get all files in the directory and create a params dictionary. 
+    def filesInDirectory(self,dir):
+        onlyfiles = [ f for f in listdir(dir) if isfile(join(dir,f)) !=None ]
+        onlyfiles = [ f for f in onlyfiles if(re.search('([^\s]+(\.(jpg|png|gif|bmp))$)',str(f))!=None) ] 
+        print onlyfiles
+        return onlyfiles
+
+
 
 '''Redis Connection for Inter Thread Communication'''
 class RedisListenForPostThread(threading.Thread):
@@ -68,75 +142,4 @@ def listenToChannel(ps,r):
     
     return False
                   
-#get request to obtain csrf token
-def get_request(url):
-    token=''
-    try:
-	data = requests.get(url) 
-	for line in data:
-	    
-	    m = re.search('(META:{\'CSRF_COOKIE\': \')((\\w)+)(\',)', line)
-	    if(m!=None):
-		token = m.group(2)
-	
-    except Exception as e:
-	print "Error in get_request: "+str(e)
-    
-    return token
 
-
-#get all files in the directory and create a params dictionary. 
-def files_in_directory(dir):
-    onlyfiles = [ f for f in listdir(dir) if isfile(join(dir,f)) !=None ]
-    onlyfiles = [ f for f in onlyfiles if(re.search('([^\s]+(\.(jpg|png|gif|bmp))$)',str(f))!=None) ] 
-    print onlyfiles
-    return onlyfiles
-
-#send post requests containing images to the server    
-def send_post_request(pathname, imagepath, ps, r, executable):
-    global socketid
-
-    params={}
-    params_data={}
-    
-    token = get_request('http://godel.ece.vt.edu/cloudcv/matlab')
-    
-    if(token == ''):
-	print 'token not found'
-	raise SystemExit
-	
-    
-    files = files_in_directory(pathname)
-    
-    i=0
-    for f in files:
-	params['file'+str(i)]=open(pathname+'/'+f, 'rb')
-	i+=1
-	
-    params_data['token']=token
-    params_data['count']=str(len(files))
-    params_data['socketid']=''
-    params_data['executable']=executable
-     
-    while(True):
-        if socketid != '':
-            params_data['socketid']=socketid
-            break
-        else:
-            time.sleep(1)
-            print '\nwaiting for socket connection to complete'
-             
-    print str(params)+'\n\n\n\n'
-    
-    datagen, headers = multipart_encode(params)
-    
-    print headers
-    print datagen
-
-    try:	
-	request = requests.post("http://godel.ece.vt.edu/cloudcv/matlab/", params_data, files=params)
-	
-	print Fore.BLUE + "Text:   "+request.text+"\n\n\n"
-        print Fore.RESET
-    except Exception as e:
-	print e
