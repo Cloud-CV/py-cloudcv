@@ -61,7 +61,7 @@ class ConfigParser:
             
             self.readConfigFile('config.json')
             self.changePath()
-            self.setParams()
+            
 
             if(name!=None):
                 self.exec_name = name
@@ -79,7 +79,8 @@ class ConfigParser:
                 self.changeOutputPath(resultpath,name)
             elif(self.output_path==None):
                 raise ArgumentError(2)
-
+            
+            self.setParams()
         except ArgumentError as e:
             log('W',str(e))
     
