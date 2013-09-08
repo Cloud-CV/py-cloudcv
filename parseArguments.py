@@ -25,11 +25,12 @@ class ConfigParser:
         for d in self.data:
             if(d['name']==self.exec_name):
                 self.params=d['params']
+                #print str(self.params)
 
     
     def getParams(self):
-        pprint(self.params)
-
+        #pprint(self.params)
+        pass
     
     def readConfigFile(self,file):
         data_file = open(file,'r').read()

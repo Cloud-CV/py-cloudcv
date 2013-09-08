@@ -6,17 +6,16 @@
         "name": "ImageStitch",
         "path": " ",
         "output": " ",
-        "params" :{  
+        "params" :{
+          "warp" : "plane"  
         }
     },
     
     {
         "name": "VOCRelease5",
-        "path": " ",
-        "output": " ",
-        "params" :{
-            "model" : [" "]
-        }
+        "path": "/home/dexter/Pictures/test_download/2",
+        "output": "/home/dexter/Pictures/test_download",
+        "params": {"Models": "all", "Models2": ""}
     }
 ]
 }

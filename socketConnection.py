@@ -51,30 +51,31 @@ class SocketIOConnection(threading.Thread):
                 self._socketid = message['socketid']
 
         if('name' in message):
+            log('D',message['name'])
             self._socket_io.emit('send_message',self._executable)
 
 
         if('data' in message):
-            log('I',message['data'])
+            log('D',message['data'])
 
 
         if('picture' in message):
-            log('I',message['picture'])
+            log('D',message['picture'])
             file = requests.get(message['picture'])
             
             with open(self._imagepath+'/result'+str(self._socketid)+'.jpg', 'wb') as f:
                 f.write(file.content)
             
-            log('I','Image Saved: '+self._imagepath+'/result.jpg')
+            log('D','Image Saved: '+self._imagepath+'/result.jpg')
             self._redis_obj.publish('intercomm', '***end***')
 
 
         if('mat' in message):
-            log('I',message['mat'])
+            log('D',message['mat'])
             file = requests.get(message['mat'])
-            with open(self._imagepath+'/result.mat', 'wb') as f:
+            with open(self._imagepath+'/results.txt', 'wb') as f:
                 f.write(file.content)
-            log('I','Mat File Saved: '+self._imagepath+'/result.mat')
+            log('D','Results Saved: '+self._imagepath+'/results.txt')
             self._redis_obj.publish('intercomm', '***end***') 
 
     def setupSocketIO(self):
@@ -100,7 +101,7 @@ class RedisListen(threading.Thread):
         self._pubsub_obj = ps
 
     def run(self):
-    	log('I','Listening Listing to Redis Channel')
+    	log('I','Listening to Redis Channel')
         while(True):
             shouldEnd = self.listenToChannel(self._pubsub_obj, self._redis_obj)
             if(shouldEnd):

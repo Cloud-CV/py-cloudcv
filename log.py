@@ -10,6 +10,9 @@ def log(logType,e):
         print Fore.MAGENTA
         print str(e)+'\n'
         print Fore.RESET
+    if(logType == 'D'):
+        print Fore.CYAN+str(e)+'\n'
+        print Fore.RESET
 
 
 class ArgumentError(Exception):

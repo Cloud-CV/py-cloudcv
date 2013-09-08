@@ -50,7 +50,7 @@ class UploadData (threading.Thread):
         token = self.getRequest('http://godel.ece.vt.edu/cloudcv/matlab')
         
         if(token == None):
-            print 'token not found'
+            log('W','token not found')
             raise SystemExit
         
         
@@ -60,30 +60,30 @@ class UploadData (threading.Thread):
         for f in files:
             params_for_request['file'+str(i)]=open(self._source_path+'/'+f, 'rb')
             i+=1
-        
+
         params_data['token']=token
         params_data['count']=str(len(files))
         params_data['socketid']=''
         params_data['executable']=self._exec_name
-        params_data['exec_params'] = self._params
-         
+        params_data['exec_params'] = str(self._params)
+
         while(True):
             if socketid != '':
                 params_data['socketid']=socketid
                 break
             else:
                 time.sleep(1)
-                print '\nwaiting for socket connection to complete'
+                log('W','Waiting for Socket Connection to complete')
                  
-        log('I',str(params_for_request))
-        log('I',str(params_data)) 
+        log('D',str(params_for_request))
+        log('D',str(params_data)) 
         datagen, headers = multipart_encode(params_for_request)
         
         try:	
             request = requests.post("http://godel.ece.vt.edu/cloudcv/matlab/", params_data, files=params_for_request)
-            log('I','Text:   '+request.text)
+            log('D','Text:   '+request.text)
         except Exception as e:
-            log('W',e)
+            log('W','Error in sendPostRequest'+str(e))
 
     #get request to obtain csrf token
     def getRequest(self,url):
@@ -106,7 +106,6 @@ class UploadData (threading.Thread):
     def filesInDirectory(self,dir):
         onlyfiles = [ f for f in listdir(dir) if isfile(join(dir,f)) !=None ]
         onlyfiles = [ f for f in onlyfiles if(re.search('([^\s]+(\.(jpg|png|gif|bmp))$)',str(f))!=None) ] 
-        print onlyfiles
         return onlyfiles
 
 
@@ -118,12 +117,12 @@ class RedisListenForPostThread(threading.Thread):
         self.r = r
         self.ps = ps
     def run(self):
-        print '\nStarting Listening to Redis Channel for HTTP Post Requests'  
+        log('I','Starting Listening to Redis Channel for HTTP Post Requests')  
         while(True):
             shouldEnd = listenToChannel(self.ps, self.r)
             if(shouldEnd):
                 break
-        print '\nExiting Redis Thread for HTTP Post requests'
+        log('I','Exiting Redis Thread for HTTP Post requests')
 
 
 def listenToChannel(ps,r):
@@ -132,13 +131,13 @@ def listenToChannel(ps,r):
     for item in ps.listen():
         if item['type'] == 'message':
             if( item['channel'] == 'intercomm'):
-                print item['data']
+               
                 if '***end***' in item['data']:
                     r.publish('intercomm2', '***endcomplete***')
                     return True
                 else:    
                     socketid = item['data']
-                    print socketid
+             
     
     return False
                   
