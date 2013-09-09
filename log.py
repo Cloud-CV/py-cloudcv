@@ -13,6 +13,9 @@ def log(logType,e):
     if(logType == 'D'):
         print Fore.CYAN+str(e)+'\n'
         print Fore.RESET
+    if(logType == 'O'):
+        print Fore.BLUE+str(e)+'\n'
+        print Fore.RESET
 
 
 class ArgumentError(Exception):

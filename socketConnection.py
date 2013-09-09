@@ -51,12 +51,12 @@ class SocketIOConnection(threading.Thread):
                 self._socketid = message['socketid']
 
         if('name' in message):
-            log('D',message['name'])
+            log('O',message['name'])
             self._socket_io.emit('send_message',self._executable)
 
 
         if('data' in message):
-            log('D',message['data'])
+            log('O',message['data'])
 
 
         if('picture' in message):
