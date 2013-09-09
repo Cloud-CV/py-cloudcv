@@ -1,0 +1,4 @@
+include *.txt
+recursive-include docs *.txt
+include README.txt
+include pcloudcv/config.json

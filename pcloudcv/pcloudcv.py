@@ -11,9 +11,9 @@ import sys
 class PCloudCV:
     config_obj=None
     
-    def __init__(self, list):
+    def __init__(self, file, list):
         self.config_obj = ConfigParser()
-        self.config_obj.parseArguments(list)
+        self.config_obj.parseArguments(list, file)
         self.config_obj.verify()
 
     def pCloudCV(self):
@@ -29,7 +29,11 @@ if __name__ == "__main__":
     executable = None
     
     print Fore.RESET
-    
-    p = PCloudCV(sys.argv[1:])
-    p.pCloudCV()
+    if(len(sys.argv)<2):
+        print 'No Config File Specified'
+    else:
+        file = sys.argv[1]
+        p = PCloudCV(file, sys.argv[2:])
+        p.pCloudCV()
+
 

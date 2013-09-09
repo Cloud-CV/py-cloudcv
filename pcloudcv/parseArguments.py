@@ -43,7 +43,7 @@ class ConfigParser:
         json.dump(self.data, data_file)
 
     
-    def parseArguments(self, arg):
+    def parseArguments(self, arg, file):
         sourcepath=None
         resultpath=None
         name=None
@@ -59,7 +59,7 @@ class ConfigParser:
             i+=2
         try:
             
-            self.readConfigFile('config.json')
+            self.readConfigFile(file)
             self.changePath()
             
 

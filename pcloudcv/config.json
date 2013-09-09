@@ -1,0 +1,21 @@
+{
+    "exec" : "VOCRelease5",
+"config":
+[
+    {
+        "name": "ImageStitch",
+        "path": " ",
+        "output": " ",
+        "params" :{
+          "warp" : "plane"  
+        }
+    },
+    
+    {
+        "name": "VOCRelease5",
+        "path": "/home/dexter/Pictures/test_download/2",
+        "output": "/home/dexter/Pictures/test_download",
+        "params": {"Models": "all", "Models2": ""}
+    }
+]
+}
