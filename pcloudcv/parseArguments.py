@@ -60,16 +60,15 @@ class ConfigParser:
         try:
             
             self.readConfigFile(file)
-            self.changePath()
-            
-
             if(name!=None):
                 self.exec_name = name
             elif(self.exec_name==None):
                 raise ArgumentError(0)
+            
             elif(name==None and self.exec_name!=None):
                 name=self.exec_name
 
+            self.changePath()
             if(sourcepath!=None):
                 self.changeSourcePath(sourcepath,name)
             elif(self.source_path==None):

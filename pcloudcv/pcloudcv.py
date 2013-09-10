@@ -4,6 +4,7 @@ from colorama import init
 from colorama import Fore
 from parseArguments import ConfigParser
 from log import log
+import os
 init()
 
 import sys
@@ -33,7 +34,7 @@ if __name__ == "__main__":
         print 'No Config File Specified'
     else:
         file = sys.argv[1]
-        p = PCloudCV(file, sys.argv[2:])
+        p = PCloudCV(os.getcwd()+'/'+str(file), sys.argv[2:])
         p.pCloudCV()
 
 

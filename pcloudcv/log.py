@@ -4,17 +4,16 @@ init()
 
 def log(logType,e):
     if(logType=='W'):
-        print Fore.RED+str(e)+'\n'
+        print Fore.RED+str(e)
         print Fore.RESET
     if(logType == 'I'):
-        print Fore.MAGENTA
-        print str(e)+'\n'
+        print Fore.MAGENTA+str(e)
         print Fore.RESET
     if(logType == 'D'):
-        print Fore.CYAN+str(e)+'\n'
+        print Fore.CYAN+str(e)
         print Fore.RESET
     if(logType == 'O'):
-        print Fore.BLUE+str(e)+'\n'
+        print Fore.BLUE+str(e)
         print Fore.RESET
 
 

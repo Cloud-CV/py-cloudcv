@@ -4,8 +4,8 @@
 [
     {
         "name": "ImageStitch",
-        "path": " ",
-        "output": " ",
+        "path": "/home/dexter/Pictures/test_download/1",
+        "output": "/home/dexter/Pictures/test_download",
         "params" :{
           "warp" : "plane"  
         }
@@ -15,7 +15,7 @@
         "name": "VOCRelease5",
         "path": "/home/dexter/Pictures/test_download/2",
         "output": "/home/dexter/Pictures/test_download",
-        "params": {"Models": "all", "Models2": ""}
+        "params": {"Models": "all"}
     }
 ]
 }
