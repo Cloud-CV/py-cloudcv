@@ -42,7 +42,8 @@ class SocketIOConnection(threading.Thread):
 
     def connection(self, *args):
         pass
-    
+
+
     def on_aaa_response(self, *args):
         message = args[0]
 
@@ -57,7 +58,7 @@ class SocketIOConnection(threading.Thread):
 
         if('data' in message):
             log('O',message['data'])
-
+            self._redis_obj.publish('intercomm', '***end***')
 
         if('picture' in message):
             log('D',message['picture'])
@@ -66,8 +67,7 @@ class SocketIOConnection(threading.Thread):
             with open(self._imagepath+'/result'+str(self._socketid)+'.jpg', 'wb') as f:
                 f.write(file.content)
             
-            log('D','Image Saved: '+self._imagepath+'/result.jpg')
-            self._redis_obj.publish('intercomm', '***end***')
+            log('D','Image Saved: '+self._imagepath+'/result'+str(self._socketid)+'.jpg')
 
 
         if('mat' in message):
@@ -76,7 +76,9 @@ class SocketIOConnection(threading.Thread):
             with open(self._imagepath+'/results.txt', 'wb') as f:
                 f.write(file.content)
             log('D','Results Saved: '+self._imagepath+'/results.txt')
-            self._redis_obj.publish('intercomm', '***end***') 
+        
+        if('request_data' in message):
+            self._socket_io.emit('send_message','data')
 
     def setupSocketIO(self):
         global socketio
@@ -85,7 +87,6 @@ class SocketIOConnection(threading.Thread):
             self._socket_io = SocketIO('godel.ece.vt.edu', 8000)
             self._socket_io.on('connect', self.connection)
             self._socket_io.on('message', self.on_aaa_response)
-            
             socketio=self._socket_io
 
             self._socket_io.wait()
