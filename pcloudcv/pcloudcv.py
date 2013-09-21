@@ -17,7 +17,7 @@ class PCloudCV:
         self.config_obj.parseArguments(list, file)
         self.config_obj.verify()
 
-    def pCloudCV(self):
+    def run(self):
         ud = UploadData(self.config_obj)
         ud.start()
         log('I','Starting Uploading Data')
@@ -35,6 +35,5 @@ if __name__ == "__main__":
     else:
         file = sys.argv[1]
         p = PCloudCV(os.getcwd()+'/'+str(file), sys.argv[2:])
-        p.pCloudCV()
-
+        p.run()
 
