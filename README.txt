@@ -9,5 +9,6 @@ https://github.com/batra-mlp-lab/pcloudcv/blob/master/pcloudcv/config.json
 Wiki(Documentation):  
 https://github.com/batra-mlp-lab/pcloudcv/wiki
 
-CloudCV Python APIs in Action:  
+CloudCV Python APIs in Action: 
+ 
 ![Screenshot](https://raw.github.com/batra-mlp-lab/pcloudcv/master/python_screenshot.gif)
