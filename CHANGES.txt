@@ -1,2 +1,2 @@
 * 0.0.1 (in development)
-    * Testing the python APIs for CloudCV
+    * First release of python APIs for CloudCV
