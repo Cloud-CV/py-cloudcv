@@ -73,7 +73,7 @@ class SocketIOConnection(threading.Thread):
         if('mat' in message):
             log('D',message['mat'])
             file = requests.get(message['mat'])
-            with open(self._imagepath+'/results'+self_socketid+'.txt', 'wb') as f:
+            with open(self._imagepath+'/results'+self._socketid+'.txt', 'wb') as f:
                 f.write(file.content)
             log('D','Results Saved: '+self._imagepath+'/results'+self._socketid+'.txt')
         
