@@ -11,4 +11,4 @@ https://github.com/batra-mlp-lab/pcloudcv/wiki
 
 CloudCV Python APIs in Action: 
  
-![Screenshot](https://raw.github.com/batra-mlp-lab/pcloudcv/master/python_screenshot.gif)
+![Screenshot](https://raw.github.com/batra-mlp-lab/pcloudcv/master/output_new.gif)
