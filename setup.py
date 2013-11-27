@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='PCloudCV',
-    version='0.0.1',
+    version='0.0.2',
     author='Harsh Agrawal, Dr. Dhruv Batra',
     author_email='h.agrawal092@gmail.com, dbatra@vt.edu',
     packages=['pcloudcv'],
@@ -15,6 +15,6 @@ setup(
         "redis >= 2.7.6",
         "colorama >= 0.2.5",
         "poster >= 0.8.1",
-        "socketIO-client >= 0.4",
+        "socketIO-client == 0.4",
     ],
 )

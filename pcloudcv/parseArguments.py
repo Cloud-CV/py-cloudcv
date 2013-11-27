@@ -49,6 +49,15 @@ class ConfigParser:
         name=None
 
         i=0
+
+        if(len(arg)==3):
+            if(arg[0]!=''):
+                sourcepath=arg[0]
+            if(arg[1]!=''):
+                resultpath=arg[1]
+            if(arg[2]!=''):
+                name=arg[2]
+
         while(i<len(arg)):
             if(arg[i]=='-E'):
                 name = arg[i+1]

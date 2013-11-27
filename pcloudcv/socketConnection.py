@@ -10,6 +10,9 @@ from log import log
 init()
 socketio = None
 
+#import logging
+#logging.basicConfig(level=logging.DEBUG)
+
 class SocketIOConnection(threading.Thread):
     
     _executable = ''
