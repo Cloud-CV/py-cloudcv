@@ -4,8 +4,10 @@ import redis
 from colorama import init
 from colorama import Fore, Back, Style
 import requests
+
 from parseArguments import ConfigParser
 from log import log
+
 
 init()
 socketio = None
@@ -119,4 +121,3 @@ class RedisListen(threading.Thread):
                     socketio.disconnect()
                     return True
         return False
-   

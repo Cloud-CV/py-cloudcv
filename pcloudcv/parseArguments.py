@@ -1,67 +1,5 @@
 import json
 from log import log, ArgumentError
-import pickle
-
-class GoogleAccounts:
-    userid = None
-    first_name = None
-    last_name = None
-    emailid = None
-    access_token = None
-
-    def __init__(self):
-        self.userid = ''
-        self.first_name = ''
-        self.last_name = ''
-        self.emailid = ''
-        self.access_token = ''
-
-
-class DropboxAcconts:
-    userid = None
-    access_token = None
-
-    def __init__(self):
-        self.userid = ''
-        self.access_token = ''
-
-
-class CVModule:
-    name = ''
-    path = ''
-    output = ''
-    params = None
-
-    def __init__(self,name,path, output):
-        self.name = name
-        self.path = path
-        self.output = output
-        self.params = {}
-
-
-class Config:
-    gaccount = GoogleAccounts()
-    dbaccount = DropboxAcconts()
-    run_module = ''
-    config = {}
-    def __init__(self):
-        self.config['ImageStitch'] = CVModule('ImageStitch', '', '')
-        self.config['VOCRelease5'] = CVModule('VOCRelease5', '', '')
-
-class Configure:
-
-    def __init__(self):
-        pass
-
-    def readConfigFile(self, path='config.cfg'):
-        reader = open(path, 'rb')
-        config_input = pickle.load(reader)
-        reader.close()
-
-    def writeConfigFile(self, path='config.cfg'):
-        writer = open(path, 'wb')
-        pickle.dump(self.config, writer)
-        writer.close()
 
 class ConfigParser:
     data = None
@@ -97,7 +35,7 @@ class ConfigParser:
 
     def writeToConfigFile(self, file):
         data_file = open(file, 'w')
-        json.dump(self.data, data_file)
+        json.dump(self.complete_data, data_file)
 
     def parseArguments(self, arg, file):
         sourcepath = None
@@ -125,6 +63,7 @@ class ConfigParser:
         try:
 
             self.readConfigFile(file)
+
             if name is not None:
                 self.exec_name = name
             elif self.exec_name is None:
