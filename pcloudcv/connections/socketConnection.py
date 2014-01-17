@@ -1,19 +1,17 @@
-from socketIO_client import SocketIO
 import threading
+
+from socketIO_client import SocketIO
 import redis
 from colorama import init
-from colorama import Fore, Back, Style
 import requests
-
-from parseArguments import ConfigParser
-from log import log
-
+from utility import logging
+import local_server
 
 init()
 socketio = None
 
-#import logging
-#logging.basicConfig(level=logging.DEBUG)
+#import logging.log
+#logging.log.basicConfig(level=logging.log.DEBUG)
 
 class SocketIOConnection(threading.Thread):
     _executable = ''
@@ -28,6 +26,7 @@ class SocketIOConnection(threading.Thread):
         self._imagepath = str(imagepath)
 
         redis_thread = self.setupRedis()
+        redis_thread.setDaemon(True)
         redis_thread.start()
 
     def setupRedis(self):
@@ -39,9 +38,10 @@ class SocketIOConnection(threading.Thread):
         return redis_thread
 
     def run(self):
-        log('I', 'Starting Socket Connection Thread')
+        logging.log('I', 'Starting Socket Connection Thread')
         self.setupSocketIO()
-        log('I', 'Exiting Socket Connection Thread')
+        logging.log('I', 'Exiting Socket Connection Thread')
+        local_server.server.stop()
 
 
     def connection(self, *args):
@@ -56,28 +56,28 @@ class SocketIOConnection(threading.Thread):
             self._socketid = message['socketid']
 
         if ('name' in message):
-            log('O', message['name'])
+            logging.log('O', message['name'])
             self._socket_io.emit('send_message', self._executable)
 
         if ('data' in message):
-            log('O', message['data'])
+            logging.log('O', message['data'])
             self._redis_obj.publish('intercomm', '***end***')
 
         if ('picture' in message):
-            log('D', message['picture'])
+            logging.log('D', message['picture'])
             file = requests.get(message['picture'])
 
             with open(self._imagepath + '/result' + str(self._socketid) + '.jpg', 'wb') as f:
                 f.write(file.content)
 
-            log('D', 'Image Saved: ' + self._imagepath + '/result' + str(self._socketid) + '.jpg')
+            logging.log('D', 'Image Saved: ' + self._imagepath + '/result' + str(self._socketid) + '.jpg')
 
         if ('mat' in message):
-            log('D', message['mat'])
+            logging.log('D', message['mat'])
             file = requests.get(message['mat'])
             with open(self._imagepath + '/results' + self._socketid + '.txt', 'wb') as f:
                 f.write(file.content)
-            log('D', 'Results Saved: ' + self._imagepath + '/results' + self._socketid + '.txt')
+            logging.log('D', 'Results Saved: ' + self._imagepath + '/results' + self._socketid + '.txt')
 
         if ('request_data' in message):
             self._socket_io.emit('send_message', 'data')
@@ -94,7 +94,7 @@ class SocketIOConnection(threading.Thread):
             self._socket_io.wait()
 
         except Exception as e:
-            log('W', e)
+            logging.log('W', e)
             raise SystemExit
 
 
@@ -105,12 +105,12 @@ class RedisListen(threading.Thread):
         self._pubsub_obj = ps
 
     def run(self):
-        log('I', 'Listening to Redis Channel')
+        logging.log('I', 'Listening to Redis Channel')
         while (True):
             shouldEnd = self.listenToChannel(self._pubsub_obj, self._redis_obj)
             if (shouldEnd):
                 break
-        log('I', 'Ending Listing to Redis Channel')
+        logging.log('I', 'Ending Listing to Redis Channel')
 
     def listenToChannel(self, ps, r):
         global socketio

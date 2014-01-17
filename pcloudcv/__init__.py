@@ -1,4 +1,6 @@
+from pcloudcv.utility.parseArguments import ConfigParser
+
 from pcloudcv import PCloudCV
-from parseArguments import ConfigParser
-from socketConnection import SocketIOConnection
-from uploadData import UploadData
+from pcloudcv.connections.socketConnection import SocketIOConnection
+
+from pcloudcv.connections.uploadData import UploadData
