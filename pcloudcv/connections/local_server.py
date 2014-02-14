@@ -17,6 +17,29 @@ class Path:
         return 'hi'
 
     @cherrypy.expose
+    def dropbox_callback(self, *args, **kwargs):
+        state = kwargs['state']
+        code = kwargs['code']
+
+        result = requests.post('http://cloudcv.org/cloudcv/callback/dropbox/',
+                                data={
+                                'code': code,
+                                'state': state,
+                                'userid': accounts.account_obj.getGoogleUserID()
+                                })
+        print result.text
+
+        try:
+            account_info = json.loads(result.text)
+        except Exception:
+            return result.text
+
+        accounts.account_obj.dbaccount = accounts.DropboxAccounts(str(account_info['uid']), str(account_info['token']))
+        accounts.writeAccounts(accounts.account_obj)
+        accounts.dropboxAuthentication = True
+        return result
+
+    @cherrypy.expose
     def callback(self, *args, **kwargs):
         state = kwargs['state']
         code = kwargs['code']
@@ -41,7 +64,7 @@ class Path:
         accounts.account_obj = accounts.Accounts()
         accounts.account_obj.gaccount = accounts.GoogleAccounts(str(account_info['id']), str(account_info['email']))
         accounts.writeAccounts(accounts.account_obj)
-
+        accounts.googleAuthentication=True
         return result
 
     def exit(self):

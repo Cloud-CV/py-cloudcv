@@ -5,6 +5,7 @@ import redis
 from colorama import init
 import requests
 from utility import logging
+
 import local_server
 
 init()
@@ -39,14 +40,13 @@ class SocketIOConnection(threading.Thread):
 
     def run(self):
         logging.log('I', 'Starting Socket Connection Thread')
+
         self.setupSocketIO()
         logging.log('I', 'Exiting Socket Connection Thread')
         local_server.server.stop()
 
-
     def connection(self, *args):
         pass
-
 
     def on_aaa_response(self, *args):
         message = args[0]
@@ -87,7 +87,7 @@ class SocketIOConnection(threading.Thread):
 
         try:
             self._socket_io = SocketIO('godel.ece.vt.edu', 8000)
-            self._socket_io.on('connect', self.connection)
+            #self._socket_io.on('connect', self.connection)
             self._socket_io.on('message', self.on_aaa_response)
             socketio = self._socket_io
 

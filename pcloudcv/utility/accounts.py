@@ -6,6 +6,8 @@ from os import path
 import sys
 import json
 
+googleAuthentication = False
+dropboxAuthentication = False
 class GoogleAccounts:
     userid = None
     emailid = None
@@ -15,18 +17,18 @@ class GoogleAccounts:
         self.emailid = emailid
 
 
-class DropboxAcconts:
+class DropboxAccounts:
     userid = None
     access_token = None
 
-    def __init__(self):
-        self.userid = ''
-        self.access_token = ''
+    def __init__(self, userid='', access_token=''):
+        self.userid = userid
+        self.access_token = access_token
 
 
 class Accounts:
     gaccount = GoogleAccounts()
-    dbaccount = DropboxAcconts()
+    dbaccount = DropboxAccounts()
 
     def __init__(self):
         pass
@@ -51,9 +53,46 @@ def writeAccounts(account, path = PATH_TO_CONFIG_FILE):
 
 random_key = ''
 
+def dropboxAuthenticate():
+    global random_key, account_obj, googleAuthentication, dropboxAuthentication
+
+    if googleAuthentication:
+        db_userid = account_obj.dbaccount.userid
+        if db_userid and db_userid is not '':
+            response = requests.get('http://cloudcv.org/cloudcv/auth/dropbox', params={'type': 'api',
+                                                                                       'state': random_key,
+                                                                                       'userid': str(account_obj.gaccount.userid),
+                                                                                       'dbuserid': str(db_userid)})
+        else:
+            response = requests.get('http://cloudcv.org/cloudcv/auth/dropbox', params={'type': 'api',
+                                                                                       'state': random_key,
+                                                                                       'userid': str(account_obj.gaccount.userid)})
+        fi = open('error.html', 'w')
+        fi.write(str(response.text))
+        fi.close()
+        print "Written to File"
+
+        try:
+            response_json = json.loads(response.text)
+        except ValueError:
+            print response.text
+            sys.exit()
+
+        if 'redirect' in response_json and response_json['redirect'] == 'True':
+            webbrowser.open_new_tab(str(response_json['url']))
+
+        elif 'isValid' in response_json and response_json['isValid'] == 'True':
+            print 'DropBox Authentication Successful'
+            dropboxAuthentication = True
+
+        else:
+            authenticate()
+            dropboxAuthenticate()
+
+
 
 def authenticate():
-        global random_key, account_obj
+        global random_key, account_obj, googleAuthentication
         random_key = str(uuid.uuid1())
 
         if path.exists('config.cfg'):
@@ -79,5 +118,6 @@ def authenticate():
         elif 'isValid' in response_json and response_json['isValid'] == 'True':
             print 'User Authenticated'
             print 'Welcome '+str(response_json['first_name'])
+            googleAuthentication = True
 
 account_obj = Accounts()
