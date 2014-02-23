@@ -6,8 +6,6 @@ import sys
 import requests
 import cherrypy
 from utility import accounts
-
-
 class Path:
     @cherrypy.expose
     def __init__(self):

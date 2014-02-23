@@ -8,6 +8,8 @@ import json
 
 googleAuthentication = False
 dropboxAuthentication = False
+login_required = True
+
 class GoogleAccounts:
     userid = None
     emailid = None
@@ -85,9 +87,9 @@ def dropboxAuthenticate():
             print 'DropBox Authentication Successful'
             dropboxAuthentication = True
 
-        else:
-            authenticate()
-            dropboxAuthenticate()
+    else:
+        authenticate()
+        dropboxAuthenticate()
 
 
 
@@ -99,11 +101,12 @@ def authenticate():
             account_obj = readAccounts()
             userid = account_obj.gaccount.userid
             print userid
-            response = requests.get('http://cloudcv.org/cloudcv/auth/google', params={'type': 'api',
+
+            response = requests.get('http://cloudcv.org/cloudcv/auth/google/', params={'type': 'api',
                                                                                       'state': random_key,
                                                                                       'userid': str(userid)})
         else:
-            response = requests.get('http://cloudcv.org/cloudcv/auth/google', params={'type': 'api',
+            response = requests.get('http://cloudcv.org/cloudcv/auth/google/', params={'type': 'api',
                                                                                       'state': random_key})
         try:
             response_json = json.loads(response.text)
@@ -117,7 +120,7 @@ def authenticate():
 
         elif 'isValid' in response_json and response_json['isValid'] == 'True':
             print 'User Authenticated'
-            print 'Welcome '+str(response_json['first_name'])
+            print 'Welcome ' + str(response_json['first_name'])
             googleAuthentication = True
 
 account_obj = Accounts()

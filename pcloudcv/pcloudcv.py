@@ -21,7 +21,7 @@ parser.add_argument("config", type=str, help="Full Path to config file")
 parser.add_argument("-I", "--input", type=str, help="Full Path to the Input Folder")
 parser.add_argument("-O", "--output", type=str, help="Full Path to the Output Folder")
 parser.add_argument("-E", "--executable", type=str, help="Executable Name: \n1.) ImageStitch or \n 2.)VOCRelease5")
-parser.add_argument("--nosignup", help="Specify this argument to ignore logging in. However some features can be used only when logged in.",
+parser.add_argument("--nologin", help="Specify this argument to ignore logging in. However some features can be used only when logged in.",
                     action="store_true")
 args = parser.parse_args()
 #----------------xxx-------------Argument Parser Code Ends---------------------xxx----------------------
@@ -39,6 +39,8 @@ class PCloudCV:
     def __init__(self, file, list, login_required):
         signal.signal(signal.SIGINT, signal_handler)
         self.login_required = login_required
+        accounts.login_required = login_required
+
         self.config_obj = ConfigParser()
         self.config_obj.parseArguments(list, file)
         self.config_obj.verify()
@@ -51,7 +53,7 @@ class PCloudCV:
         if self.login_required:
             self.authenticate()
 
-'''
+
         ud = UploadData(self.config_obj)
         ud.setDaemon(True)
         ud.start()
@@ -59,7 +61,6 @@ class PCloudCV:
         sioc = SocketIOConnection(self.config_obj.exec_name, self.config_obj.output_path)
         sioc.setDaemon(True)
         sioc.start()
-'''
 
 def parseCommandLineArgs():
     i = 0
@@ -70,7 +71,7 @@ def parseCommandLineArgs():
         parsedList['output'] = args.output
     if args.executable:
         parsedList['exec'] = args.executable
-    return parsedList, args.config, not args.nosignup
+    return parsedList, args.config, not args.nologin
 
 
 if __name__ == "__main__":

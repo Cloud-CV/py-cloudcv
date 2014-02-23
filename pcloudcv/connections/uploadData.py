@@ -1,3 +1,4 @@
+from __builtin__ import str
 import threading
 import time
 import re
@@ -22,10 +23,10 @@ class UploadData(threading.Thread):
     def __init__(self, config_parser):
         threading.Thread.__init__(self)
 
-        self._source_path = config_parser.source_path
-        self._output_path = config_parser.output_path
-        self._exec_name = config_parser.exec_name
-        self._params = config_parser.params
+        self.source_path = config_parser.source_path
+        self.output_path = config_parser.output_path
+        self.exec_name = config_parser.exec_name
+        self.params = config_parser.params
 
         self._redis_obj = redis.StrictRedis(host='localhost', port=6379, db=0)
         self._pubsub = self._redis_obj.pubsub()
@@ -40,6 +41,44 @@ class UploadData(threading.Thread):
         self.sendPostRequest()
         logging.log('I', 'Exiting From the Post Request Thread')
 
+    #get all files in the directory and create a params dictionary.
+    def filesInDirectory(self, dir):
+        onlyfiles = [f for f in listdir(dir) if isfile(join(dir, f)) is not None]
+        onlyfiles = [f for f in onlyfiles if (re.search('([^\s]+(\.(jpg|png|gif|bmp))$)', str(f)) is not None)]
+        return onlyfiles
+
+    def identifySourcePath(self):
+        list = self.source_path.split(':')
+
+        print list[0].lower().strip(), list[1].strip()
+        return list[0].lower().strip(), list[1].strip()
+
+    def addAccountParameters(self, params_data, source):
+        if accounts.login_required:
+            params_data['userid'] = accounts.account_obj.getGoogleUserID()
+            print params_data['userid']
+
+        if source == 'dropbox':
+            if accounts.dropboxAuthentication is False:
+                accounts.dropboxAuthenticate()
+            params_data['userid'] = accounts.account_obj.getGoogleUserID()
+            params_data['dropbox_token'] = accounts.account_obj.dbaccount.access_token
+            print 'Dropbox Token: ', params_data['dropbox_token']
+
+    def addFileParameters(self, source, source_path, params_data, params_for_request):
+        print source
+        print source_path
+
+        if source == 'dropbox':
+            params_data['dropbox_path'] = source_path
+        else:  # path given by user is on local system
+            files = self.filesInDirectory(source_path)
+            i = 0
+            for f in files:
+                params_for_request['file' + str(i)] = open(self.source_path + '/' + f, 'rb')
+                i += 1
+            params_data['count'] = str(len(files))
+
     #send post requests containing images to the server    
     def sendPostRequest(self):
         global socketid
@@ -47,24 +86,21 @@ class UploadData(threading.Thread):
         params_for_request = {}
         params_data = {}
 
-        token = self.getRequest('http://godel.ece.vt.edu/cloudcv/matlab')
+        token = self.getRequest('http://godel.ece.vt.edu/cloudcv/api')
 
         if token is None:
             logging.log('W', 'token not found')
             raise SystemExit
 
-        files = self.filesInDirectory(self._source_path)
+        source, source_path = self.identifySourcePath()
 
-        i = 0
-        for f in files:
-            params_for_request['file' + str(i)] = open(self._source_path + '/' + f, 'rb')
-            i += 1
-        params_data['userid'] = accounts.account_obj.getGoogleUserID()
+        self.addAccountParameters(params_data, source)
+        self.addFileParameters(source, source_path, params_data, params_for_request)
+
         params_data['token'] = token
-        params_data['count'] = str(len(files))
         params_data['socketid'] = ''
-        params_data['executable'] = self._exec_name
-        params_data['exec_params'] = str(self._params)
+        params_data['executable'] = self.exec_name
+        params_data['exec_params'] = str(self.params)
 
         while True:
             if socketid != '':
@@ -76,10 +112,9 @@ class UploadData(threading.Thread):
 
         logging.log('D', str(params_for_request))
         logging.log('D', str(params_data))
-        datagen, headers = multipart_encode(params_for_request)
 
         try:
-            request = requests.post("http://godel.ece.vt.edu/cloudcv/matlab/", params_data, files=params_for_request)
+            request = requests.post("http://godel.ece.vt.edu/cloudcv/api/", params_data, files=params_for_request)
             logging.log('D', 'Text:   ' + request.text)
         except Exception as e:
             logging.log('W', 'Error in sendPostRequest' + str(e))
@@ -101,14 +136,7 @@ class UploadData(threading.Thread):
         return token
 
 
-    #get all files in the directory and create a params dictionary. 
-    def filesInDirectory(self, dir):
-        onlyfiles = [f for f in listdir(dir) if isfile(join(dir, f)) is not None]
-        onlyfiles = [f for f in onlyfiles if (re.search('([^\s]+(\.(jpg|png|gif|bmp))$)', str(f)) is not None)]
-        return onlyfiles
-
-
-'''Redis Connection for Inter Thread Communication'''
+"""Redis Connection for Inter Thread Communication"""
 class RedisListenForPostThread(threading.Thread):
     def __init__(self, ps, r):
         threading.Thread.__init__(self)
