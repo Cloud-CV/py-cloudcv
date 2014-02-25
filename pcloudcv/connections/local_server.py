@@ -6,6 +6,11 @@ import sys
 import requests
 import cherrypy
 from utility import accounts
+
+
+def exit_program():
+    sys.exit(0)
+
 class Path:
     @cherrypy.expose
     def __init__(self):
@@ -109,9 +114,11 @@ class HTTPServer(threading.Thread):
         cherrypy.log.screen = False
         cherrypy.server.socket_port = 8000
         cherrypy.quickstart(Path())
+        print 'Ending HTTP Server Run method'
 
     def stop(self):
         cherrypy.engine.exit()
         cherrypy.server.stop()
+        print 'Local Server Stop'
 
 server = HTTPServer()

@@ -44,6 +44,7 @@ class SocketIOConnection(threading.Thread):
         self.setupSocketIO()
         logging.log('I', 'Exiting Socket Connection Thread')
         local_server.server.stop()
+        print 'Exit Program by pressing Control + C'
 
     def connection(self, *args):
         pass

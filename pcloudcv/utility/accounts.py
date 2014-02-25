@@ -5,6 +5,7 @@ import uuid
 from os import path
 import sys
 import json
+import time
 
 googleAuthentication = False
 dropboxAuthentication = False
@@ -85,10 +86,14 @@ def dropboxAuthenticate():
 
         elif 'isValid' in response_json and response_json['isValid'] == 'True':
             print 'DropBox Authentication Successful'
+            if account_obj.dbaccount.access_token is None or account_obj.dbaccount.access_token == '':
+                account_obj.dbaccount.access_token = response_json['token']
             dropboxAuthentication = True
 
     else:
         authenticate()
+        while not googleAuthentication:
+            time.sleep(5)
         dropboxAuthenticate()
 
 
@@ -117,6 +122,8 @@ def authenticate():
         if 'redirect' in response_json and response_json['redirect'] == 'True':
             print 'coming'
             webbrowser.open_new_tab(str(response_json['url']))
+            while not googleAuthentication:
+                time.sleep(2)
 
         elif 'isValid' in response_json and response_json['isValid'] == 'True':
             print 'User Authenticated'

@@ -29,7 +29,7 @@ args = parser.parse_args()
 def signal_handler(signal, frame):
     print 'You pressed Ctrl+C! Exiting Now'
     local_server.server.stop()
-    sys.exit(0)
+    local_server.exit_program()
 
 
 class PCloudCV:
@@ -46,6 +46,7 @@ class PCloudCV:
         self.config_obj.verify()
 
     def authenticate(self):
+        local_server.server.setDaemon(True)
         local_server.server.start()
         accounts.authenticate()
 

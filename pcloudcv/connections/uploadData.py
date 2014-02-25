@@ -62,6 +62,7 @@ class UploadData(threading.Thread):
         if source == 'dropbox':
             if accounts.dropboxAuthentication is False:
                 accounts.dropboxAuthenticate()
+
             params_data['userid'] = accounts.account_obj.getGoogleUserID()
             params_data['dropbox_token'] = accounts.account_obj.dbaccount.access_token
             print 'Dropbox Token: ', params_data['dropbox_token']
