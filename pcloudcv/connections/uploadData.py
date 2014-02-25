@@ -12,7 +12,8 @@ from poster.encode import multipart_encode
 
 from utility import logging
 from utility import accounts
-
+import poster
+import urllib2
 
 exitFlag = 0
 socketid = ''
@@ -75,7 +76,7 @@ class UploadData(threading.Thread):
             files = self.filesInDirectory(source_path)
             i = 0
             for f in files:
-                params_for_request['file' + str(i)] = open(self.source_path + '/' + f, 'rb')
+                params_for_request['file' + str(i)] = open(source_path + '/' + f, 'rb')
                 i += 1
             params_data['count'] = str(len(files))
 
@@ -110,11 +111,15 @@ class UploadData(threading.Thread):
                 time.sleep(1)
                 logging.log('W', 'Waiting for Socket Connection to complete')
 
+
+        # for k,v in params_for_request.items():
+        #     params_data[k] = v
+
         logging.log('D', str(params_for_request))
         logging.log('D', str(params_data))
 
         try:
-            request = requests.post("http://godel.ece.vt.edu/cloudcv/api/", params_data, files=params_for_request)
+            request = requests.post("http://godel.ece.vt.edu/cloudcv/api/", data=params_data, files=params_for_request)
             logging.log('D', 'Text:   ' + request.text)
         except Exception as e:
             logging.log('W', 'Error in sendPostRequest' + str(e))
