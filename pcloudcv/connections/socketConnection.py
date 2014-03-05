@@ -49,6 +49,12 @@ class SocketIOConnection(threading.Thread):
     def connection(self, *args):
         pass
 
+    def on_error_response(self, *args):
+        error_message = args[0];
+        if('message' in error_message):
+            print error_message['message']
+            self._redis_obj.publish('intercomm', '***end***')
+
     def on_aaa_response(self, *args):
         message = args[0]
 
@@ -90,6 +96,7 @@ class SocketIOConnection(threading.Thread):
             self._socket_io = SocketIO('godel.ece.vt.edu', 8000)
             #self._socket_io.on('connect', self.connection)
             self._socket_io.on('message', self.on_aaa_response)
+            self._socket_io.on('error', self.on_error_response)
             socketio = self._socket_io
 
             self._socket_io.wait()
