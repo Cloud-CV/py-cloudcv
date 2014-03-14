@@ -28,6 +28,7 @@ def parseCommandLineArgs():
 
 if __name__ == "__main__":
     parsedList, config_file, login_required = parseCommandLineArgs()
+    print parsedList
     p = PCloudCV(os.getcwd() + '/' + str(config_file), parsedList, login_required)
     signal.signal(signal.SIGINT, p.signal_handler)
     p.start()

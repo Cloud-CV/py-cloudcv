@@ -49,8 +49,8 @@ class ConfigParser:
             sourcepath = arg['input']
         if 'output' in arg:
             resultpath = arg['output']
-        if 'name' in arg:
-            name = arg['name']
+        if 'exec' in arg:
+            name = arg['exec']
 
         try:
             self.readConfigFile(file)

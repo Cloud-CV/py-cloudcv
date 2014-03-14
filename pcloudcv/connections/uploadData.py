@@ -46,6 +46,8 @@ class UploadData(threading.Thread):
 
     def identifySourcePath(self):
         list = self.source_path.split(':')
+        if len(list) < 2:
+            raise Exception('Image Input Path not in proper format. ')
         return list[0].lower().strip(), list[1].strip()
 
     def addAccountParameters(self, params_data, source):
@@ -93,6 +95,10 @@ class UploadData(threading.Thread):
         params_data['socketid'] = ''
         params_data['executable'] = self.exec_name
         params_data['exec_params'] = str(self.params)
+
+        logging.log('D', 'Source Path: ' + self.source_path)
+        logging.log('D', 'Executable: ' + params_data['executable'])
+        logging.log('D', 'Executable Params: ' + params_data['exec_params'])
 
         while True:
             if self.socketid != '' and self.socketid is not None:
