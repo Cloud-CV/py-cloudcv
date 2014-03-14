@@ -1,5 +1,6 @@
 import json
 from logging import log, ArgumentError
+import job
 
 class ConfigParser:
     data = None

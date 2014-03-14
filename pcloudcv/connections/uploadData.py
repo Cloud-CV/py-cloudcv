@@ -62,9 +62,6 @@ class UploadData(threading.Thread):
             print 'Dropbox Token: ', params_data['dropbox_token']
 
     def addFileParameters(self, source, source_path, params_data, params_for_request):
-        print source
-        print source_path
-
         if source == 'dropbox':
             params_data['dropbox_path'] = source_path
         else:  # path given by user is on local system

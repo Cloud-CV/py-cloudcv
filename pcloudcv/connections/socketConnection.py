@@ -5,10 +5,15 @@ import redis
 from colorama import init
 import requests
 from utility import logging
+
+import utility.job as job
+
 import os
 import local_server
 from urlparse import urlparse
 from os.path import splitext, basename
+
+
 
 init()
 socketio = None
@@ -77,6 +82,9 @@ class SocketIOConnection(threading.Thread):
             logging.log('D', message['picture'])
 
             resultpath = self._imagepath.rstrip('/') + '/' + message['jobid']
+
+            job.job.setJobID(message['jobid'])
+            job.job.resultpath = resultpath
 
             if not os.path.exists(resultpath):
                 os.makedirs(resultpath)
