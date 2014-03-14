@@ -8,19 +8,15 @@ from os.path import isfile, join
 import redis
 import requests
 from colorama import init
-from poster.encode import multipart_encode
 
 from utility import logging
 from utility import accounts
-import poster
-import urllib2
-
 exitFlag = 0
-socketid = ''
 init()
 
 
 class UploadData(threading.Thread):
+    socketid = None
     def __init__(self, config_parser):
         threading.Thread.__init__(self)
 
@@ -33,7 +29,7 @@ class UploadData(threading.Thread):
         self._pubsub = self._redis_obj.pubsub()
         self._pubsub.subscribe('intercomm')
 
-        redisThread = RedisListenForPostThread(self._pubsub, self._redis_obj)
+        redisThread = RedisListenForPostThread(self._pubsub, self._redis_obj, self)
         redisThread.setDaemon(True)
         redisThread.start()
 
@@ -74,7 +70,7 @@ class UploadData(threading.Thread):
         if source == 'dropbox':
             params_data['dropbox_path'] = source_path
         else:  # path given by user is on local system
-            files = self.filesInDirectory(source_path)
+            files = self.filesInDirectory(source_path.rstrip('/'))
             i = 0
             for f in files:
                 params_for_request['file' + str(i)] = open(source_path + '/' + f, 'rb')
@@ -83,7 +79,6 @@ class UploadData(threading.Thread):
 
     #send post requests containing images to the server    
     def sendPostRequest(self):
-        global socketid
 
         params_for_request = {}
         params_data = {}
@@ -105,11 +100,12 @@ class UploadData(threading.Thread):
         params_data['exec_params'] = str(self.params)
 
         while True:
-            if socketid != '':
-                params_data['socketid'] = socketid
+            if self.socketid != '' and self.socketid != 'None':
+                params_data['socketid'] = (self.socketid)
+                print 'SocketID: ', (self.socketid)
                 break
             else:
-                time.sleep(1)
+                time.sleep(5)
                 logging.log('W', 'Waiting for Socket Connection to complete')
 
 
@@ -144,33 +140,33 @@ class UploadData(threading.Thread):
 
 """Redis Connection for Inter Thread Communication"""
 class RedisListenForPostThread(threading.Thread):
-    def __init__(self, ps, r):
+    def __init__(self, ps, r, udobj):
         threading.Thread.__init__(self)
         self.r = r
         self.ps = ps
+        self.udobj = udobj
 
     def run(self):
         logging.log('I', 'Starting Listening to Redis Channel for HTTP Post Requests')
         while (True):
-            shouldEnd = listenToChannel(self.ps, self.r)
+            shouldEnd = self.listenToChannel(self.ps, self.r)
             if (shouldEnd):
                 break
         logging.log('I', 'Exiting Redis Thread for HTTP Post requests')
 
 
-def listenToChannel(ps, r):
-    global socketid
+    def listenToChannel(self, ps, r):
+        for item in ps.listen():
+            if item['type'] == 'message':
+                if item['channel'] == 'intercomm':
 
-    for item in ps.listen():
-        if item['type'] == 'message':
-            if item['channel'] == 'intercomm':
+                    if '***end***' in item['data']:
+                        r.publish('intercomm2', '***endcomplete***')
+                        return True
+                    else:
+                        self.udobj.socketid = item['data']
+                        print self.udobj.socketid
 
-                if '***end***' in item['data']:
-                    r.publish('intercomm2', '***endcomplete***')
-                    return True
-                else:
-                    socketid = item['data']
-
-    return False
+        return False
                   
 

@@ -5,8 +5,10 @@ import redis
 from colorama import init
 import requests
 from utility import logging
-
+import os
 import local_server
+from urlparse import urlparse
+from os.path import splitext, basename
 
 init()
 socketio = None
@@ -50,9 +52,10 @@ class SocketIOConnection(threading.Thread):
         pass
 
     def on_error_response(self, *args):
-        error_message = args[0];
-        if('message' in error_message):
-            print error_message['message']
+        error_message = args[0]
+        if('error' in error_message):
+            print error_message['error']
+        if('end' in error_message):
             self._redis_obj.publish('intercomm', '***end***')
 
     def on_aaa_response(self, *args):
@@ -72,12 +75,29 @@ class SocketIOConnection(threading.Thread):
 
         if ('picture' in message):
             logging.log('D', message['picture'])
-            file = requests.get(message['picture'])
 
-            with open(self._imagepath + '/result' + str(self._socketid) + '.jpg', 'wb') as f:
-                f.write(file.content)
+            resultpath = self._imagepath.rstrip('/') + '/' + message['jobid']
 
-            logging.log('D', 'Image Saved: ' + self._imagepath + '/result' + str(self._socketid) + '.jpg')
+            if not os.path.exists(resultpath):
+                os.makedirs(resultpath)
+                os.chmod(resultpath, 0776)
+                print 'Directory created'
+
+            while True:
+                try:
+                    file = requests.get(message['picture'])
+                    break
+                except Exception as e:
+                    print 'Error Connecting to CloudCV. Will try again'
+
+
+            file_name = basename(urlparse(message['picture']).path)
+
+            f = open(resultpath + '/' + file_name, 'wb')
+            f.write(file.content)
+            f.close()
+
+            logging.log('D', 'Image Saved: ' + resultpath + '/' + file_name)
 
         if ('mat' in message):
             logging.log('D', message['mat'])
@@ -88,6 +108,7 @@ class SocketIOConnection(threading.Thread):
 
         if ('request_data' in message):
             self._socket_io.emit('send_message', 'data')
+
 
     def setupSocketIO(self):
         global socketio
