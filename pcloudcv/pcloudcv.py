@@ -48,6 +48,7 @@ class PCloudCV:
     def authenticate(self):
         local_server.server.setDaemon(True)
         local_server.server.start()
+
         accounts.authenticate()
 
     def run(self):

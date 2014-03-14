@@ -6,6 +6,7 @@ from os import path
 import sys
 import json
 import time
+from logging import log
 
 googleAuthentication = False
 dropboxAuthentication = False
@@ -99,35 +100,41 @@ def dropboxAuthenticate():
 
 
 def authenticate():
-        global random_key, account_obj, googleAuthentication
-        random_key = str(uuid.uuid1())
 
-        if path.exists('config.cfg'):
-            account_obj = readAccounts()
-            userid = account_obj.gaccount.userid
-            print userid
-
-            response = requests.get('http://cloudcv.org/cloudcv/auth/google/', params={'type': 'api',
-                                                                                      'state': random_key,
-                                                                                      'userid': str(userid)})
-        else:
-            response = requests.get('http://cloudcv.org/cloudcv/auth/google/', params={'type': 'api',
-                                                                                      'state': random_key})
+    global random_key, account_obj, googleAuthentication
+    random_key = str(uuid.uuid1())
+    for i in range(100):
         try:
-            response_json = json.loads(response.text)
-        except ValueError:
-            print response.text
-            sys.exit()
+            if path.exists('config.cfg'):
+                account_obj = readAccounts()
+                userid = account_obj.gaccount.userid
+                print userid
 
-        if 'redirect' in response_json and response_json['redirect'] == 'True':
-            print 'coming'
-            webbrowser.open_new_tab(str(response_json['url']))
-            while not googleAuthentication:
-                time.sleep(2)
+                response = requests.get('http://cloudcv.org/cloudcv/auth/google/', params={'type': 'api',
+                                                                                          'state': random_key,
+                                                                                          'userid': str(userid)})
+            else:
+                response = requests.get('http://cloudcv.org/cloudcv/auth/google/', params={'type': 'api',
+                                                                                          'state': random_key})
+            break
+        except Exception as e:
+            log('W', 'Error connecting to cloudcv. Retrying: ' + str(i) + ' attempt\n')
 
-        elif 'isValid' in response_json and response_json['isValid'] == 'True':
-            print 'User Authenticated'
-            print 'Welcome ' + str(response_json['first_name'])
-            googleAuthentication = True
+    try:
+        response_json = json.loads(response.text)
+    except ValueError:
+        print response.text
+        sys.exit()
+
+    if 'redirect' in response_json and response_json['redirect'] == 'True':
+        print 'coming'
+        webbrowser.open_new_tab(str(response_json['url']))
+        while not googleAuthentication:
+            time.sleep(2)
+
+    elif 'isValid' in response_json and response_json['isValid'] == 'True':
+        print 'User Authenticated'
+        print 'Welcome ' + str(response_json['first_name'])
+        googleAuthentication = True
 
 account_obj = Accounts()

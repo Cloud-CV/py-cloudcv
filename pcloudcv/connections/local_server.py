@@ -114,12 +114,11 @@ class HTTPServer(threading.Thread):
         cherrypy.log.screen = False
         cherrypy.server.socket_port = 8000
         cherrypy.quickstart(Path())
-        print 'Ending HTTP Server Run method'
 
     def stop(self):
         cherrypy.engine.exit()
         cherrypy.server.stop()
         cherrypy.process.bus.exit()
-        print 'Local Server Stop'
+        print 'Local Server Stopped'
 
 server = HTTPServer()

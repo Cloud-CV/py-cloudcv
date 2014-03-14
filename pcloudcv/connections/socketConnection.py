@@ -81,7 +81,6 @@ class SocketIOConnection(threading.Thread):
             if not os.path.exists(resultpath):
                 os.makedirs(resultpath)
                 os.chmod(resultpath, 0776)
-                print 'Directory created'
 
             while True:
                 try:

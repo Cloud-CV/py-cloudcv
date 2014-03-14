@@ -46,14 +46,12 @@ class UploadData(threading.Thread):
 
     def identifySourcePath(self):
         list = self.source_path.split(':')
-
-        print list[0].lower().strip(), list[1].strip()
         return list[0].lower().strip(), list[1].strip()
 
     def addAccountParameters(self, params_data, source):
         if accounts.login_required:
             params_data['userid'] = accounts.account_obj.getGoogleUserID()
-            print params_data['userid']
+            print 'UserId: '+ params_data['userid']
 
         if source == 'dropbox':
             if accounts.dropboxAuthentication is False:
@@ -100,7 +98,7 @@ class UploadData(threading.Thread):
         params_data['exec_params'] = str(self.params)
 
         while True:
-            if self.socketid != '' and self.socketid != 'None':
+            if self.socketid != '' and self.socketid is not None:
                 params_data['socketid'] = (self.socketid)
                 print 'SocketID: ', (self.socketid)
                 break
@@ -111,9 +109,6 @@ class UploadData(threading.Thread):
 
         # for k,v in params_for_request.items():
         #     params_data[k] = v
-
-        logging.log('D', str(params_for_request))
-        logging.log('D', str(params_data))
 
         try:
             request = requests.post("http://godel.ece.vt.edu/cloudcv/api/", data=params_data, files=params_for_request)
@@ -165,8 +160,6 @@ class RedisListenForPostThread(threading.Thread):
                         return True
                     else:
                         self.udobj.socketid = item['data']
-                        print self.udobj.socketid
-
         return False
                   
 
