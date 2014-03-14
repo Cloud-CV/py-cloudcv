@@ -4,7 +4,7 @@ class Job:
     jobid = None
 
     def __init__(self, imagepath=None, resultpath=None, executable=None):
-        self.imagepath = imagepat.h
+        self.imagepath = imagepath
         self.resultpath = resultpath
         self.executable = executable
 
