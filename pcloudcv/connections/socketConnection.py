@@ -6,7 +6,7 @@ from colorama import init
 import requests
 from utility import logging
 import utility.job as job
-
+import traceback
 import os
 import local_server
 from urlparse import urlparse
@@ -84,25 +84,27 @@ class SocketIOConnection(threading.Thread):
 
             job.job.setJobID(message['jobid'])
             job.job.resultpath = resultpath
+            try:
+                if not os.path.exists(resultpath):
+                    os.makedirs(resultpath)
+                    os.chmod(resultpath, 0776)
 
-            if not os.path.exists(resultpath):
-                os.makedirs(resultpath)
-                os.chmod(resultpath, 0776)
-
-            while True:
-                try:
-                    file = requests.get(message['picture'])
-                    break
-                except Exception as e:
-                    print 'Error Connecting to CloudCV. Will try again'
+                while True:
+                    try:
+                        file = requests.get(message['picture'])
+                        break
+                    except Exception as e:
+                        print 'Error Connecting to CloudCV. Will try again'
 
 
-            file_name = basename(urlparse(message['picture']).path)
+                file_name = basename(urlparse(message['picture']).path)
 
-            f = open(resultpath + '/' + file_name, 'wb')
-            f.write(file.content)
-            f.close()
-
+                f = open(resultpath + '/' + file_name, 'wb')
+                f.write(file.content)
+                f.close()
+            except Exception as e:
+                logging.log('W', str(traceback.format_exc()))
+                logging.log('W', str('possible reason: Output format improper'))
             logging.log('D', 'File Saved: ' + resultpath + '/' + file_name)
 
         if ('mat' in message):
