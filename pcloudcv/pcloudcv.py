@@ -1,8 +1,9 @@
 import os
 import sys
 from os import system
+import time
 
-path = os.path.realpath(__file__)
+path = os.path.dirname(os.path.realpath(__file__))
 print "Added Path: " + path
 if path not in sys.path:
     sys.path.append(path)
@@ -19,6 +20,8 @@ from connections.socketConnection import SocketIOConnection
 
 init()
 
+def getfullpath(s):
+    return os.path.join(os.getcw(), s)
 
 class PCloudCV(threading.Thread):
     config_obj = None
@@ -32,7 +35,10 @@ class PCloudCV(threading.Thread):
         self.config_obj = ConfigParser()
         self.config_obj.parseArguments(list, file)
         self.config_obj.verify()
-        job.job.imagepath = self.config_obj.source_path
+
+    def stop_local_server(self):
+        local_server.server.stop()
+        local_server.exit_program()
 
     def signal_handler(self, signal, frame):
         print 'You pressed Ctrl+C! Exiting Now'
@@ -50,15 +56,16 @@ class PCloudCV(threading.Thread):
         if self.login_required:
             self.authenticate()
 
-
         ud = UploadData(self.config_obj)
-        ud.setDaemon(True)
-        ud.start()
-        logging.log('I', 'Starting Uploading Data')
         sioc = SocketIOConnection(self.config_obj.exec_name, self.config_obj.output_path)
         sioc.setDaemon(True)
         sioc.start()
 
+        time.sleep(4)
+
+        ud.setDaemon(True)
+        ud.start()
+        logging.log('I', 'Starting Uploading Data')
 
 
 

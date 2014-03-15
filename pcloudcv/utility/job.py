@@ -2,7 +2,8 @@ __author__ = 'dexter'
 
 class Job:
     jobid = None
-
+    output = ''
+    files = list()
     def __init__(self, imagepath=None, resultpath=None, executable=None):
         self.imagepath = imagepath
         self.resultpath = resultpath
@@ -16,4 +17,9 @@ class Job:
     def setJobID(self, jobid):
         self.jobid = jobid
 
+    def setOutput(self, output):
+        self.output = output
+
+    def addFiles(self, path):
+        list.append(path)
 job = Job()

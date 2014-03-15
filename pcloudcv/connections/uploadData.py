@@ -8,9 +8,11 @@ from os.path import isfile, join
 import redis
 import requests
 from colorama import init
-
 from utility import logging
 from utility import accounts
+
+import utility.job as job
+
 exitFlag = 0
 init()
 
@@ -91,6 +93,8 @@ class UploadData(threading.Thread):
         self.addAccountParameters(params_data, source)
         self.addFileParameters(source, source_path, params_data, params_for_request)
 
+        job.job.imagepath = source_path
+
         params_data['token'] = token
         params_data['socketid'] = ''
         params_data['executable'] = self.exec_name
@@ -106,12 +110,14 @@ class UploadData(threading.Thread):
                 print 'SocketID: ', (self.socketid)
                 break
             else:
-                time.sleep(5)
+                time.sleep(2)
                 logging.log('W', 'Waiting for Socket Connection to complete')
 
 
         # for k,v in params_for_request.items():
         #     params_data[k] = v
+        print params_data
+        print params_for_request
 
         try:
             request = requests.post("http://godel.ece.vt.edu/cloudcv/api/", data=params_data, files=params_for_request)

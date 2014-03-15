@@ -8,7 +8,6 @@ import sys
 import json
 import time
 from logging import log
-
 googleAuthentication = False
 dropboxAuthentication = False
 login_required = True
