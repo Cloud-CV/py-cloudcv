@@ -5,7 +5,6 @@ import redis
 from colorama import init
 import requests
 from utility import logging
-
 import utility.job as job
 
 import os
@@ -104,7 +103,7 @@ class SocketIOConnection(threading.Thread):
             f.write(file.content)
             f.close()
 
-            logging.log('D', 'Image Saved: ' + resultpath + '/' + file_name)
+            logging.log('D', 'File Saved: ' + resultpath + '/' + file_name)
 
         if ('mat' in message):
             logging.log('D', message['mat'])
