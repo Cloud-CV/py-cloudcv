@@ -162,4 +162,9 @@ class RedisListen(threading.Thread):
                 if '***endcomplete***' in item['data']:
                     socketio.disconnect()
                     return True
+                try:
+                    if item['type'] == 'message':
+                        socketio.emit('getsocketid', 'socketid')
+                except Exception as e:
+                    print e
         return False

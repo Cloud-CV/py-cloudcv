@@ -43,7 +43,7 @@ class UploadData(threading.Thread):
     #get all files in the directory and create a params dictionary.
     def filesInDirectory(self, dir):
         onlyfiles = [f for f in listdir(dir) if isfile(join(dir, f)) is not None]
-        onlyfiles = [f for f in onlyfiles if (re.search('([^\s]+(\.(jpg|png|gif|bmp))$)', str(f)) is not None)]
+        onlyfiles = [f for f in onlyfiles if (re.search('([^\s]+(\.(jpg|png|gif|bmp|jpeg))$)', str(f)) is not None)]
         return onlyfiles
 
     def identifySourcePath(self):
@@ -110,8 +110,10 @@ class UploadData(threading.Thread):
                 print 'SocketID: ', (self.socketid)
                 break
             else:
-                time.sleep(2)
+                self._redis_obj.publish('intercomm2', 'getsocketid')
+                time.sleep(3)
                 logging.log('W', 'Waiting for Socket Connection to complete')
+
 
 
         # for k,v in params_for_request.items():
@@ -168,6 +170,7 @@ class RedisListenForPostThread(threading.Thread):
                         r.publish('intercomm2', '***endcomplete***')
                         return True
                     else:
+                        print 'SocketID: ', item['data']
                         self.udobj.socketid = item['data']
         return False
                   
