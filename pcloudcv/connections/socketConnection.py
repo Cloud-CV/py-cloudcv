@@ -53,7 +53,7 @@ class SocketIOConnection(threading.Thread):
         print 'Exit Program by pressing Control + C'
 
     def connection(self, *args):
-        pass
+        print 'Connected using websockets'
 
     def on_error_response(self, *args):
         error_message = args[0]
@@ -75,6 +75,7 @@ class SocketIOConnection(threading.Thread):
 
         if ('data' in message):
             logging.log('O', message['data'])
+            job.job.output = message['data']
             self._redis_obj.publish('intercomm', '***end***')
 
         if ('picture' in message):
@@ -84,6 +85,8 @@ class SocketIOConnection(threading.Thread):
 
             job.job.setJobID(message['jobid'])
             job.job.resultpath = resultpath
+            job.job.executable = self._executable
+
             try:
                 if not os.path.exists(resultpath):
                     os.makedirs(resultpath)
@@ -102,6 +105,9 @@ class SocketIOConnection(threading.Thread):
                 f = open(resultpath + '/' + file_name, 'wb')
                 f.write(file.content)
                 f.close()
+
+                job.job.addFiles(resultpath + '/' + file_name)
+
             except Exception as e:
                 logging.log('W', str(traceback.format_exc()))
                 logging.log('W', str('possible reason: Output format improper'))
@@ -123,11 +129,10 @@ class SocketIOConnection(threading.Thread):
 
         try:
             self._socket_io = SocketIO('godel.ece.vt.edu', 8000)
-            #self._socket_io.on('connect', self.connection)
+            self._socket_io.on('connect', self.connection)
             self._socket_io.on('message', self.on_aaa_response)
             self._socket_io.on('error', self.on_error_response)
             socketio = self._socket_io
-
             self._socket_io.wait()
 
         except Exception as e:
