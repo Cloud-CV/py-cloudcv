@@ -31,6 +31,10 @@ if __name__ == "__main__":
     print parsedList
     p = PCloudCV(os.getcwd() + '/' + str(config_file), parsedList, login_required)
     signal.signal(signal.SIGINT, p.signal_handler)
+    p.dropbox_authenticate()
+
+    raw_input()
+
     p.start()
     p.join()
     signal.pause()

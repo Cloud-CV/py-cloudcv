@@ -36,6 +36,9 @@ class PCloudCV(threading.Thread):
         self.config_obj.parseArguments(list, file)
         self.config_obj.verify()
 
+        local_server.server.setDaemon(True)
+        local_server.server.start()
+
     def stop_local_server(self):
         local_server.server.stop()
         local_server.exit_program()
@@ -45,9 +48,10 @@ class PCloudCV(threading.Thread):
         local_server.server.stop()
         local_server.exit_program()
 
+    def dropbox_authenticate(self):
+        accounts.dropboxAuthenticate()
+
     def authenticate(self):
-        local_server.server.setDaemon(True)
-        local_server.server.start()
 
         accounts.authenticate()
 
