@@ -1,5 +1,7 @@
 import os
 import sys
+from os import system
+
 path = os.path.realpath(__file__)
 print "Added Path: " + path
 if path not in sys.path:
@@ -17,6 +19,7 @@ from connections.socketConnection import SocketIOConnection
 
 init()
 
+os.system('redis-server')
 
 class PCloudCV(threading.Thread):
     config_obj = None
