@@ -19,7 +19,6 @@ from connections.socketConnection import SocketIOConnection
 
 init()
 
-os.system('redis-server')
 
 class PCloudCV(threading.Thread):
     config_obj = None
