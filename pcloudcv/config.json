@@ -1,9 +1,9 @@
 {
-    "exec": "ImageStitch",
+    "exec": "classify",
     "config": [
         {
             "name": "ImageStitch",
-            "path": "local: /home/dexter/Pictures/test_download/1",
+            "path": "local: /home/dexter/Pictures/test_download/5",
             "output": "/home/dexter/Pictures/test_download",
             "params": {
                 "warp": "plane"
@@ -21,7 +21,7 @@
 
         {
             "name": "classify",
-            "path": "local: /home/dexter/Pictures/test_upload/kitchen",
+            "path": "local: /home/dexter/Pictures/test_download/kitchen",
             "output": "/home/dexter/Pictures/test_download",
             "params": {
             }
