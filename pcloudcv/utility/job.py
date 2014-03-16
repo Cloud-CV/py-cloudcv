@@ -21,5 +21,5 @@ class Job:
         self.output = output
 
     def addFiles(self, path):
-        list.append(path)
+        self.files.append(path)
 job = Job()

@@ -57,6 +57,7 @@ def writeAccounts(account, path = PATH_TO_CONFIG_FILE):
 
 random_key = ''
 
+
 def dropboxAuthenticate():
     global random_key, account_obj, googleAuthentication, dropboxAuthentication
 
@@ -74,7 +75,6 @@ def dropboxAuthenticate():
         fi = open('error.html', 'w')
         fi.write(str(response.text))
         fi.close()
-        print "Written to File"
 
         try:
             response_json = json.loads(response.text)
@@ -127,7 +127,6 @@ def authenticate():
         sys.exit()
 
     if 'redirect' in response_json and response_json['redirect'] == 'True':
-        print 'coming'
         webbrowser.open_new_tab(str(response_json['url']))
         while not googleAuthentication:
             time.sleep(2)

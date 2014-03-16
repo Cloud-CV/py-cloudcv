@@ -69,7 +69,6 @@ class PCloudCV(threading.Thread):
 
         ud.setDaemon(True)
         ud.start()
-        logging.log('I', 'Starting Uploading Data')
 
 
 

@@ -8,7 +8,7 @@ class ConfigParser:
     source_path = None
     output_path = None
     params = None
-
+    maxim = None
     def __init__(self):
         pass
 
@@ -33,6 +33,7 @@ class ConfigParser:
         complete_data = json.loads(data_file)
         self.data = complete_data['config']
         self.exec_name = complete_data['exec']
+        self.maxim = int(complete_data['maxim'])
 
     def writeToConfigFile(self, file):
         data_file = open(file, 'w')

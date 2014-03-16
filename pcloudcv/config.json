@@ -1,9 +1,10 @@
 {
-    "exec": "classify",
+    "exec": "VOCRelease5",
+    "maxim": 500,
     "config": [
         {
             "name": "ImageStitch",
-            "path": "local: /home/dexter/Pictures/test_download/5",
+            "path": "local: /home/dexter/Pictures/test_download/1",
             "output": "/home/dexter/Pictures/test_download",
             "params": {
                 "warp": "plane"
@@ -12,7 +13,7 @@
 
         {
             "name": "VOCRelease5",
-            "path": "local: /home/dexter/Pictures/test_download/4",
+            "path": "dropbox: /4",
             "output": "/home/dexter/Pictures/test_download",
             "params": {
                 "Models": "PAS_bicycle,PAS_aeroplane,PAS_bird,PAS_boat,PAS_bottle,PAS_bus,PAS_car,PAS_cat,PAS_chair,PAS_cow,PAS_diningtable,PAS_dog,PAS_horse,PAS_motorbike,PAS_person,PAS_pottedplant,PAS_sheep,PAS_sofa,PAS_train,PAS_tvmonitor"
@@ -21,7 +22,7 @@
 
         {
             "name": "classify",
-            "path": "local: /home/dexter/Pictures/test_download/kitchen",
+            "path": "local: /home/dexter/Pictures/test_download/4",
             "output": "/home/dexter/Pictures/test_download",
             "params": {
             }

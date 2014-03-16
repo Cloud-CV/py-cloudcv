@@ -30,7 +30,6 @@ class Path:
                                 'state': state,
                                 'userid': accounts.account_obj.getGoogleUserID()
                                 })
-        print result.text
 
         try:
             account_info = json.loads(result.text)
@@ -58,11 +57,6 @@ class Path:
 
         except Exception:
             return result.text
-
-        if 'user_table_message' in account_info and 'gaccount_table_message' in account_info:
-            print account_info['user_table_message']
-            print account_info['gaccount_table_message']
-
 
         accounts.account_obj = accounts.Accounts()
         accounts.account_obj.gaccount = accounts.GoogleAccounts(str(account_info['id']), str(account_info['email']))
