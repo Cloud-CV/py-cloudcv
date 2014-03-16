@@ -31,13 +31,14 @@ def visualize(ImagePath, scores):
     BGimg.save('sample-out-BG.JPEG')
     BGimg.show()
 
-def visualize_classification(output_dict):
+def str2dict(str):
+    return json.loads(str)
+
+def visualize_classification(str):
+    output_dict = str2dict(str)
     for k, v in output_dict.iteritems():
         imagepath = os.path.join(job.job.imagepath, k)
         scores = output_dict[k]
         visualize(imagepath, scores)
         raw_input()
-
-def str2dict(str):
-    return json.loads(str)
 
