@@ -46,7 +46,7 @@ class UploadData(threading.Thread):
     #get all files in the directory and create a params dictionary.
     def filesInDirectory(self, dir):
         onlyfiles = [f for f in listdir(dir) if isfile(join(dir, f)) is not None]
-        onlyfiles = [f for f in onlyfiles if (re.search('([^\s]+(\.(jpg|png|gif|bmp|jpeg))$)', str(f)) is not None)]
+        onlyfiles = [f for f in onlyfiles if (re.search('([^\s]+(\.(jpg|png|gif|bmp|jpeg|JPG|PNG|GIF|BMP|JPEG))$)', str(f)) is not None)]
         return onlyfiles
 
     def identifySourcePath(self):
