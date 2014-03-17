@@ -2,6 +2,7 @@ import os
 import sys
 from os import system
 import time
+import requests
 
 path = os.path.dirname(os.path.realpath(__file__))
 print "Added Path: " + path
@@ -39,6 +40,14 @@ class PCloudCV(threading.Thread):
         local_server.server.setDaemon(True)
         local_server.server.start()
 
+    def ec2_demo(self):
+        params_data= {}
+        params_data['dropbox_token'] = accounts.account_obj.dbaccount.access_token
+        params_data['emailid'] = 'h.agrawal092@gmail.com'
+        response = requests.get('http://godel.ece.vt.edu/cloudcv/ec2/', params=params_data)
+        print response.text
+        self.stop_local_server()
+
     def stop_local_server(self):
         local_server.server.stop()
         local_server.exit_program()
@@ -52,7 +61,6 @@ class PCloudCV(threading.Thread):
         accounts.dropboxAuthenticate()
 
     def authenticate(self):
-
         accounts.authenticate()
 
     def run(self):
