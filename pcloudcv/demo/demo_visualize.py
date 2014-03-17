@@ -34,6 +34,7 @@ def visualize(ImagePath, scores):
 def str2dict(str):
     return json.loads(str)
 
+#Visualization Code for Classifications
 def visualize_classification(str):
     output_dict = str2dict(str)
     for k, v in output_dict.iteritems():
@@ -41,4 +42,5 @@ def visualize_classification(str):
         scores = output_dict[k]
         visualize(imagepath, scores)
         raw_input()
+
 
