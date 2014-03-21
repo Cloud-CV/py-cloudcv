@@ -16,5 +16,8 @@ setup(
         "colorama >= 0.2.5",
         "poster >= 0.8.1",
         "socketIO-client == 0.4",
+        "CherryPy >= 3.2.4",
+        "h5py",
+        "numpy"
     ],
 )
