@@ -39,7 +39,9 @@ class Path:
         accounts.account_obj.dbaccount = accounts.DropboxAccounts(str(account_info['uid']), str(account_info['token']))
         accounts.writeAccounts(accounts.account_obj)
         accounts.dropboxAuthentication = True
-        return result
+
+        http_response = "Your dropbox account is now linked"
+        return http_response
 
     @cherrypy.expose
     def callback(self, *args, **kwargs):
@@ -62,7 +64,8 @@ class Path:
         accounts.account_obj.gaccount = accounts.GoogleAccounts(str(account_info['id']), str(account_info['email']))
         accounts.writeAccounts(accounts.account_obj)
         accounts.googleAuthentication=True
-        return result
+        http_response = "You have been authenticated to CloudCV using your google account"
+        return http_response
 
     def exit(self):
         """
