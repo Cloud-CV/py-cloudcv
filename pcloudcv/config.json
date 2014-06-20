@@ -1,10 +1,10 @@
 {
-    "exec": "VOCRelease5",
+    "exec": "ImageStitch",
     "maxim": 500,
     "config": [
         {
             "name": "ImageStitch",
-            "path": "local: /home/dexter/Pictures/test_download/1",
+            "path": "local: /home/dexter/Pictures/1",
             "output": "/home/dexter/Pictures/test_download",
             "params": {
                 "warp": "plane"
@@ -29,10 +29,10 @@
         },
         {
             "name": "features",
-            "path": "dropbox: /1",
+            "path": "local: /home/dexter/Pictures/test_download/4",
             "output": "/home/dexter/Pictures/test_download",
             "params": {
-                "name": "decaf,decaf_center,line_hists,ssim",
+                "name": "decaf,decaf_center",
                 "verbose": "2"
             }
         }

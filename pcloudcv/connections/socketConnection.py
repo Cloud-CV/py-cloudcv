@@ -13,7 +13,6 @@ from urlparse import urlparse
 from os.path import splitext, basename
 
 
-
 init()
 socketio = None
 
@@ -91,7 +90,6 @@ class SocketIOConnection(threading.Thread):
                 if not os.path.exists(resultpath):
                     os.makedirs(resultpath)
                     os.chmod(resultpath, 0776)
-
                 while True:
                     try:
                         file = requests.get(message['picture'])
