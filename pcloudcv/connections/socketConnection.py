@@ -90,13 +90,14 @@ class SocketIOConnection(threading.Thread):
                 if not os.path.exists(resultpath):
                     os.makedirs(resultpath)
                     os.chmod(resultpath, 0776)
-                while True:
+                i =0
+                while i<10:
                     try:
                         file = requests.get(message['picture'])
                         break
                     except Exception as e:
                         print 'Error Connecting to CloudCV. Will try again'
-
+                    i+=1
 
                 file_name = basename(urlparse(message['picture']).path)
 
@@ -109,6 +110,7 @@ class SocketIOConnection(threading.Thread):
             except Exception as e:
                 logging.log('W', str(traceback.format_exc()))
                 logging.log('W', str('possible reason: Output format improper'))
+
             logging.log('D', 'File Saved: ' + resultpath + '/' + file_name)
 
         if ('mat' in message):
