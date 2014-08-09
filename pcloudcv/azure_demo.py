@@ -1,3 +1,5 @@
+__author__ = 'dexter'
+
 from pcloudcv import PCloudCV
 import signal
 import argparse
@@ -30,19 +32,7 @@ if __name__ == "__main__":
     parsedList, config_file, login_required = parseCommandLineArgs()
     print parsedList
     p = PCloudCV(os.getcwd() + '/' + str(config_file), parsedList, login_required)
-    signal.signal(signal.SIGINT, p.signal_handler)
-
     if login_required:
         p.dropbox_authenticate()
-
     raw_input()
-
-    p.start()
-    p.join()
-
-    signal.pause()
-    
-    import utility.job as uj
-    import demo.demo_visualize as dv
-    dv.visualize_classification(uj.job.output)
-    
+    p.azure_demo('h.agrawal092@gmail.com', '/classify_azure/')

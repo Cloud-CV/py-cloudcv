@@ -48,6 +48,15 @@ class PCloudCV(threading.Thread):
         print response.text
         self.stop_local_server()
 
+    def azure_demo(self, emailid, path):
+        params_data= {}
+        params_data['dropbox_token'] = accounts.account_obj.dbaccount.access_token
+        params_data['emailid'] = emailid
+        params_data['dropbox_path'] = path
+        response = requests.post('http://mlpmasternode.cloudapp.net/api', data=params_data)
+        print response.text
+        self.stop_local_server()
+
     def stop_local_server(self):
         local_server.server.stop()
         local_server.exit_program()
