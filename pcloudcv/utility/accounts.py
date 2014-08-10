@@ -72,9 +72,6 @@ def dropboxAuthenticate():
             response = requests.get('http://cloudcv.org/cloudcv/auth/dropbox', params={'type': 'api',
                                                                                        'state': random_key,
                                                                                        'userid': str(account_obj.gaccount.userid)})
-        fi = open('error.html', 'w')
-        fi.write(str(response.text))
-        fi.close()
 
         try:
             response_json = json.loads(response.text)

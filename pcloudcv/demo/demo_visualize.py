@@ -41,6 +41,5 @@ def visualize_classification(str):
         imagepath = os.path.join(job.job.imagepath, k)
         scores = output_dict[k]
         visualize(imagepath, scores)
-        raw_input()
 
 
