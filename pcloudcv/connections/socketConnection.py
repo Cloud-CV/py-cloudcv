@@ -68,6 +68,10 @@ class SocketIOConnection(threading.Thread):
             self._redis_obj.publish('intercomm', message['socketid'])
             self._socketid = message['socketid']
 
+        if ('jobid' in message):
+            print 'Received JobID: ' + message['jobid']
+            job.job.jobid = message['jobid']
+
         if ('name' in message):
             logging.log('O', message['name'])
             self._socket_io.emit('send_message', self._executable)
@@ -75,6 +79,12 @@ class SocketIOConnection(threading.Thread):
         if ('data' in message):
             logging.log('O', message['data'])
             job.job.output = message['data']
+
+            resultpath = self._imagepath.rstrip('/') + '/' + job.job.jobid
+
+            job.job.resultpath = resultpath
+            job.job.executable = self._executable
+
             self._redis_obj.publish('intercomm', '***end***')
 
         if ('picture' in message):
