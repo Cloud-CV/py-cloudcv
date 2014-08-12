@@ -117,11 +117,11 @@ class HTTPServer(threading.Thread):
         cherrypy.quickstart(Path())
 
     def stop(self):
-        '''
+
         cherrypy.engine.exit()
-        cherrypy.server.stop()
-        cherrypy.process.bus.exit()
+        #cherrypy.server.stop()
+        #cherrypy.process.bus.exit()
         print 'Local Server Stopped'
-        '''
-        pass
+
+        #pass
 server = HTTPServer()
