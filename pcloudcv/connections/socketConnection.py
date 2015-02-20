@@ -11,7 +11,8 @@ import os
 import local_server
 from urlparse import urlparse
 from os.path import splitext, basename
-
+from utility import conf
+import json
 
 init()
 socketio = None
@@ -47,15 +48,16 @@ class SocketIOConnection(threading.Thread):
         logging.log('I', 'Starting Socket Connection Thread')
 
         self.setupSocketIO()
+
         logging.log('I', 'Exiting Socket Connection Thread')
-        local_server.server.stop()
-        print 'Exit Program by pressing Control + C'
+
 
     def connection(self, *args):
         print 'Connected using websockets'
 
     def on_error_response(self, *args):
         error_message = args[0]
+
         if('error' in error_message):
             print error_message['error']
         if('end' in error_message):
@@ -68,13 +70,35 @@ class SocketIOConnection(threading.Thread):
             self._redis_obj.publish('intercomm', message['socketid'])
             self._socketid = message['socketid']
 
+        if ('jobid' in message):
+            print 'Received JobID: ' + message['jobid']
+            job.job.jobid = message['jobid']
+
         if ('name' in message):
-            logging.log('O', message['name'])
+            logging.log('O',message['name'])
+            # self._socket_io.emit('send_message', self._executable)
+
+        if ('done' in message):
             self._socket_io.emit('send_message', self._executable)
+
+        if ('jobinfo' in message):
+            # logging.log('O', 'Received information regarding the current job')
+            print message['jobinfo']
+            job.job.jobinfo = message['jobinfo']
 
         if ('data' in message):
             logging.log('O', message['data'])
             job.job.output = message['data']
+
+            if(job.job.jobid is None):
+                job.job.jobid = ''
+
+            resultpath = self._imagepath.rstrip('/') + '/' + job.job.jobid
+
+            job.job.resultpath = resultpath
+            job.job.executable = self._executable
+            print "Data Received from Server"
+
             self._redis_obj.publish('intercomm', '***end***')
 
         if ('picture' in message):
@@ -89,51 +113,56 @@ class SocketIOConnection(threading.Thread):
             try:
                 if not os.path.exists(resultpath):
                     os.makedirs(resultpath)
-                    os.chmod(resultpath, 0776)
+                    os.chmod(resultpath, 0775)
                 i =0
                 while i<10:
                     try:
-                        file = requests.get(message['picture'])
+                        file = requests.get(os.path.join(conf.BASE_URL + message['picture']))
+                        file_name = basename(urlparse(message['picture']).path)
+
+                        f = open(resultpath + '/' + file_name, 'wb')
+                        f.write(file.content)
+                        f.close()
+
+                        job.job.addFiles(resultpath + '/' + file_name)
+                        logging.log('D', 'File Saved: ' + resultpath + '/' + file_name)
                         break
                     except Exception as e:
                         print 'Error Connecting to CloudCV. Will try again'
                     i+=1
 
-                file_name = basename(urlparse(message['picture']).path)
-
-                f = open(resultpath + '/' + file_name, 'wb')
-                f.write(file.content)
-                f.close()
-
-                job.job.addFiles(resultpath + '/' + file_name)
-
             except Exception as e:
                 logging.log('W', str(traceback.format_exc()))
                 logging.log('W', str('possible reason: Output format improper'))
 
-            logging.log('D', 'File Saved: ' + resultpath + '/' + file_name)
+
 
         if ('mat' in message):
             logging.log('D', message['mat'])
-            file = requests.get(message['mat'])
+            file = requests.get(os.path.join(conf.BASE_URL, message['mat']))
             with open(self._imagepath + '/results' + self._socketid + '.txt', 'wb') as f:
                 f.write(file.content)
             logging.log('D', 'Results Saved: ' + self._imagepath + '/results' + self._socketid + '.txt')
 
         if ('request_data' in message):
+            print 'Data request from Server'
             self._socket_io.emit('send_message', 'data')
 
+        if ('exit' in message):
+            logging.log('W', message['exit'])
+            self._redis_obj.publish('intercomm', '***end***')
 
     def setupSocketIO(self):
         global socketio
 
         try:
-            self._socket_io = SocketIO('godel.ece.vt.edu', 8000)
+            self._socket_io = SocketIO(conf.SOCKET_URL, 80)
             self._socket_io.on('connect', self.connection)
             self._socket_io.on('message', self.on_aaa_response)
             self._socket_io.on('error', self.on_error_response)
             socketio = self._socket_io
             self._socket_io.wait()
+            print 'Socket waiting finished. \n'
 
         except Exception as e:
             logging.log('W', e)

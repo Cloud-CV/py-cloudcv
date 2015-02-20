@@ -103,7 +103,7 @@ class UploadData(threading.Thread):
                                 "Please check the path, and the extension of the files present.")
             print 'No of files to be uploaded: ',len(files)
             for f in files:
-                params_for_request['file' + str(i)] = open(source_path+'/resized/'+f, 'rb')
+                params_for_request[f] = open(source_path+'/resized/'+f, 'rb')
                 #params_for_request['file' + str(i)] = self.openFile(source_path+'/resized/'+f)
                 i += 1
 
@@ -114,20 +114,18 @@ class UploadData(threading.Thread):
 
     #send post requests containing images to the server    
     def sendPostRequest(self):
-
-        params_for_request = {}
-        params_data = {}
-
-        token = self.getRequest('http://godel.ece.vt.edu/cloudcv/api')
-
-        if token is None:
-            logging.log('W', 'token not found')
-            raise SystemExit
-
-        source, source_path = self.identifySourcePath()
-
-        self.addAccountParameters(params_data, source)
         try:
+            params_for_request = {}
+            params_data = {}
+
+            token = self.getRequest('http://cloudcv.org/api')
+            print token
+            if token is None:
+                logging.log('W', 'token not found')
+                raise SystemExit
+
+            source, source_path = self.identifySourcePath()
+            self.addAccountParameters(params_data, source)
             self.addFileParameters(source, source_path, params_data, params_for_request)
 
 
@@ -159,34 +157,26 @@ class UploadData(threading.Thread):
             logging.log('D', 'Starting The POST request')
             for i in range(1,5):
                 try:
-                    request = requests.post("http://godel.ece.vt.edu/cloudcv/api/", data=params_data,
+                    request = requests.post("http://cloudcv.org/api/", data=params_data,
                                             files=params_for_request)
-                    logging.log('D', 'Response:   ' + request.text)
+
+                    # logging.log('D', 'Response:   ' + request.text)
                     logging.log('D', 'Info:   ' + 'Please wait while CloudCV runs your job request')
                     break
                 except Exception as e:
                     logging.log('W', 'Error in sendPostRequest' + str(traceback.format_exc()))
         except Exception as e:
-            logging.log('W', e)
+            logging.log('W', str(traceback.format_exc()))
             self._redis_obj.publish('intercomm', '***end***')
 
 
     #get request to obtain csrf token
     def getRequest(self, url):
-        token = ''
-        try:
-            data = requests.get(url)
-            for line in data:
-
-                m = re.search('(META:{\'CSRF_COOKIE\': \')((\\w)+)(\',)', line)
-                if m is not None:
-                    token = m.group(2)
-
-        except Exception as e:
-            logging.log('W', e)
-
+        client = requests.session()
+        client.get('http://cloudcv.org/classify')
+        token = client.cookies['csrftoken']
+        print token
         return token
-
 
 """Redis Connection for Inter Thread Communication"""
 class RedisListenForPostThread(threading.Thread):

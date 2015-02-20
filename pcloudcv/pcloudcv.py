@@ -57,12 +57,12 @@ class PCloudCV(threading.Thread):
         print response.text
         self.stop_local_server()
 
+
     def stop_local_server(self):
         local_server.server.stop()
-        local_server.exit_program()
 
     def signal_handler(self, signal, frame):
-        print 'You pressed Ctrl+C! Exiting Now'
+        print '\nYou pressed Ctrl+C! Exiting Now'
         local_server.server.stop()
         local_server.exit_program()
 
@@ -81,11 +81,10 @@ class PCloudCV(threading.Thread):
         sioc = SocketIOConnection(self.config_obj.exec_name, self.config_obj.output_path)
         sioc.setDaemon(True)
         sioc.start()
-
         time.sleep(4)
-
         ud.setDaemon(True)
         ud.start()
+
 
 
 
