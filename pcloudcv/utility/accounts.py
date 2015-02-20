@@ -8,9 +8,12 @@ import sys
 import json
 import time
 from logging import log
+import conf
+
 googleAuthentication = False
 dropboxAuthentication = False
 login_required = True
+
 
 class GoogleAccounts:
     userid = None
@@ -64,12 +67,12 @@ def dropboxAuthenticate():
     if googleAuthentication:
         db_userid = account_obj.dbaccount.userid
         if db_userid and db_userid is not '':
-            response = requests.get('http://cloudcv.org/cloudcv/auth/dropbox', params={'type': 'api',
+            response = requests.get(conf.BASE_URL + '/auth/dropbox', params={'type': 'api',
                                                                                        'state': random_key,
                                                                                        'userid': str(account_obj.gaccount.userid),
                                                                                        'dbuserid': str(db_userid)})
         else:
-            response = requests.get('http://cloudcv.org/cloudcv/auth/dropbox', params={'type': 'api',
+            response = requests.get(conf.BASE_URL + '/auth/dropbox', params={'type': 'api',
                                                                                        'state': random_key,
                                                                                        'userid': str(account_obj.gaccount.userid)})
 
@@ -107,11 +110,11 @@ def authenticate():
                 userid = account_obj.gaccount.userid
                 print userid
 
-                response = requests.get('http://cloudcv.org/cloudcv/auth/google/', params={'type': 'api',
+                response = requests.get(conf.BASE_URL + '/auth/google/', params={'type': 'api',
                                                                                           'state': random_key,
                                                                                           'userid': str(userid)})
             else:
-                response = requests.get('http://cloudcv.org/cloudcv/auth/google/', params={'type': 'api',
+                response = requests.get(conf.BASE_URL + '/auth/google/', params={'type': 'api',
                                                                                           'state': random_key})
             break
         except Exception as e:

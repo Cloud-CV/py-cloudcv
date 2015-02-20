@@ -38,11 +38,4 @@ if __name__ == "__main__":
     raw_input()
 
     p.start()
-    p.join()
-
     signal.pause()
-    
-    import utility.job as uj
-    import demo.demo_visualize as dv
-    dv.visualize_classification(uj.job.output)
-    

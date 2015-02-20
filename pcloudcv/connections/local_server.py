@@ -5,8 +5,63 @@ import sys
 
 import requests
 import cherrypy
-from utility import accounts
+from utility import accounts, conf
+from mako.template import Template
+from mako.lookup import TemplateLookup
+import utility.job as job
+import utility.conf as conf
+import collections
 
+lookup = TemplateLookup(directories=['html'])
+
+"""
+class MakoHandler(cherrypy.dispatch.LateParamPageHandler):
+
+
+    def __init__(self, template, next_handler):
+        self.template = template
+        self.next_handler = next_handler
+
+    def __call__(self):
+        env = globals().copy()
+        env.update(self.next_handler())
+        try:
+            return self.template.render(**env)
+        except:
+            # something went wrong rendering the template
+            # this will generate a pretty error page with details
+            cherrypy.response.status = "500"
+            return cherrypy.exceptions.html_error_template().render()
+
+
+class MakoLoader(object):
+
+    def __init__(self):
+        self.lookups = {}
+
+    def __call__(self, filename, directories, module_directory=None,
+                 collection_size=-1):
+        # Find the appropriate template lookup.
+        key = (tuple(directories), module_directory)
+        try:
+            lookup = self.lookups[key]
+        except KeyError:
+            lookup = TemplateLookup(directories=directories,
+                                    module_directory=module_directory,
+                                    collection_size=collection_size,
+                                    )
+            self.lookups[key] = lookup
+        cherrypy.request.lookup = lookup
+
+        # Replace the current handler.
+        cherrypy.request.template = t = lookup.get_template(filename)
+        cherrypy.request.handler = MakoHandler(t, cherrypy.request.handler)
+
+main = MakoLoader()
+cherrypy.tools.mako = cherrypy.Tool('on_start_resource', main)
+cherrypy.tools.mako.collection_size = 500
+cherrypy.tools.mako.directories = 'html'
+"""
 
 def exit_program():
     sys.exit(0)
@@ -20,11 +75,29 @@ class Path:
         return 'hi'
 
     @cherrypy.expose
+    def classify_output(name=None):
+        template = Template(filename='html/index.html')
+        imagepath = []
+
+        output_dict = json.loads(job.job.output)
+        result = []
+        for k, v in output_dict.iteritems():
+            imagepath.append(os.path.join(conf.BASE_URL+job.job.jobinfo['url'], k))
+            scores = output_dict[k]
+            sorted_scores = collections.OrderedDict(sorted(scores.items(), key=lambda t: t[1]))
+            result.append(sorted_scores.items())
+
+        return template.render(imagepath=imagepath, result = result)
+
+
+
+
+    @cherrypy.expose
     def dropbox_callback(self, *args, **kwargs):
         state = kwargs['state']
         code = kwargs['code']
 
-        result = requests.post('http://cloudcv.org/cloudcv/callback/dropbox/',
+        result = requests.post(conf.BASE_URL + '/callback/dropbox/',
                                 data={
                                 'code': code,
                                 'state': state,
@@ -48,7 +121,7 @@ class Path:
         state = kwargs['state']
         code = kwargs['code']
 
-        result = requests.post('http://cloudcv.org/cloudcv/callback/google/',
+        result = requests.post(conf.BASE_URL + '/callback/google/',
                                 data={
                                 'code': code,
                                 'state': state
@@ -83,7 +156,7 @@ def GET(self, name, **params):
         state = params.get('state')
         code = params.get('code')
 
-        result = requests.post('http://cloudcv.org/cloudcv/callback/google/',
+        result = requests.post(accounts.BASE_URL + '/callback/google/',
                                data={
                                    'code': code,
                                    'state': state
@@ -117,7 +190,6 @@ class HTTPServer(threading.Thread):
         cherrypy.quickstart(Path())
 
     def stop(self):
-
         cherrypy.engine.exit()
         #cherrypy.server.stop()
         #cherrypy.process.bus.exit()

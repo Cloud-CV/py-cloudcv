@@ -1,10 +1,12 @@
 __author__ = 'dexter'
 import os, traceback
+import utility.logging as logging
 
 class Job:
     jobid = None
     output = ''
     files = list()
+    jobinfo = {}
     def __init__(self, imagepath=None, resultpath=None, executable=None):
         self.imagepath = imagepath
         self.resultpath = resultpath
@@ -37,7 +39,12 @@ class Job:
                 print 'Output Written to File: ' + self.resultpath + '/output.txt'
             else:
                 print 'No Output Present'
+        except OSError as oserror:
+            logging.log('W', 'Check Output Path in your config. This is usually caused while trying to write in a directory with limited permissions')
+            logging.log('W', str(traceback.format_exc()))
+
         except Exception as e:
-            print str(traceback.format_exc())
+            logging.log('W', 'Error Writing Output.')
+            logging.log('W', str(traceback.format_exc()))
 
 job = Job()
