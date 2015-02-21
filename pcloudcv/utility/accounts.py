@@ -9,12 +9,14 @@ import json
 import time
 from logging import log
 import conf
+import redis
+
 
 googleAuthentication = False
 dropboxAuthentication = False
 login_required = True
 
-
+redis_obj = redis.StrictRedis(host='localhost', port=6379, db=0)
 class GoogleAccounts:
     userid = None
     emailid = None
@@ -89,6 +91,7 @@ def dropboxAuthenticate():
             print 'DropBox Authentication Successful'
             if account_obj.dbaccount.access_token is None or account_obj.dbaccount.access_token == '':
                 account_obj.dbaccount.access_token = response_json['token']
+                redis_obj.set('dropbox_token', response_json['token'])
             dropboxAuthentication = True
 
     else:
@@ -124,6 +127,10 @@ def authenticate():
         response_json = json.loads(response.text)
     except ValueError:
         print response.text
+        sys.exit()
+    if 'error' in response_json:
+        print "Possible Error Finding this userid in the server database. Remove the config file and start again."
+        print response_json['error']
         sys.exit()
 
     if 'redirect' in response_json and response_json['redirect'] == 'True':

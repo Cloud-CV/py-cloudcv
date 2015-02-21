@@ -64,9 +64,12 @@ class UploadData(threading.Thread):
         if source == 'dropbox':
             if accounts.dropboxAuthentication is False:
                 accounts.dropboxAuthenticate()
+                dbtoken = self._redis_obj.get('dropbox_token')
+            else:
+                dbtoken = self._redis_obj.get('dropbox_token')
 
             params_data['userid'] = accounts.account_obj.getGoogleUserID()
-            params_data['dropbox_token'] = accounts.account_obj.dbaccount.access_token
+            params_data['dropbox_token'] = dbtoken
             print 'Dropbox Token: ', params_data['dropbox_token']
 
     def resize(self, files, resized_path, source_path):

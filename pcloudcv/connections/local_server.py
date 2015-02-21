@@ -2,7 +2,7 @@ import threading
 import json
 import os
 import sys
-
+import redis
 import requests
 import cherrypy
 from utility import accounts, conf
@@ -13,7 +13,7 @@ import utility.conf as conf
 import collections
 
 lookup = TemplateLookup(directories=['html'])
-
+redis_obj = redis.StrictRedis(host='localhost', port=6379, db=0)
 """
 class MakoHandler(cherrypy.dispatch.LateParamPageHandler):
 
@@ -110,6 +110,12 @@ class Path:
             return result.text
 
         accounts.account_obj.dbaccount = accounts.DropboxAccounts(str(account_info['uid']), str(account_info['token']))
+        print "Dropbox Account:", str(account_info['uid'])
+        print "Dropbox Token:", str(account_info['token'])
+
+        redis_obj.set('dropbox_token', account_info['token'])
+        redis_obj.set('dropbox_account', account_info['uid'])
+
         accounts.writeAccounts(accounts.account_obj)
         accounts.dropboxAuthentication = True
 
