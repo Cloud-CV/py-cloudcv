@@ -1,0 +1,25 @@
+bin
+.metadata
+*~
+target/
+.DS_Store
+
+# latex temp files
+*.aux
+*.bbl
+*.brf
+*.blg
+*.log
+*.synctex.gz
+*.dvi
+*.out
+
+# svn folders
+.svn/
+
+# python bytecode
+*.pyc
+
+# main pdf file generated
+main.pdf
+review_version/main.pdf
