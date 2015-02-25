@@ -84,9 +84,8 @@ class Path:
         for k, v in output_dict.iteritems():
             imagepath.append(os.path.join(conf.BASE_URL+job.job.jobinfo['url'], k))
             scores = output_dict[k]
-            sorted_scores = collections.OrderedDict(sorted(scores.items(), key=lambda t: t[1]))
-            result.append(sorted_scores.items())
-
+            result.append(scores)
+        print imagepath, result
         return template.render(imagepath=imagepath, result = result)
 
 

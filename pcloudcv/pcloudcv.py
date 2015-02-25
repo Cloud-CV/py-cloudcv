@@ -40,6 +40,12 @@ class PCloudCV(threading.Thread):
         local_server.server.setDaemon(True)
         local_server.server.start()
 
+        self.ud = UploadData(self.config_obj)
+        self.sioc = SocketIOConnection(self.config_obj.exec_name, self.config_obj.output_path)
+        self.sioc.setDaemon(True)
+        self.ud.setDaemon(True)
+
+
     def ec2_demo(self):
         params_data= {}
         params_data['dropbox_token'] = accounts.account_obj.dbaccount.access_token
@@ -77,13 +83,10 @@ class PCloudCV(threading.Thread):
         if self.login_required:
             self.authenticate()
 
-        ud = UploadData(self.config_obj)
-        sioc = SocketIOConnection(self.config_obj.exec_name, self.config_obj.output_path)
-        sioc.setDaemon(True)
-        sioc.start()
+        self.sioc.start()
         time.sleep(4)
-        ud.setDaemon(True)
-        ud.start()
+
+        self.ud.start()
 
 
 
