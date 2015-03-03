@@ -23,3 +23,6 @@ target/
 # main pdf file generated
 main.pdf
 review_version/main.pdf
+
+# config file
+pcloudcv/config.json
