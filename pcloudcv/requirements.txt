@@ -1,7 +1,6 @@
 Cython
 numpy
 matplotlib
-Pillow
 h5py
 redis >= 2.7.6
 colorama >= 0.2.5
@@ -20,7 +19,6 @@ simplejson==3.6.5
 six==1.9.0
 socketIO-client==0.4
 argparse==1.2.1
-pyzmq
 tornado
 ipython
 
