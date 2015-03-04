@@ -33,7 +33,6 @@ class ConfigParser:
         complete_data = json.loads(data_file)
         self.data = complete_data.get('config')
         self.maxim = int(complete_data.get('maxim'))
-        self.server_port = int(complete_data.get('server_port'))
         return complete_data
 
     def writeToConfigFile(self, file):
