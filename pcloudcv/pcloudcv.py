@@ -85,11 +85,8 @@ class PCloudCV(threading.Thread):
 
         self.sioc.start()
         time.sleep(4)
-
         self.ud.start()
 
-
-
-
-
+        self.ud.join()
+        self.sioc.join()
 
