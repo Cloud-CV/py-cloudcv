@@ -8,7 +8,6 @@ from utility import logging
 import utility.job as job
 import traceback
 import os
-import local_server
 from urlparse import urlparse
 from os.path import splitext, basename
 from utility import conf
@@ -48,7 +47,6 @@ class SocketIOConnection(threading.Thread):
         logging.log('I', 'Starting Socket Connection Thread')
 
         self.setupSocketIO()
-        self.redis_thread.join()
 
         logging.log('I', 'Exiting Socket Connection Thread')
 

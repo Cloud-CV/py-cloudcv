@@ -85,7 +85,8 @@ class Path:
             imagepath.append(os.path.join(conf.BASE_URL+job.job.jobinfo['url'], k))
             scores = output_dict[k]
             result.append(scores)
-        print imagepath, result
+#        print imagepath, result
+        cherrypy.engine.exit()
         return template.render(imagepath=imagepath, result = result)
 
 

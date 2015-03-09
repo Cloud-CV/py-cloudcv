@@ -84,5 +84,4 @@ class PCloudCV(threading.Thread):
 
         self.ud.join()
         self.sioc.join()
-        self.stop_local_server()
 
