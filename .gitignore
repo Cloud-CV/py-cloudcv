@@ -24,7 +24,12 @@ target/
 main.pdf
 review_version/main.pdf
 
-# config file
+# config files
 pcloudcv/config.json
 config.cfg
+docs/conf.py
+docs/Makefile
+docs/make.bat
 
+#redis db dump
+dump.rdb
