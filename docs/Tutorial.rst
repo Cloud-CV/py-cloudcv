@@ -4,6 +4,9 @@ Tutorial
 Installation
 ------------
 
+
+.. include Quick-Start.rst:
+
 | To start using PCloudCV is easy. You can download PCloudCV using:
 | https://github.com/batra-mlp-lab/pcloudcv/wiki/Setup
 
@@ -33,7 +36,7 @@ run.py
    2. Full Path to Output Folder where the results will be stored,
       ignore it if you want to use path mentioned in config file.
    3. Algorithm that needs to be run. More information about the valid
-      names are here. Ignore it if you want to use the name of the
+      names are functionalities_. Ignore it if you want to use the name of the
       executable mentioned in the config file
 
       .. code:: python

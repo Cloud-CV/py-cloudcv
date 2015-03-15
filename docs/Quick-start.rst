@@ -10,9 +10,9 @@ Welcome to the pcloudcv wiki.
    configfile
    Tutorial
 
-.. _functionalities:
 
-Functionalities:
+**Functionalities** :
+
 Currently the python APIs support
 the following functionalities:
 
