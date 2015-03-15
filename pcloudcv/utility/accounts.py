@@ -140,7 +140,7 @@ def authenticate():
 
     elif 'isValid' in response_json and response_json['isValid'] == 'True':
         print 'User Authenticated'
-        print 'Welcome ' + str(response_json['first_name'])
+        print 'Welcome ' + response_json['first_name'].encode('utf-8')
         googleAuthentication = True
 
 account_obj = Accounts()

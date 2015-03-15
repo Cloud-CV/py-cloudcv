@@ -8,7 +8,6 @@ from utility import logging
 import utility.job as job
 import traceback
 import os
-import local_server
 from urlparse import urlparse
 from os.path import splitext, basename
 from utility import conf
@@ -32,9 +31,9 @@ class SocketIOConnection(threading.Thread):
         self._executable = str(executable)
         self._imagepath = str(imagepath)
 
-        redis_thread = self.setupRedis()
-        redis_thread.setDaemon(True)
-        redis_thread.start()
+        self.redis_thread = self.setupRedis()
+        self.redis_thread.setDaemon(True)
+        self.redis_thread.start()
 
     def setupRedis(self):
         self._redis_obj = redis.StrictRedis(host='localhost', port=6379, db=0)
@@ -50,7 +49,6 @@ class SocketIOConnection(threading.Thread):
         self.setupSocketIO()
 
         logging.log('I', 'Exiting Socket Connection Thread')
-
 
     def connection(self, *args):
         print 'Connected using websockets'

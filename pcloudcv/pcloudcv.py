@@ -10,16 +10,12 @@ if path not in sys.path:
     sys.path.append(path)
 
 import threading
-from colorama import init
-from colorama import Fore
 from connections import local_server
 from utility import accounts, logging
 from utility.parseArguments import ConfigParser
 import utility.job as job
 from connections.uploadData import UploadData
 from connections.socketConnection import SocketIOConnection
-
-init()
 
 def getfullpath(s):
     return os.path.join(os.getcw(), s)
@@ -79,17 +75,13 @@ class PCloudCV(threading.Thread):
         accounts.authenticate()
 
     def run(self):
-
         if self.login_required:
             self.authenticate()
 
         self.sioc.start()
         time.sleep(4)
-
         self.ud.start()
 
-
-
-
-
+        self.ud.join()
+        self.sioc.join()
 
