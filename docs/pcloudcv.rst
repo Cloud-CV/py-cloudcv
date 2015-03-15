@@ -6,9 +6,9 @@ Subpackages
 
 .. toctree::
 
-    pcloudcv.connections
-    pcloudcv.demo
-    pcloudcv.utility
+    connections
+    demo
+    utility
 
 Submodules
 ----------
