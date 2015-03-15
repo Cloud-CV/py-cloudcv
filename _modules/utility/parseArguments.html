@@ -1,0 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>utility.parseArguments &mdash; pcloudcv  documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="pcloudcv  documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">pcloudcv  documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for utility.parseArguments</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">log</span><span class="p">,</span> <span class="n">ArgumentError</span>
+<span class="kn">import</span> <span class="nn">job</span>
+
+<div class="viewcode-block" id="ConfigParser"><a class="viewcode-back" href="../../utility.html#utility.parseArguments.ConfigParser">[docs]</a><span class="k">class</span> <span class="nc">ConfigParser</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">exec_name</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">source_path</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">output_path</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">maxim</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="ConfigParser.changePath"><a class="viewcode-back" href="../../utility.html#utility.parseArguments.ConfigParser.changePath">[docs]</a>    <span class="k">def</span> <span class="nf">changePath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_name</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">source_path</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s">&#39;path&#39;</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s">&#39;output&#39;</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="ConfigParser.setParams"><a class="viewcode-back" href="../../utility.html#utility.parseArguments.ConfigParser.setParams">[docs]</a>    <span class="k">def</span> <span class="nf">setParams</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_name</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s">&#39;params&#39;</span><span class="p">]</span>
+                <span class="c">#print str(self.params)</span>
+</div>
+<div class="viewcode-block" id="ConfigParser.getParams"><a class="viewcode-back" href="../../utility.html#utility.parseArguments.ConfigParser.getParams">[docs]</a>    <span class="k">def</span> <span class="nf">getParams</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c">#pprint(self.params)</span>
+        <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="ConfigParser.readConfigFile"><a class="viewcode-back" href="../../utility.html#utility.parseArguments.ConfigParser.readConfigFile">[docs]</a>    <span class="k">def</span> <span class="nf">readConfigFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+        <span class="n">data_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">complete_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">complete_data</span><span class="p">[</span><span class="s">&#39;config&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exec_name</span> <span class="o">=</span> <span class="n">complete_data</span><span class="p">[</span><span class="s">&#39;exec&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maxim</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">complete_data</span><span class="p">[</span><span class="s">&#39;maxim&#39;</span><span class="p">])</span>
+</div>
+<div class="viewcode-block" id="ConfigParser.writeToConfigFile"><a class="viewcode-back" href="../../utility.html#utility.parseArguments.ConfigParser.writeToConfigFile">[docs]</a>    <span class="k">def</span> <span class="nf">writeToConfigFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+        <span class="n">data_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">complete_data</span><span class="p">,</span> <span class="n">data_file</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ConfigParser.parseArguments"><a class="viewcode-back" href="../../utility.html#utility.parseArguments.ConfigParser.parseArguments">[docs]</a>    <span class="k">def</span> <span class="nf">parseArguments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+        <span class="n">sourcepath</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">resultpath</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="s">&#39;input&#39;</span> <span class="ow">in</span> <span class="n">arg</span><span class="p">:</span>
+            <span class="n">sourcepath</span> <span class="o">=</span> <span class="n">arg</span><span class="p">[</span><span class="s">&#39;input&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s">&#39;output&#39;</span> <span class="ow">in</span> <span class="n">arg</span><span class="p">:</span>
+            <span class="n">resultpath</span> <span class="o">=</span> <span class="n">arg</span><span class="p">[</span><span class="s">&#39;output&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s">&#39;exec&#39;</span> <span class="ow">in</span> <span class="n">arg</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">arg</span><span class="p">[</span><span class="s">&#39;exec&#39;</span><span class="p">]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">readConfigFile</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">exec_name</span> <span class="o">=</span> <span class="n">name</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_name</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ArgumentError</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">name</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_name</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">changePath</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">sourcepath</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">changeSourcePath</span><span class="p">(</span><span class="n">sourcepath</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_path</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ArgumentError</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">resultpath</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">changeOutputPath</span><span class="p">(</span><span class="n">resultpath</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ArgumentError</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">setParams</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">ArgumentError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span><span class="p">(</span><span class="s">&#39;W&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="ConfigParser.changeSourcePath"><a class="viewcode-back" href="../../utility.html#utility.parseArguments.ConfigParser.changeSourcePath">[docs]</a>    <span class="k">def</span> <span class="nf">changeSourcePath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">execname</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">execname</span><span class="p">:</span>
+                    <span class="n">d</span><span class="p">[</span><span class="s">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">path</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">source_path</span> <span class="o">=</span> <span class="n">path</span>
+                    <span class="k">return</span>
+            <span class="k">raise</span> <span class="n">ArgumentError</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="n">ArgumentError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span><span class="p">(</span><span class="s">&#39;W&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span>
+</div>
+<div class="viewcode-block" id="ConfigParser.changeOutputPath"><a class="viewcode-back" href="../../utility.html#utility.parseArguments.ConfigParser.changeOutputPath">[docs]</a>    <span class="k">def</span> <span class="nf">changeOutputPath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">execname</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">execname</span><span class="p">:</span>
+                    <span class="n">d</span><span class="p">[</span><span class="s">&quot;output&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">path</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span> <span class="o">=</span> <span class="n">path</span>
+                    <span class="k">return</span>
+
+            <span class="k">raise</span> <span class="n">ArgumentError</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="n">ArgumentError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span><span class="p">(</span><span class="s">&#39;W&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span>
+</div>
+<div class="viewcode-block" id="ConfigParser.verify"><a class="viewcode-back" href="../../utility.html#utility.parseArguments.ConfigParser.verify">[docs]</a>    <span class="k">def</span> <span class="nf">verify</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_name</span> <span class="o">==</span> <span class="s">&#39; &#39;</span><span class="p">:</span>
+            <span class="n">log</span><span class="p">(</span><span class="s">&#39;W&#39;</span><span class="p">,</span> <span class="s">&#39;Undefined Executable Name. Please try again&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_path</span> <span class="o">==</span> <span class="s">&#39; &#39;</span><span class="p">:</span>
+            <span class="n">log</span><span class="p">(</span><span class="s">&#39;W&#39;</span><span class="p">,</span> <span class="s">&#39;Empty Input Folder Path. Please try again&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span> <span class="o">==</span> <span class="s">&#39; &#39;</span><span class="p">:</span>
+            <span class="n">log</span><span class="p">(</span><span class="s">&#39;W&#39;</span><span class="p">,</span> <span class="s">&#39;Empty Output Path. Please try again&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">pcloudcv  documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Shubham Desale.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.
+    </div>
+  </body>
+</html>

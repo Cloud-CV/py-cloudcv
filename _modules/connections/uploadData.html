@@ -1,0 +1,305 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>connections.uploadData &mdash; pcloudcv  documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="pcloudcv  documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">pcloudcv  documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for connections.uploadData</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">__builtin__</span> <span class="kn">import</span> <span class="nb">str</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">listdir</span><span class="p">,</span> <span class="n">makedirs</span><span class="p">,</span> <span class="n">chmod</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">isfile</span><span class="p">,</span> <span class="n">join</span><span class="p">,</span> <span class="n">exists</span>
+
+<span class="kn">import</span> <span class="nn">redis</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">colorama</span> <span class="kn">import</span> <span class="n">init</span>
+<span class="kn">from</span> <span class="nn">utility</span> <span class="kn">import</span> <span class="n">logging</span>
+<span class="kn">from</span> <span class="nn">utility</span> <span class="kn">import</span> <span class="n">accounts</span>
+
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+
+<span class="kn">import</span> <span class="nn">utility.job</span> <span class="kn">as</span> <span class="nn">job</span>
+
+<span class="n">exitFlag</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">init</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="UploadData"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData">[docs]</a><span class="k">class</span> <span class="nc">UploadData</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+    <span class="n">socketid</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_parser</span><span class="p">):</span>
+        <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">source_path</span> <span class="o">=</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">source_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span> <span class="o">=</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">output_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exec_name</span> <span class="o">=</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">exec_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maxim</span> <span class="o">=</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">maxim</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_redis_obj</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">StrictRedis</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">6379</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pubsub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redis_obj</span><span class="o">.</span><span class="n">pubsub</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pubsub</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="s">&#39;intercomm&#39;</span><span class="p">)</span>
+
+        <span class="n">redisThread</span> <span class="o">=</span> <span class="n">RedisListenForPostThread</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pubsub</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redis_obj</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="n">redisThread</span><span class="o">.</span><span class="n">setDaemon</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">redisThread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+<div class="viewcode-block" id="UploadData.run"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">,</span> <span class="s">&#39;Starting Post Request&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sendPostRequest</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">,</span> <span class="s">&#39;Exiting From the Post Request Thread&#39;</span><span class="p">)</span>
+
+    <span class="c">#get all files in the directory and create a params dictionary.</span></div>
+<div class="viewcode-block" id="UploadData.filesInDirectory"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData.filesInDirectory">[docs]</a>    <span class="k">def</span> <span class="nf">filesInDirectory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">dir</span><span class="p">):</span>
+        <span class="n">onlyfiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">listdir</span><span class="p">(</span><span class="nb">dir</span><span class="p">)</span> <span class="k">if</span> <span class="n">isfile</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="nb">dir</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">]</span>
+        <span class="n">onlyfiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">onlyfiles</span> <span class="k">if</span> <span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">&#39;([^\s]+(\.(jpg|png|gif|bmp|jpeg|JPG|PNG|GIF|BMP|JPEG))$)&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">onlyfiles</span>
+</div>
+<div class="viewcode-block" id="UploadData.identifySourcePath"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData.identifySourcePath">[docs]</a>    <span class="k">def</span> <span class="nf">identifySourcePath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Image Input Path not in proper format. &#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="nb">list</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="UploadData.addAccountParameters"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData.addAccountParameters">[docs]</a>    <span class="k">def</span> <span class="nf">addAccountParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params_data</span><span class="p">,</span> <span class="n">source</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">accounts</span><span class="o">.</span><span class="n">login_required</span><span class="p">:</span>
+            <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;userid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">accounts</span><span class="o">.</span><span class="n">account_obj</span><span class="o">.</span><span class="n">getGoogleUserID</span><span class="p">()</span>
+            <span class="c">#print &#39;UserId: &#39;+ params_data[&#39;userid&#39;]</span>
+
+        <span class="k">if</span> <span class="n">source</span> <span class="o">==</span> <span class="s">&#39;dropbox&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">accounts</span><span class="o">.</span><span class="n">dropboxAuthentication</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
+                <span class="n">accounts</span><span class="o">.</span><span class="n">dropboxAuthenticate</span><span class="p">()</span>
+                <span class="n">dbtoken</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redis_obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;dropbox_token&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dbtoken</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redis_obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;dropbox_token&#39;</span><span class="p">)</span>
+
+            <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;userid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">accounts</span><span class="o">.</span><span class="n">account_obj</span><span class="o">.</span><span class="n">getGoogleUserID</span><span class="p">()</span>
+            <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;dropbox_token&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dbtoken</span>
+            <span class="k">print</span> <span class="s">&#39;Dropbox Token: &#39;</span><span class="p">,</span> <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;dropbox_token&#39;</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="UploadData.resize"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData.resize">[docs]</a>    <span class="k">def</span> <span class="nf">resize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">resized_path</span><span class="p">,</span> <span class="n">source_path</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">resized_path</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;/&#39;</span> <span class="o">+</span> <span class="n">f</span><span class="p">):</span>
+                <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">source_path</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">),</span><span class="n">f</span><span class="p">))</span>
+                <span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxim</span>
+                <span class="k">if</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">size</span> <span class="ow">or</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">size</span><span class="p">:</span>
+                    <span class="n">im</span><span class="o">.</span><span class="n">thumbnail</span><span class="p">((</span><span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">),</span> <span class="n">Image</span><span class="o">.</span><span class="n">ANTIALIAS</span><span class="p">)</span>
+                <span class="n">im</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">resized_path</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;/&#39;</span> <span class="o">+</span> <span class="n">f</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">print</span> <span class="s">&quot;Resized image already present in the directory&quot;</span></div>
+<div class="viewcode-block" id="UploadData.openFile"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData.openFile">[docs]</a>    <span class="k">def</span> <span class="nf">openFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_name</span><span class="p">):</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path_name</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="UploadData.addFileParameters"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData.addFileParameters">[docs]</a>    <span class="k">def</span> <span class="nf">addFileParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">source_path</span><span class="p">,</span> <span class="n">params_data</span><span class="p">,</span> <span class="n">params_for_request</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">source</span> <span class="o">==</span> <span class="s">&#39;dropbox&#39;</span><span class="p">:</span>
+            <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;dropbox_path&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">source_path</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c"># path given by user is on local system</span>
+            <span class="n">files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filesInDirectory</span><span class="p">(</span><span class="n">source_path</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">))</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">source_path</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">),</span> <span class="s">&#39;resized&#39;</span><span class="p">)):</span>
+                <span class="n">makedirs</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">source_path</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">),</span> <span class="s">&#39;resized&#39;</span><span class="p">))</span>
+                <span class="n">chmod</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">source_path</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">),</span> <span class="s">&#39;resized&#39;</span><span class="p">),</span> <span class="mo">0776</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">join</span><span class="p">(</span><span class="n">source_path</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">),</span> <span class="s">&#39;resized&#39;</span><span class="p">),</span> <span class="n">source_path</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;No. of files is more than the specified limit:50&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;No of images in the directory is zero. &quot;</span>
+                                <span class="s">&quot;Please check the path, and the extension of the files present.&quot;</span><span class="p">)</span>
+            <span class="k">print</span> <span class="s">&#39;No of files to be uploaded: &#39;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                <span class="n">params_for_request</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">source_path</span><span class="o">+</span><span class="s">&#39;/resized/&#39;</span><span class="o">+</span><span class="n">f</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span>
+                <span class="c">#params_for_request[&#39;file&#39; + str(i)] = self.openFile(source_path+&#39;/resized/&#39;+f)</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+
+            <span class="c">#print params_for_request</span>
+            <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">))</span>
+
+
+    <span class="c">#send post requests containing images to the server    </span></div>
+<div class="viewcode-block" id="UploadData.sendPostRequest"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData.sendPostRequest">[docs]</a>    <span class="k">def</span> <span class="nf">sendPostRequest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">params_for_request</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">params_data</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="n">token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getRequest</span><span class="p">(</span><span class="s">&#39;http://cloudcv.org/api&#39;</span><span class="p">)</span>
+            <span class="k">print</span> <span class="n">token</span>
+            <span class="k">if</span> <span class="n">token</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;W&#39;</span><span class="p">,</span> <span class="s">&#39;token not found&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">SystemExit</span>
+
+            <span class="n">source</span><span class="p">,</span> <span class="n">source_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifySourcePath</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">addAccountParameters</span><span class="p">(</span><span class="n">params_data</span><span class="p">,</span> <span class="n">source</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">addFileParameters</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">source_path</span><span class="p">,</span> <span class="n">params_data</span><span class="p">,</span> <span class="n">params_for_request</span><span class="p">)</span>
+
+
+            <span class="n">job</span><span class="o">.</span><span class="n">job</span><span class="o">.</span><span class="n">imagepath</span> <span class="o">=</span> <span class="n">source_path</span>
+
+            <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;token&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">token</span>
+            <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;socketid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+            <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;executable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_name</span>
+            <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;exec_params&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+
+            <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;D&#39;</span><span class="p">,</span> <span class="s">&#39;Source Path: &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_path</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;D&#39;</span><span class="p">,</span> <span class="s">&#39;Executable: &#39;</span> <span class="o">+</span> <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;executable&#39;</span><span class="p">])</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;D&#39;</span><span class="p">,</span> <span class="s">&#39;Executable Params: &#39;</span> <span class="o">+</span> <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;exec_params&#39;</span><span class="p">])</span>
+
+            <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">socketid</span> <span class="o">!=</span> <span class="s">&#39;&#39;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">socketid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;socketid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">socketid</span><span class="p">)</span>
+                    <span class="k">print</span> <span class="s">&#39;SocketID: &#39;</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">socketid</span><span class="p">)</span>
+                    <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_redis_obj</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="s">&#39;intercomm2&#39;</span><span class="p">,</span> <span class="s">&#39;getsocketid&#39;</span><span class="p">)</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;W&#39;</span><span class="p">,</span> <span class="s">&#39;Waiting for Socket Connection to complete&#39;</span><span class="p">)</span>
+
+
+
+            <span class="c"># for k,v in params_for_request.items():</span>
+            <span class="c">#     params_data[k] = v</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;D&#39;</span><span class="p">,</span> <span class="s">&#39;Starting The POST request&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">request</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s">&quot;http://cloudcv.org/api/&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">params_data</span><span class="p">,</span>
+                                            <span class="n">files</span><span class="o">=</span><span class="n">params_for_request</span><span class="p">)</span>
+
+                    <span class="c"># logging.log(&#39;D&#39;, &#39;Response:   &#39; + request.text)</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;D&#39;</span><span class="p">,</span> <span class="s">&#39;Info:   &#39;</span> <span class="o">+</span> <span class="s">&#39;Please wait while CloudCV runs your job request&#39;</span><span class="p">)</span>
+                    <span class="k">break</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;W&#39;</span><span class="p">,</span> <span class="s">&#39;Error in sendPostRequest&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;W&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_redis_obj</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="s">&#39;intercomm&#39;</span><span class="p">,</span> <span class="s">&#39;***end***&#39;</span><span class="p">)</span>
+
+
+    <span class="c">#get request to obtain csrf token</span></div>
+<div class="viewcode-block" id="UploadData.getRequest"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData.getRequest">[docs]</a>    <span class="k">def</span> <span class="nf">getRequest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">session</span><span class="p">()</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;http://cloudcv.org/classify&#39;</span><span class="p">)</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">cookies</span><span class="p">[</span><span class="s">&#39;csrftoken&#39;</span><span class="p">]</span>
+        <span class="k">print</span> <span class="n">token</span>
+        <span class="k">return</span> <span class="n">token</span>
+</div></div>
+<span class="sd">&quot;&quot;&quot;Redis Connection for Inter Thread Communication&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="RedisListenForPostThread"><a class="viewcode-back" href="../../connections.html#connections.uploadData.RedisListenForPostThread">[docs]</a><span class="k">class</span> <span class="nc">RedisListenForPostThread</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">udobj</span><span class="p">):</span>
+        <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">r</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ps</span> <span class="o">=</span> <span class="n">ps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">udobj</span> <span class="o">=</span> <span class="n">udobj</span>
+
+<div class="viewcode-block" id="RedisListenForPostThread.run"><a class="viewcode-back" href="../../connections.html#connections.uploadData.RedisListenForPostThread.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">,</span> <span class="s">&#39;Starting Listening to Redis Channel for HTTP Post Requests&#39;</span><span class="p">)</span>
+        <span class="k">while</span> <span class="p">(</span><span class="bp">True</span><span class="p">):</span>
+            <span class="n">shouldEnd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">listenToChannel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">shouldEnd</span><span class="p">):</span>
+                <span class="k">break</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">,</span> <span class="s">&#39;Exiting Redis Thread for HTTP Post requests&#39;</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="RedisListenForPostThread.listenToChannel"><a class="viewcode-back" href="../../connections.html#connections.uploadData.RedisListenForPostThread.listenToChannel">[docs]</a>    <span class="k">def</span> <span class="nf">listenToChannel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">ps</span><span class="o">.</span><span class="n">listen</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;message&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s">&#39;channel&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;intercomm&#39;</span><span class="p">:</span>
+
+                    <span class="k">if</span> <span class="s">&#39;***end***&#39;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="s">&#39;data&#39;</span><span class="p">]:</span>
+                        <span class="n">r</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="s">&#39;intercomm2&#39;</span><span class="p">,</span> <span class="s">&#39;***endcomplete***&#39;</span><span class="p">)</span>
+                        <span class="k">return</span> <span class="bp">True</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">print</span> <span class="s">&#39;SocketID: &#39;</span><span class="p">,</span> <span class="n">item</span><span class="p">[</span><span class="s">&#39;data&#39;</span><span class="p">]</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">udobj</span><span class="o">.</span><span class="n">socketid</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s">&#39;data&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">False</span>
+                  
+</pre></div></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">pcloudcv  documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Shubham Desale.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.
+    </div>
+  </body>
+</html>

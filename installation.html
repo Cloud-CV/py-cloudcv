@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Installation &mdash; pcloudcv  documentation</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="pcloudcv  documentation" href="index.html" />
+    <link rel="next" title="Quick-Start" href="Quick-start.html" />
+    <link rel="prev" title="Welcome to PCloudCV’s documentation!" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Quick-start.html" title="Quick-Start"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to PCloudCV’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pcloudcv  documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to PCloudCV&#8217;s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="Quick-start.html"
+                        title="next chapter">Quick-Start</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/installation.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p><strong>Creating a virtual-env</strong></p>
+<div class="highlight-python"><div class="highlight"><pre>virtualenv cloudcv_env
+source cloudcv_env/bin/activate
+</pre></div>
+</div>
+<p><strong>Cloning</strong></p>
+<div class="highlight-python"><div class="highlight"><pre>git clone https://github.com/batra-mlp-lab/pcloudcv.git pcloudcv
+cd pcloudcv/pcloudcv
+</pre></div>
+</div>
+<p><strong>Pre-requisites</strong></p>
+<ol class="arabic">
+<li><p class="first">Please ensure that redis-server is installed and running in
+background. Follow the instructions on this page - till the end of
+the page. <a class="reference external" href="http://redis.io/topics/quickstart">Redis Quickstart</a></p>
+<p>On OSX:
+<a class="reference external" href="http://www.richardsumilang.com/blog/2014/04/04/how-to-install-redis-on-os-x/">http://www.richardsumilang.com/blog/2014/04/04/how-to-install-redis-on-os-x/</a>
+( I hope this is easier. Didn’t try it myself)</p>
+</li>
+<li><p class="first">Port <em>8000</em> should be free</p>
+</li>
+<li><p class="first">The h5py in requirements.txt needs to have HDF5 installed before. On
+Ubuntu 12.04 it’s called “libhdf5-serial-dev”, otherwise it cannot
+find the path to “hdf5.h”. Using Synaptic seems best to have all the
+paths set properly. On Ubuntu: <code class="docutils literal"><span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">libhdf5-dev</span></code>
+On OSX : <code class="docutils literal"><span class="pre">brew</span> <span class="pre">tap</span> <span class="pre">homebrew/science</span></code> , <code class="docutils literal"><span class="pre">brew</span> <span class="pre">install</span> <span class="pre">hdf5</span></code></p>
+</li>
+<li><p class="first">In addition, a C compiler and the necesarry Python development
+environment are needed:</p>
+<p>Ubuntu/Debian: sudo apt-get install python-dev build-essential
+(untested, please report back if more packages are needed here) Mac
+OS X: Install XCode (usually bundled with the Mac OS X installation
+disks)</p>
+<p>On ubuntu 12:</p>
+<div class="highlight-python"><div class="highlight"><pre>sudo apt-get install libtiff4-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev    tcl8.5-dev tk8.5-dev python-tk
+</pre></div>
+</div>
+<p>On Ubuntu 14:</p>
+<div class="highlight-python"><div class="highlight"><pre>sudo apt-get install libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk
+</pre></div>
+</div>
+<p>On Mac:</p>
+<div class="highlight-python"><div class="highlight"><pre>brew install libtiff libjpeg webp little-cms2
+</pre></div>
+</div>
+</li>
+</ol>
+<p><strong>Installing Dependencies</strong></p>
+<div class="highlight-python"><div class="highlight"><pre>for req in $(cat requirements.txt); do pip install $req; done
+</pre></div>
+</div>
+<p>The dependencies are not installed in order when using requirements.txt
+and therefore this is a workaround. This will ensure proper installation
+of all the packages.</p>
+<div class="line-block">
+<div class="line"><strong>Config File</strong></div>
+<div class="line">It is important to ensure that config file is well setup. You can look
+at the sample config.json and modify it to suit your needs</div>
+<div class="line">1. <strong>path:</strong></div>
+<div class="line-block">
+<div class="line">This is the input path. It should be the full path to where the files
+are located.</div>
+<div class="line">It can either take this form if you want to upload images from local
+directory:</div>
+<div class="line"><code class="docutils literal"><span class="pre">&quot;path&quot;:</span> <span class="pre">&quot;local:</span> <span class="pre">/home/dexter/Pictures/test_upload/kitchen&quot;,</span></code></div>
+<div class="line">or this form if you have files in your dropbox. Please note that
+dropbox is relative to /Apps/CloudCV folder.</div>
+<div class="line"><code class="docutils literal"><span class="pre">&quot;path&quot;:</span> <span class="pre">&quot;dropbox:</span> <span class="pre">/1&quot;,</span></code></div>
+</div>
+<div class="line">2. <strong>exec:</strong> This executable should contain the name of the executable
+you want to run</div>
+</div>
+<ol class="arabic simple" start="3">
+<li><strong>output:</strong> This should contain the full path to the output
+directory. Please note that there shouldn’t be a local: prefix before
+the output directory path. Also in-case the input is an input
+directory, the output path is not considered and the results are
+uploaded in their corresponding jobid folde</li>
+</ol>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Quick-start.html" title="Quick-Start"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to PCloudCV’s documentation!"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pcloudcv  documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Shubham Desale.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.
+    </div>
+  </body>
+</html>

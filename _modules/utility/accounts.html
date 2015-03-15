@@ -1,0 +1,237 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>utility.accounts &mdash; pcloudcv  documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="pcloudcv  documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">pcloudcv  documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for utility.accounts</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">webbrowser</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">import</span> <span class="nn">conf</span>
+<span class="kn">import</span> <span class="nn">redis</span>
+
+
+<span class="n">googleAuthentication</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="n">dropboxAuthentication</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="n">login_required</span> <span class="o">=</span> <span class="bp">True</span>
+
+<span class="n">redis_obj</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">StrictRedis</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">6379</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">GoogleAccounts</span><span class="p">:</span>
+<div class="viewcode-block" id="GoogleAccounts"><a class="viewcode-back" href="../../utility.html#utility.accounts.GoogleAccounts">[docs]</a>    <span class="n">userid</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">emailid</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">userid</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">emailid</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">userid</span> <span class="o">=</span> <span class="n">userid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">emailid</span> <span class="o">=</span> <span class="n">emailid</span>
+
+
+<span class="k">class</span> <span class="nc">DropboxAccounts</span><span class="p">:</span></div>
+<div class="viewcode-block" id="DropboxAccounts"><a class="viewcode-back" href="../../utility.html#utility.accounts.DropboxAccounts">[docs]</a>    <span class="n">userid</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">access_token</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">userid</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">access_token</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">userid</span> <span class="o">=</span> <span class="n">userid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">access_token</span> <span class="o">=</span> <span class="n">access_token</span>
+
+
+<span class="k">class</span> <span class="nc">Accounts</span><span class="p">:</span></div>
+<div class="viewcode-block" id="Accounts"><a class="viewcode-back" href="../../utility.html#utility.accounts.Accounts">[docs]</a>    <span class="n">gaccount</span> <span class="o">=</span> <span class="n">GoogleAccounts</span><span class="p">()</span>
+    <span class="n">dbaccount</span> <span class="o">=</span> <span class="n">DropboxAccounts</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">getGoogleUserID</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Accounts.getGoogleUserID"><a class="viewcode-back" href="../../utility.html#utility.accounts.Accounts.getGoogleUserID">[docs]</a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gaccount</span><span class="o">.</span><span class="n">userid</span>
+
+<span class="n">PATH_TO_CONFIG_FILE</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))))</span><span class="o">+</span><span class="s">&#39;/config.cfg&#39;</span></div></div>
+
+<span class="k">def</span> <span class="nf">readAccounts</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">PATH_TO_CONFIG_FILE</span><span class="p">):</span>
+<div class="viewcode-block" id="readAccounts"><a class="viewcode-back" href="../../utility.html#utility.accounts.readAccounts">[docs]</a>        <span class="k">print</span> <span class="n">path</span>
+        <span class="n">reader</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span>
+        <span class="n">account</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">reader</span><span class="p">)</span>
+        <span class="n">reader</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">account</span>
+
+<span class="k">def</span> <span class="nf">writeAccounts</span><span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="n">PATH_TO_CONFIG_FILE</span><span class="p">):</span></div>
+<div class="viewcode-block" id="writeAccounts"><a class="viewcode-back" href="../../utility.html#utility.accounts.writeAccounts">[docs]</a>        <span class="n">writer</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="n">writer</span><span class="p">)</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+
+<span class="n">random_key</span> <span class="o">=</span> <span class="s">&#39;&#39;</span></div>
+
+
+<span class="k">def</span> <span class="nf">dropboxAuthenticate</span><span class="p">():</span>
+<div class="viewcode-block" id="dropboxAuthenticate"><a class="viewcode-back" href="../../utility.html#utility.accounts.dropboxAuthenticate">[docs]</a>    <span class="k">global</span> <span class="n">random_key</span><span class="p">,</span> <span class="n">account_obj</span><span class="p">,</span> <span class="n">googleAuthentication</span><span class="p">,</span> <span class="n">dropboxAuthentication</span>
+
+    <span class="k">if</span> <span class="n">googleAuthentication</span><span class="p">:</span>
+        <span class="n">db_userid</span> <span class="o">=</span> <span class="n">account_obj</span><span class="o">.</span><span class="n">dbaccount</span><span class="o">.</span><span class="n">userid</span>
+        <span class="k">if</span> <span class="n">db_userid</span> <span class="ow">and</span> <span class="n">db_userid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">BASE_URL</span> <span class="o">+</span> <span class="s">&#39;/auth/dropbox&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;api&#39;</span><span class="p">,</span>
+                                                                                       <span class="s">&#39;state&#39;</span><span class="p">:</span> <span class="n">random_key</span><span class="p">,</span>
+                                                                                       <span class="s">&#39;userid&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">account_obj</span><span class="o">.</span><span class="n">gaccount</span><span class="o">.</span><span class="n">userid</span><span class="p">),</span>
+                                                                                       <span class="s">&#39;dbuserid&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">db_userid</span><span class="p">)})</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">BASE_URL</span> <span class="o">+</span> <span class="s">&#39;/auth/dropbox&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;api&#39;</span><span class="p">,</span>
+                                                                                       <span class="s">&#39;state&#39;</span><span class="p">:</span> <span class="n">random_key</span><span class="p">,</span>
+                                                                                       <span class="s">&#39;userid&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">account_obj</span><span class="o">.</span><span class="n">gaccount</span><span class="o">.</span><span class="n">userid</span><span class="p">)})</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">response_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">print</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="s">&#39;redirect&#39;</span> <span class="ow">in</span> <span class="n">response_json</span> <span class="ow">and</span> <span class="n">response_json</span><span class="p">[</span><span class="s">&#39;redirect&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;True&#39;</span><span class="p">:</span>
+            <span class="n">webbrowser</span><span class="o">.</span><span class="n">open_new_tab</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">response_json</span><span class="p">[</span><span class="s">&#39;url&#39;</span><span class="p">]))</span>
+
+        <span class="k">elif</span> <span class="s">&#39;isValid&#39;</span> <span class="ow">in</span> <span class="n">response_json</span> <span class="ow">and</span> <span class="n">response_json</span><span class="p">[</span><span class="s">&#39;isValid&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;True&#39;</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;DropBox Authentication Successful&#39;</span>
+            <span class="k">if</span> <span class="n">account_obj</span><span class="o">.</span><span class="n">dbaccount</span><span class="o">.</span><span class="n">access_token</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">account_obj</span><span class="o">.</span><span class="n">dbaccount</span><span class="o">.</span><span class="n">access_token</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+                <span class="n">account_obj</span><span class="o">.</span><span class="n">dbaccount</span><span class="o">.</span><span class="n">access_token</span> <span class="o">=</span> <span class="n">response_json</span><span class="p">[</span><span class="s">&#39;token&#39;</span><span class="p">]</span>
+                <span class="n">redis_obj</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s">&#39;dropbox_token&#39;</span><span class="p">,</span> <span class="n">response_json</span><span class="p">[</span><span class="s">&#39;token&#39;</span><span class="p">])</span>
+            <span class="n">dropboxAuthentication</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">authenticate</span><span class="p">()</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">googleAuthentication</span><span class="p">:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+        <span class="n">dropboxAuthenticate</span><span class="p">()</span>
+
+
+
+<span class="k">def</span> <span class="nf">authenticate</span><span class="p">():</span></div>
+<div class="viewcode-block" id="authenticate"><a class="viewcode-back" href="../../utility.html#utility.accounts.authenticate">[docs]</a>
+    <span class="k">global</span> <span class="n">random_key</span><span class="p">,</span> <span class="n">account_obj</span><span class="p">,</span> <span class="n">googleAuthentication</span>
+    <span class="n">random_key</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">())</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s">&#39;config.cfg&#39;</span><span class="p">):</span>
+                <span class="n">account_obj</span> <span class="o">=</span> <span class="n">readAccounts</span><span class="p">()</span>
+                <span class="n">userid</span> <span class="o">=</span> <span class="n">account_obj</span><span class="o">.</span><span class="n">gaccount</span><span class="o">.</span><span class="n">userid</span>
+                <span class="k">print</span> <span class="n">userid</span>
+
+                <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">BASE_URL</span> <span class="o">+</span> <span class="s">&#39;/auth/google/&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;api&#39;</span><span class="p">,</span>
+                                                                                          <span class="s">&#39;state&#39;</span><span class="p">:</span> <span class="n">random_key</span><span class="p">,</span>
+                                                                                          <span class="s">&#39;userid&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">userid</span><span class="p">)})</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">BASE_URL</span> <span class="o">+</span> <span class="s">&#39;/auth/google/&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;api&#39;</span><span class="p">,</span>
+                                                                                          <span class="s">&#39;state&#39;</span><span class="p">:</span> <span class="n">random_key</span><span class="p">})</span>
+            <span class="k">break</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span><span class="p">(</span><span class="s">&#39;W&#39;</span><span class="p">,</span> <span class="s">&#39;Error connecting to cloudcv. Retrying: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39; attempt</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">response_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+    <span class="k">if</span> <span class="s">&#39;error&#39;</span> <span class="ow">in</span> <span class="n">response_json</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&quot;Possible Error Finding this userid in the server database. Remove the config file and start again.&quot;</span>
+        <span class="k">print</span> <span class="n">response_json</span><span class="p">[</span><span class="s">&#39;error&#39;</span><span class="p">]</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="s">&#39;redirect&#39;</span> <span class="ow">in</span> <span class="n">response_json</span> <span class="ow">and</span> <span class="n">response_json</span><span class="p">[</span><span class="s">&#39;redirect&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;True&#39;</span><span class="p">:</span>
+        <span class="n">webbrowser</span><span class="o">.</span><span class="n">open_new_tab</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">response_json</span><span class="p">[</span><span class="s">&#39;url&#39;</span><span class="p">]))</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">googleAuthentication</span><span class="p">:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="s">&#39;isValid&#39;</span> <span class="ow">in</span> <span class="n">response_json</span> <span class="ow">and</span> <span class="n">response_json</span><span class="p">[</span><span class="s">&#39;isValid&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;True&#39;</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&#39;User Authenticated&#39;</span>
+        <span class="k">print</span> <span class="s">&#39;Welcome &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">response_json</span><span class="p">[</span><span class="s">&#39;first_name&#39;</span><span class="p">])</span>
+        <span class="n">googleAuthentication</span> <span class="o">=</span> <span class="bp">True</span>
+
+<span class="n">account_obj</span> <span class="o">=</span> <span class="n">Accounts</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">pcloudcv  documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Shubham Desale.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.
+    </div>
+  </body>
+</html>
