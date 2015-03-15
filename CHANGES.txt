@@ -1,6 +1,0 @@
-* 0.0.1 (in development)
-    * First release of python APIs for CloudCV
-* 0.0.2 (in development)
-    * minor bug fixes
-* 0.0.3 (in development)
-    * google authentication

@@ -1,4 +1,0 @@
-include *.txt
-recursive-include docs *.txt
-include README.txt
-

@@ -1,0 +1,359 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>utility package &mdash; pcloudcv  documentation</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="pcloudcv  documentation" href="index.html" />
+    <link rel="up" title="pcloudcv package" href="pcloudcv.html" />
+    <link rel="prev" title="demo package" href="demo.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="demo.html" title="demo package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pcloudcv  documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="contents.html" >Package Contents</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="pcloudcv.html" accesskey="U">pcloudcv package</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">utility package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-utility.accounts">utility.accounts module</a></li>
+<li><a class="reference internal" href="#module-utility.conf">utility.conf module</a></li>
+<li><a class="reference internal" href="#module-utility.job">utility.job module</a></li>
+<li><a class="reference internal" href="#module-utility.logging">utility.logging module</a></li>
+<li><a class="reference internal" href="#module-utility.parseArguments">utility.parseArguments module</a></li>
+<li><a class="reference internal" href="#module-utility">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="demo.html"
+                        title="previous chapter">demo package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/utility.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="utility-package">
+<h1>utility package<a class="headerlink" href="#utility-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-utility.accounts">
+<span id="utility-accounts-module"></span><h2>utility.accounts module<a class="headerlink" href="#module-utility.accounts" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="utility.accounts.Accounts">
+<em class="property">class </em><code class="descclassname">utility.accounts.</code><code class="descname">Accounts</code><a class="reference internal" href="_modules/utility/accounts.html#Accounts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.accounts.Accounts" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="utility.accounts.Accounts.dbaccount">
+<code class="descname">dbaccount</code><em class="property"> = &lt;utility.accounts.DropboxAccounts instance&gt;</em><a class="headerlink" href="#utility.accounts.Accounts.dbaccount" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="utility.accounts.Accounts.gaccount">
+<code class="descname">gaccount</code><em class="property"> = &lt;utility.accounts.GoogleAccounts instance&gt;</em><a class="headerlink" href="#utility.accounts.Accounts.gaccount" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utility.accounts.Accounts.getGoogleUserID">
+<code class="descname">getGoogleUserID</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/accounts.html#Accounts.getGoogleUserID"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.accounts.Accounts.getGoogleUserID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="utility.accounts.DropboxAccounts">
+<em class="property">class </em><code class="descclassname">utility.accounts.</code><code class="descname">DropboxAccounts</code><span class="sig-paren">(</span><em>userid=''</em>, <em>access_token=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/accounts.html#DropboxAccounts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.accounts.DropboxAccounts" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="utility.accounts.DropboxAccounts.access_token">
+<code class="descname">access_token</code><em class="property"> = None</em><a class="headerlink" href="#utility.accounts.DropboxAccounts.access_token" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="utility.accounts.DropboxAccounts.userid">
+<code class="descname">userid</code><em class="property"> = None</em><a class="headerlink" href="#utility.accounts.DropboxAccounts.userid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="utility.accounts.GoogleAccounts">
+<em class="property">class </em><code class="descclassname">utility.accounts.</code><code class="descname">GoogleAccounts</code><span class="sig-paren">(</span><em>userid=''</em>, <em>emailid=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/accounts.html#GoogleAccounts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.accounts.GoogleAccounts" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="utility.accounts.GoogleAccounts.emailid">
+<code class="descname">emailid</code><em class="property"> = None</em><a class="headerlink" href="#utility.accounts.GoogleAccounts.emailid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="utility.accounts.GoogleAccounts.userid">
+<code class="descname">userid</code><em class="property"> = None</em><a class="headerlink" href="#utility.accounts.GoogleAccounts.userid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="utility.accounts.authenticate">
+<code class="descclassname">utility.accounts.</code><code class="descname">authenticate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/accounts.html#authenticate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.accounts.authenticate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="utility.accounts.dropboxAuthenticate">
+<code class="descclassname">utility.accounts.</code><code class="descname">dropboxAuthenticate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/accounts.html#dropboxAuthenticate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.accounts.dropboxAuthenticate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="utility.accounts.readAccounts">
+<code class="descclassname">utility.accounts.</code><code class="descname">readAccounts</code><span class="sig-paren">(</span><em>path='/home/shubham/github/pcloudcv/pcloudcv/config.cfg'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/accounts.html#readAccounts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.accounts.readAccounts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="utility.accounts.writeAccounts">
+<code class="descclassname">utility.accounts.</code><code class="descname">writeAccounts</code><span class="sig-paren">(</span><em>account</em>, <em>path='/home/shubham/github/pcloudcv/pcloudcv/config.cfg'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/accounts.html#writeAccounts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.accounts.writeAccounts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-utility.conf">
+<span id="utility-conf-module"></span><h2>utility.conf module<a class="headerlink" href="#module-utility.conf" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-utility.job">
+<span id="utility-job-module"></span><h2>utility.job module<a class="headerlink" href="#module-utility.job" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="utility.job.Job">
+<em class="property">class </em><code class="descclassname">utility.job.</code><code class="descname">Job</code><span class="sig-paren">(</span><em>imagepath=None</em>, <em>resultpath=None</em>, <em>executable=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/job.html#Job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.job.Job" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="utility.job.Job.addFiles">
+<code class="descname">addFiles</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/job.html#Job.addFiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.job.Job.addFiles" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="utility.job.Job.files">
+<code class="descname">files</code><em class="property"> = []</em><a class="headerlink" href="#utility.job.Job.files" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="utility.job.Job.jobid">
+<code class="descname">jobid</code><em class="property"> = None</em><a class="headerlink" href="#utility.job.Job.jobid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="utility.job.Job.jobinfo">
+<code class="descname">jobinfo</code><em class="property"> = {}</em><a class="headerlink" href="#utility.job.Job.jobinfo" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="utility.job.Job.output">
+<code class="descname">output</code><em class="property"> = ''</em><a class="headerlink" href="#utility.job.Job.output" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utility.job.Job.outputToFile">
+<code class="descname">outputToFile</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/job.html#Job.outputToFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.job.Job.outputToFile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utility.job.Job.setJobID">
+<code class="descname">setJobID</code><span class="sig-paren">(</span><em>jobid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/job.html#Job.setJobID"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.job.Job.setJobID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utility.job.Job.setJobParameters">
+<code class="descname">setJobParameters</code><span class="sig-paren">(</span><em>imagepath=None</em>, <em>resultpath=None</em>, <em>executable=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/job.html#Job.setJobParameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.job.Job.setJobParameters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utility.job.Job.setOutput">
+<code class="descname">setOutput</code><span class="sig-paren">(</span><em>output</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/job.html#Job.setOutput"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.job.Job.setOutput" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-utility.logging">
+<span id="utility-logging-module"></span><h2>utility.logging module<a class="headerlink" href="#module-utility.logging" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="utility.logging.ArgumentError">
+<em class="property">exception </em><code class="descclassname">utility.logging.</code><code class="descname">ArgumentError</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/logging.html#ArgumentError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.logging.ArgumentError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utility.logging.log">
+<code class="descclassname">utility.logging.</code><code class="descname">log</code><span class="sig-paren">(</span><em>logType</em>, <em>e</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/logging.html#log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.logging.log" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-utility.parseArguments">
+<span id="utility-parsearguments-module"></span><h2>utility.parseArguments module<a class="headerlink" href="#module-utility.parseArguments" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="utility.parseArguments.ConfigParser">
+<em class="property">class </em><code class="descclassname">utility.parseArguments.</code><code class="descname">ConfigParser</code><a class="reference internal" href="_modules/utility/parseArguments.html#ConfigParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.parseArguments.ConfigParser" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="utility.parseArguments.ConfigParser.changeOutputPath">
+<code class="descname">changeOutputPath</code><span class="sig-paren">(</span><em>path</em>, <em>execname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/parseArguments.html#ConfigParser.changeOutputPath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.parseArguments.ConfigParser.changeOutputPath" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utility.parseArguments.ConfigParser.changePath">
+<code class="descname">changePath</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/parseArguments.html#ConfigParser.changePath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.parseArguments.ConfigParser.changePath" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utility.parseArguments.ConfigParser.changeSourcePath">
+<code class="descname">changeSourcePath</code><span class="sig-paren">(</span><em>path</em>, <em>execname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/parseArguments.html#ConfigParser.changeSourcePath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.parseArguments.ConfigParser.changeSourcePath" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="utility.parseArguments.ConfigParser.data">
+<code class="descname">data</code><em class="property"> = None</em><a class="headerlink" href="#utility.parseArguments.ConfigParser.data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="utility.parseArguments.ConfigParser.exec_name">
+<code class="descname">exec_name</code><em class="property"> = None</em><a class="headerlink" href="#utility.parseArguments.ConfigParser.exec_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utility.parseArguments.ConfigParser.getParams">
+<code class="descname">getParams</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/parseArguments.html#ConfigParser.getParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.parseArguments.ConfigParser.getParams" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="utility.parseArguments.ConfigParser.maxim">
+<code class="descname">maxim</code><em class="property"> = None</em><a class="headerlink" href="#utility.parseArguments.ConfigParser.maxim" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="utility.parseArguments.ConfigParser.output_path">
+<code class="descname">output_path</code><em class="property"> = None</em><a class="headerlink" href="#utility.parseArguments.ConfigParser.output_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="utility.parseArguments.ConfigParser.params">
+<code class="descname">params</code><em class="property"> = None</em><a class="headerlink" href="#utility.parseArguments.ConfigParser.params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utility.parseArguments.ConfigParser.parseArguments">
+<code class="descname">parseArguments</code><span class="sig-paren">(</span><em>arg</em>, <em>file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/parseArguments.html#ConfigParser.parseArguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.parseArguments.ConfigParser.parseArguments" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utility.parseArguments.ConfigParser.readConfigFile">
+<code class="descname">readConfigFile</code><span class="sig-paren">(</span><em>file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/parseArguments.html#ConfigParser.readConfigFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.parseArguments.ConfigParser.readConfigFile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utility.parseArguments.ConfigParser.setParams">
+<code class="descname">setParams</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/parseArguments.html#ConfigParser.setParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.parseArguments.ConfigParser.setParams" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="utility.parseArguments.ConfigParser.source_path">
+<code class="descname">source_path</code><em class="property"> = None</em><a class="headerlink" href="#utility.parseArguments.ConfigParser.source_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utility.parseArguments.ConfigParser.verify">
+<code class="descname">verify</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/parseArguments.html#ConfigParser.verify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.parseArguments.ConfigParser.verify" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utility.parseArguments.ConfigParser.writeToConfigFile">
+<code class="descname">writeToConfigFile</code><span class="sig-paren">(</span><em>file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/parseArguments.html#ConfigParser.writeToConfigFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.parseArguments.ConfigParser.writeToConfigFile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-utility">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-utility" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="demo.html" title="demo package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pcloudcv  documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="contents.html" >Package Contents</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="pcloudcv.html" >pcloudcv package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Shubham Desale.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.
+    </div>
+  </body>
+</html>

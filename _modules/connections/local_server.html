@@ -1,0 +1,296 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>connections.local_server &mdash; pcloudcv  documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="pcloudcv  documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">pcloudcv  documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for connections.local_server</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">redis</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">cherrypy</span>
+<span class="kn">from</span> <span class="nn">utility</span> <span class="kn">import</span> <span class="n">accounts</span><span class="p">,</span> <span class="n">conf</span>
+<span class="kn">from</span> <span class="nn">mako.template</span> <span class="kn">import</span> <span class="n">Template</span>
+<span class="kn">from</span> <span class="nn">mako.lookup</span> <span class="kn">import</span> <span class="n">TemplateLookup</span>
+<span class="kn">import</span> <span class="nn">utility.job</span> <span class="kn">as</span> <span class="nn">job</span>
+<span class="kn">import</span> <span class="nn">utility.conf</span> <span class="kn">as</span> <span class="nn">conf</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+
+<span class="n">lookup</span> <span class="o">=</span> <span class="n">TemplateLookup</span><span class="p">(</span><span class="n">directories</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;html&#39;</span><span class="p">])</span>
+<span class="n">redis_obj</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">StrictRedis</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">6379</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">class MakoHandler(cherrypy.dispatch.LateParamPageHandler):</span>
+
+
+<span class="sd">    def __init__(self, template, next_handler):</span>
+<span class="sd">        self.template = template</span>
+<span class="sd">        self.next_handler = next_handler</span>
+
+<span class="sd">    def __call__(self):</span>
+<span class="sd">        env = globals().copy()</span>
+<span class="sd">        env.update(self.next_handler())</span>
+<span class="sd">        try:</span>
+<span class="sd">            return self.template.render(**env)</span>
+<span class="sd">        except:</span>
+<span class="sd">            # something went wrong rendering the template</span>
+<span class="sd">            # this will generate a pretty error page with details</span>
+<span class="sd">            cherrypy.response.status = &quot;500&quot;</span>
+<span class="sd">            return cherrypy.exceptions.html_error_template().render()</span>
+
+
+<span class="sd">class MakoLoader(object):</span>
+
+<span class="sd">    def __init__(self):</span>
+<span class="sd">        self.lookups = {}</span>
+
+<span class="sd">    def __call__(self, filename, directories, module_directory=None,</span>
+<span class="sd">                 collection_size=-1):</span>
+<span class="sd">        # Find the appropriate template lookup.</span>
+<span class="sd">        key = (tuple(directories), module_directory)</span>
+<span class="sd">        try:</span>
+<span class="sd">            lookup = self.lookups[key]</span>
+<span class="sd">        except KeyError:</span>
+<span class="sd">            lookup = TemplateLookup(directories=directories,</span>
+<span class="sd">                                    module_directory=module_directory,</span>
+<span class="sd">                                    collection_size=collection_size,</span>
+<span class="sd">                                    )</span>
+<span class="sd">            self.lookups[key] = lookup</span>
+<span class="sd">        cherrypy.request.lookup = lookup</span>
+
+<span class="sd">        # Replace the current handler.</span>
+<span class="sd">        cherrypy.request.template = t = lookup.get_template(filename)</span>
+<span class="sd">        cherrypy.request.handler = MakoHandler(t, cherrypy.request.handler)</span>
+
+<span class="sd">main = MakoLoader()</span>
+<span class="sd">cherrypy.tools.mako = cherrypy.Tool(&#39;on_start_resource&#39;, main)</span>
+<span class="sd">cherrypy.tools.mako.collection_size = 500</span>
+<span class="sd">cherrypy.tools.mako.directories = &#39;html&#39;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="exit_program"><a class="viewcode-back" href="../../connections.html#connections.local_server.exit_program">[docs]</a><span class="k">def</span> <span class="nf">exit_program</span><span class="p">():</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Path"><a class="viewcode-back" href="../../connections.html#connections.local_server.Path">[docs]</a><span class="k">class</span> <span class="nc">Path</span><span class="p">:</span>
+    <span class="nd">@cherrypy.expose</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="nd">@cherrypy.expose</span>
+<div class="viewcode-block" id="Path.index"><a class="viewcode-back" href="../../connections.html#connections.local_server.Path.index">[docs]</a>    <span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;hi&#39;</span>
+</div>
+    <span class="nd">@cherrypy.expose</span>
+<div class="viewcode-block" id="Path.classify_output"><a class="viewcode-back" href="../../connections.html#connections.local_server.Path.classify_output">[docs]</a>    <span class="k">def</span> <span class="nf">classify_output</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s">&#39;html/index.html&#39;</span><span class="p">)</span>
+        <span class="n">imagepath</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">output_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">job</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">output_dict</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="n">imagepath</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">BASE_URL</span><span class="o">+</span><span class="n">job</span><span class="o">.</span><span class="n">job</span><span class="o">.</span><span class="n">jobinfo</span><span class="p">[</span><span class="s">&#39;url&#39;</span><span class="p">],</span> <span class="n">k</span><span class="p">))</span>
+            <span class="n">scores</span> <span class="o">=</span> <span class="n">output_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
+        <span class="k">print</span> <span class="n">imagepath</span><span class="p">,</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">imagepath</span><span class="o">=</span><span class="n">imagepath</span><span class="p">,</span> <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="p">)</span>
+
+
+
+</div>
+    <span class="nd">@cherrypy.expose</span>
+<div class="viewcode-block" id="Path.dropbox_callback"><a class="viewcode-back" href="../../connections.html#connections.local_server.Path.dropbox_callback">[docs]</a>    <span class="k">def</span> <span class="nf">dropbox_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;state&#39;</span><span class="p">]</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;code&#39;</span><span class="p">]</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">BASE_URL</span> <span class="o">+</span> <span class="s">&#39;/callback/dropbox/&#39;</span><span class="p">,</span>
+                                <span class="n">data</span><span class="o">=</span><span class="p">{</span>
+                                <span class="s">&#39;code&#39;</span><span class="p">:</span> <span class="n">code</span><span class="p">,</span>
+                                <span class="s">&#39;state&#39;</span><span class="p">:</span> <span class="n">state</span><span class="p">,</span>
+                                <span class="s">&#39;userid&#39;</span><span class="p">:</span> <span class="n">accounts</span><span class="o">.</span><span class="n">account_obj</span><span class="o">.</span><span class="n">getGoogleUserID</span><span class="p">()</span>
+                                <span class="p">})</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">account_info</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">text</span>
+
+        <span class="n">accounts</span><span class="o">.</span><span class="n">account_obj</span><span class="o">.</span><span class="n">dbaccount</span> <span class="o">=</span> <span class="n">accounts</span><span class="o">.</span><span class="n">DropboxAccounts</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">account_info</span><span class="p">[</span><span class="s">&#39;uid&#39;</span><span class="p">]),</span> <span class="nb">str</span><span class="p">(</span><span class="n">account_info</span><span class="p">[</span><span class="s">&#39;token&#39;</span><span class="p">]))</span>
+        <span class="k">print</span> <span class="s">&quot;Dropbox Account:&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">account_info</span><span class="p">[</span><span class="s">&#39;uid&#39;</span><span class="p">])</span>
+        <span class="k">print</span> <span class="s">&quot;Dropbox Token:&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">account_info</span><span class="p">[</span><span class="s">&#39;token&#39;</span><span class="p">])</span>
+
+        <span class="n">redis_obj</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s">&#39;dropbox_token&#39;</span><span class="p">,</span> <span class="n">account_info</span><span class="p">[</span><span class="s">&#39;token&#39;</span><span class="p">])</span>
+        <span class="n">redis_obj</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s">&#39;dropbox_account&#39;</span><span class="p">,</span> <span class="n">account_info</span><span class="p">[</span><span class="s">&#39;uid&#39;</span><span class="p">])</span>
+
+        <span class="n">accounts</span><span class="o">.</span><span class="n">writeAccounts</span><span class="p">(</span><span class="n">accounts</span><span class="o">.</span><span class="n">account_obj</span><span class="p">)</span>
+        <span class="n">accounts</span><span class="o">.</span><span class="n">dropboxAuthentication</span> <span class="o">=</span> <span class="bp">True</span>
+
+        <span class="n">http_response</span> <span class="o">=</span> <span class="s">&quot;Your dropbox account is now linked&quot;</span>
+        <span class="k">return</span> <span class="n">http_response</span>
+</div>
+    <span class="nd">@cherrypy.expose</span>
+<div class="viewcode-block" id="Path.callback"><a class="viewcode-back" href="../../connections.html#connections.local_server.Path.callback">[docs]</a>    <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;state&#39;</span><span class="p">]</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;code&#39;</span><span class="p">]</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">BASE_URL</span> <span class="o">+</span> <span class="s">&#39;/callback/google/&#39;</span><span class="p">,</span>
+                                <span class="n">data</span><span class="o">=</span><span class="p">{</span>
+                                <span class="s">&#39;code&#39;</span><span class="p">:</span> <span class="n">code</span><span class="p">,</span>
+                                <span class="s">&#39;state&#39;</span><span class="p">:</span> <span class="n">state</span>
+                                <span class="p">})</span>
+        <span class="k">print</span> <span class="n">result</span><span class="o">.</span><span class="n">text</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">account_info</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">text</span>
+
+        <span class="n">accounts</span><span class="o">.</span><span class="n">account_obj</span> <span class="o">=</span> <span class="n">accounts</span><span class="o">.</span><span class="n">Accounts</span><span class="p">()</span>
+        <span class="n">accounts</span><span class="o">.</span><span class="n">account_obj</span><span class="o">.</span><span class="n">gaccount</span> <span class="o">=</span> <span class="n">accounts</span><span class="o">.</span><span class="n">GoogleAccounts</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">account_info</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">]),</span> <span class="nb">str</span><span class="p">(</span><span class="n">account_info</span><span class="p">[</span><span class="s">&#39;email&#39;</span><span class="p">]))</span>
+        <span class="n">accounts</span><span class="o">.</span><span class="n">writeAccounts</span><span class="p">(</span><span class="n">accounts</span><span class="o">.</span><span class="n">account_obj</span><span class="p">)</span>
+        <span class="n">accounts</span><span class="o">.</span><span class="n">googleAuthentication</span><span class="o">=</span><span class="bp">True</span>
+        <span class="n">http_response</span> <span class="o">=</span> <span class="s">&quot;You have been authenticated to CloudCV using your google account&quot;</span>
+        <span class="k">return</span> <span class="n">http_response</span>
+</div>
+<div class="viewcode-block" id="Path.exit"><a class="viewcode-back" href="../../connections.html#connections.local_server.Path.exit">[docs]</a>    <span class="k">def</span> <span class="nf">exit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        /exit</span>
+<span class="sd">        Quits the application</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">threading</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">_exit</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="k">return</span> <span class="s">&quot;Local Server Stopped&quot;</span>
+</div></div>
+<div class="viewcode-block" id="GET"><a class="viewcode-back" href="../../connections.html#connections.local_server.GET">[docs]</a><span class="k">def</span> <span class="nf">GET</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+    <span class="k">print</span> <span class="nb">str</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="s">&#39;google&#39;</span><span class="p">:</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;state&#39;</span><span class="p">)</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;code&#39;</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">accounts</span><span class="o">.</span><span class="n">BASE_URL</span> <span class="o">+</span> <span class="s">&#39;/callback/google/&#39;</span><span class="p">,</span>
+                               <span class="n">data</span><span class="o">=</span><span class="p">{</span>
+                                   <span class="s">&#39;code&#39;</span><span class="p">:</span> <span class="n">code</span><span class="p">,</span>
+                                   <span class="s">&#39;state&#39;</span><span class="p">:</span> <span class="n">state</span>
+                               <span class="p">})</span>
+        <span class="k">global</span> <span class="n">server</span>
+        <span class="n">server</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="s">&#39;not extracted&#39;</span>
+
+</div>
+<div class="viewcode-block" id="HTTPServer"><a class="viewcode-back" href="../../connections.html#connections.local_server.HTTPServer">[docs]</a><span class="k">class</span> <span class="nc">HTTPServer</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sync</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Condition</span><span class="p">()</span>
+
+<div class="viewcode-block" id="HTTPServer.run"><a class="viewcode-back" href="../../connections.html#connections.local_server.HTTPServer.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">sync</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">cherrypy</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">check_port</span><span class="p">(</span><span class="s">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">8000</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;The port </span><span class="si">%s</span><span class="s"> is not free</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="mi">8000</span><span class="p">)</span>
+
+
+        <span class="n">cherrypy</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s">&#39;log.screen&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+                        <span class="s">&#39;log.error_file&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
+                        <span class="c">#&#39;log.error_log&#39;: None</span>
+                        <span class="p">})</span>
+
+        <span class="n">cherrypy</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">socket_port</span> <span class="o">=</span> <span class="mi">8000</span>
+        <span class="n">cherrypy</span><span class="o">.</span><span class="n">quickstart</span><span class="p">(</span><span class="n">Path</span><span class="p">())</span>
+</div>
+<div class="viewcode-block" id="HTTPServer.stop"><a class="viewcode-back" href="../../connections.html#connections.local_server.HTTPServer.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">cherrypy</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+        <span class="c">#cherrypy.server.stop()</span>
+        <span class="c">#cherrypy.process.bus.exit()</span>
+        <span class="k">print</span> <span class="s">&#39;Local Server Stopped&#39;</span>
+
+        <span class="c">#pass</span></div></div>
+<span class="n">server</span> <span class="o">=</span> <span class="n">HTTPServer</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">pcloudcv  documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Shubham Desale.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.
+    </div>
+  </body>
+</html>

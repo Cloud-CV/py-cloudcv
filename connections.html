@@ -1,0 +1,394 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>connections package &mdash; pcloudcv  documentation</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="pcloudcv  documentation" href="index.html" />
+    <link rel="up" title="pcloudcv package" href="pcloudcv.html" />
+    <link rel="next" title="demo package" href="demo.html" />
+    <link rel="prev" title="pcloudcv package" href="pcloudcv.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="demo.html" title="demo package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pcloudcv.html" title="pcloudcv package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pcloudcv  documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="contents.html" >Package Contents</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="pcloudcv.html" accesskey="U">pcloudcv package</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">connections package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-connections.local_server">connections.local_server module</a></li>
+<li><a class="reference internal" href="#module-connections.socketConnection">connections.socketConnection module</a></li>
+<li><a class="reference internal" href="#module-connections.uploadData">connections.uploadData module</a></li>
+<li><a class="reference internal" href="#module-connections">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pcloudcv.html"
+                        title="previous chapter">pcloudcv package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="demo.html"
+                        title="next chapter">demo package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/connections.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="connections-package">
+<h1>connections package<a class="headerlink" href="#connections-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-connections.local_server">
+<span id="connections-local-server-module"></span><h2>connections.local_server module<a class="headerlink" href="#module-connections.local_server" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="connections.local_server.GET">
+<code class="descclassname">connections.local_server.</code><code class="descname">GET</code><span class="sig-paren">(</span><em>self</em>, <em>name</em>, <em>**params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/local_server.html#GET"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.local_server.GET" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="connections.local_server.HTTPServer">
+<em class="property">class </em><code class="descclassname">connections.local_server.</code><code class="descname">HTTPServer</code><a class="reference internal" href="_modules/connections/local_server.html#HTTPServer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.local_server.HTTPServer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></p>
+<dl class="method">
+<dt id="connections.local_server.HTTPServer.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/local_server.html#HTTPServer.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.local_server.HTTPServer.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="connections.local_server.HTTPServer.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/local_server.html#HTTPServer.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.local_server.HTTPServer.stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="connections.local_server.Path">
+<em class="property">class </em><code class="descclassname">connections.local_server.</code><code class="descname">Path</code><a class="reference internal" href="_modules/connections/local_server.html#Path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.local_server.Path" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="connections.local_server.Path.callback">
+<code class="descname">callback</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/local_server.html#Path.callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.local_server.Path.callback" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="connections.local_server.Path.classify_output">
+<code class="descname">classify_output</code><span class="sig-paren">(</span><em>name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/local_server.html#Path.classify_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.local_server.Path.classify_output" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="connections.local_server.Path.dropbox_callback">
+<code class="descname">dropbox_callback</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/local_server.html#Path.dropbox_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.local_server.Path.dropbox_callback" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="connections.local_server.Path.exit">
+<code class="descname">exit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/local_server.html#Path.exit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.local_server.Path.exit" title="Permalink to this definition">¶</a></dt>
+<dd><p>/exit
+Quits the application</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="connections.local_server.Path.index">
+<code class="descname">index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/local_server.html#Path.index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.local_server.Path.index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="connections.local_server.exit_program">
+<code class="descclassname">connections.local_server.</code><code class="descname">exit_program</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/local_server.html#exit_program"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.local_server.exit_program" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt id="connections.local_server.redis_obj">
+<code class="descclassname">connections.local_server.</code><code class="descname">redis_obj</code><em class="property"> = StrictRedis&lt;ConnectionPool&lt;Connection&lt;host=localhost,port=6379,db=0&gt;&gt;&gt;</em><a class="headerlink" href="#connections.local_server.redis_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>class MakoHandler(cherrypy.dispatch.LateParamPageHandler):</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>def __init__(self, template, next_handler):</dt>
+<dd>self.template = template
+self.next_handler = next_handler</dd>
+<dt>def __call__(self):</dt>
+<dd><p class="first">env = globals().copy()
+env.update(self.next_handler())
+try:</p>
+<blockquote>
+<div>return self.template.render(<a href="#id1"><span class="problematic" id="id2">**</span></a>env)</div></blockquote>
+<dl class="last docutils">
+<dt>except:</dt>
+<dd># something went wrong rendering the template
+# this will generate a pretty error page with details
+cherrypy.response.status = &#8220;500&#8221;
+return cherrypy.exceptions.html_error_template().render()</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+<p>class MakoLoader(object):</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>def __init__(self):</dt>
+<dd>self.lookups = {}</dd>
+<dt>def __call__(self, filename, directories, module_directory=None,</dt>
+<dd><blockquote class="first">
+<div>collection_size=-1):</div></blockquote>
+<p># Find the appropriate template lookup.
+key = (tuple(directories), module_directory)
+try:</p>
+<blockquote>
+<div>lookup = self.lookups[key]</div></blockquote>
+<dl class="docutils">
+<dt>except KeyError:</dt>
+<dd><dl class="first docutils">
+<dt>lookup = TemplateLookup(directories=directories,</dt>
+<dd>module_directory=module_directory,
+collection_size=collection_size,
+)</dd>
+</dl>
+<p class="last">self.lookups[key] = lookup</p>
+</dd>
+</dl>
+<p>cherrypy.request.lookup = lookup</p>
+<p class="last"># Replace the current handler.
+cherrypy.request.template = t = lookup.get_template(filename)
+cherrypy.request.handler = MakoHandler(t, cherrypy.request.handler)</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>main = MakoLoader()
+cherrypy.tools.mako = cherrypy.Tool(&#8216;on_start_resource&#8217;, main)
+cherrypy.tools.mako.collection_size = 500
+cherrypy.tools.mako.directories = &#8216;html&#8217;</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-connections.socketConnection">
+<span id="connections-socketconnection-module"></span><h2>connections.socketConnection module<a class="headerlink" href="#module-connections.socketConnection" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="connections.socketConnection.RedisListen">
+<em class="property">class </em><code class="descclassname">connections.socketConnection.</code><code class="descname">RedisListen</code><span class="sig-paren">(</span><em>ps</em>, <em>r</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/socketConnection.html#RedisListen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.socketConnection.RedisListen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></p>
+<dl class="method">
+<dt id="connections.socketConnection.RedisListen.listenToChannel">
+<code class="descname">listenToChannel</code><span class="sig-paren">(</span><em>ps</em>, <em>r</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/socketConnection.html#RedisListen.listenToChannel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.socketConnection.RedisListen.listenToChannel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="connections.socketConnection.RedisListen.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/socketConnection.html#RedisListen.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.socketConnection.RedisListen.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="connections.socketConnection.SocketIOConnection">
+<em class="property">class </em><code class="descclassname">connections.socketConnection.</code><code class="descname">SocketIOConnection</code><span class="sig-paren">(</span><em>executable</em>, <em>imagepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/socketConnection.html#SocketIOConnection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.socketConnection.SocketIOConnection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></p>
+<dl class="method">
+<dt id="connections.socketConnection.SocketIOConnection.connection">
+<code class="descname">connection</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/socketConnection.html#SocketIOConnection.connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.socketConnection.SocketIOConnection.connection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="connections.socketConnection.SocketIOConnection.on_aaa_response">
+<code class="descname">on_aaa_response</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/socketConnection.html#SocketIOConnection.on_aaa_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.socketConnection.SocketIOConnection.on_aaa_response" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="connections.socketConnection.SocketIOConnection.on_error_response">
+<code class="descname">on_error_response</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/socketConnection.html#SocketIOConnection.on_error_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.socketConnection.SocketIOConnection.on_error_response" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="connections.socketConnection.SocketIOConnection.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/socketConnection.html#SocketIOConnection.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.socketConnection.SocketIOConnection.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="connections.socketConnection.SocketIOConnection.setupRedis">
+<code class="descname">setupRedis</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/socketConnection.html#SocketIOConnection.setupRedis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.socketConnection.SocketIOConnection.setupRedis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="connections.socketConnection.SocketIOConnection.setupSocketIO">
+<code class="descname">setupSocketIO</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/socketConnection.html#SocketIOConnection.setupSocketIO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.socketConnection.SocketIOConnection.setupSocketIO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-connections.uploadData">
+<span id="connections-uploaddata-module"></span><h2>connections.uploadData module<a class="headerlink" href="#module-connections.uploadData" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="connections.uploadData.RedisListenForPostThread">
+<em class="property">class </em><code class="descclassname">connections.uploadData.</code><code class="descname">RedisListenForPostThread</code><span class="sig-paren">(</span><em>ps</em>, <em>r</em>, <em>udobj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#RedisListenForPostThread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.RedisListenForPostThread" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></p>
+<dl class="method">
+<dt id="connections.uploadData.RedisListenForPostThread.listenToChannel">
+<code class="descname">listenToChannel</code><span class="sig-paren">(</span><em>ps</em>, <em>r</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#RedisListenForPostThread.listenToChannel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.RedisListenForPostThread.listenToChannel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="connections.uploadData.RedisListenForPostThread.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#RedisListenForPostThread.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.RedisListenForPostThread.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="connections.uploadData.UploadData">
+<em class="property">class </em><code class="descclassname">connections.uploadData.</code><code class="descname">UploadData</code><span class="sig-paren">(</span><em>config_parser</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#UploadData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.UploadData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></p>
+<dl class="method">
+<dt id="connections.uploadData.UploadData.addAccountParameters">
+<code class="descname">addAccountParameters</code><span class="sig-paren">(</span><em>params_data</em>, <em>source</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#UploadData.addAccountParameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.UploadData.addAccountParameters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="connections.uploadData.UploadData.addFileParameters">
+<code class="descname">addFileParameters</code><span class="sig-paren">(</span><em>source</em>, <em>source_path</em>, <em>params_data</em>, <em>params_for_request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#UploadData.addFileParameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.UploadData.addFileParameters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="connections.uploadData.UploadData.filesInDirectory">
+<code class="descname">filesInDirectory</code><span class="sig-paren">(</span><em>dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#UploadData.filesInDirectory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.UploadData.filesInDirectory" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="connections.uploadData.UploadData.getRequest">
+<code class="descname">getRequest</code><span class="sig-paren">(</span><em>url</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#UploadData.getRequest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.UploadData.getRequest" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="connections.uploadData.UploadData.identifySourcePath">
+<code class="descname">identifySourcePath</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#UploadData.identifySourcePath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.UploadData.identifySourcePath" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="connections.uploadData.UploadData.openFile">
+<code class="descname">openFile</code><span class="sig-paren">(</span><em>path_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#UploadData.openFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.UploadData.openFile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="connections.uploadData.UploadData.resize">
+<code class="descname">resize</code><span class="sig-paren">(</span><em>files</em>, <em>resized_path</em>, <em>source_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#UploadData.resize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.UploadData.resize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="connections.uploadData.UploadData.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#UploadData.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.UploadData.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="connections.uploadData.UploadData.sendPostRequest">
+<code class="descname">sendPostRequest</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#UploadData.sendPostRequest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.UploadData.sendPostRequest" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="connections.uploadData.UploadData.socketid">
+<code class="descname">socketid</code><em class="property"> = None</em><a class="headerlink" href="#connections.uploadData.UploadData.socketid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-connections">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-connections" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="demo.html" title="demo package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pcloudcv.html" title="pcloudcv package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pcloudcv  documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="contents.html" >Package Contents</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="pcloudcv.html" >pcloudcv package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Shubham Desale.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.
+    </div>
+  </body>
+</html>
