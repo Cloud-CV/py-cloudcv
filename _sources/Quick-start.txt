@@ -174,9 +174,6 @@ Try these Ipython Notebooks to get an understanding of the
 functionalities that we are trying to provide and report bugs/ submit
 patches.
 
-I am working on writing the documentation for this API and will update
-the repository very soon.
-
 .. _Tutorial: https://github.com/batra-mlp-lab/pcloudcv/wiki/Tutorial
 .. _Config File: https://github.com/batra-mlp-lab/pcloudcv/wiki/Config-File
    
