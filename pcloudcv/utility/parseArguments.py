@@ -31,37 +31,29 @@ class ConfigParser:
     def readConfigFile(self, file):
         data_file = open(file, 'r').read()
         complete_data = json.loads(data_file)
-        self.data = complete_data['config']
-        self.exec_name = complete_data['exec']
-        self.maxim = int(complete_data['maxim'])
+        self.data = complete_data.get('config')
+        self.maxim = int(complete_data.get('maxim'))
+        return complete_data
 
     def writeToConfigFile(self, file):
         data_file = open(file, 'w')
         json.dump(self.complete_data, data_file)
 
-    def parseArguments(self, arg, file):
-        sourcepath = None
-        resultpath = None
-        name = None
-
+    def parseArguments(self, arg, config_file):
         i = 0
-
-        if 'input' in arg:
-            sourcepath = arg['input']
-        if 'output' in arg:
-            resultpath = arg['output']
-        if 'exec' in arg:
-            name = arg['exec']
+        sourcepath = arg.get('input')
+        resultpath = arg.get('output')
+        name = arg.get('exec')
 
         try:
-            self.readConfigFile(file)
+            config_dict = self.readConfigFile(config_file)
 
-            if name is not None:
-                self.exec_name = name
-            elif self.exec_name is None:
+            # exec param is not mentioned in config.json and config dictionary
+            if arg.get('exec') is None and config_dict.get('exec') is None:
                 raise ArgumentError(0)
-            elif name is None and self.exec_name is not None:
-                name = self.exec_name
+
+            if arg.get('exec') is None and config_dict.get('exec') is not None:
+                name = config_dict.get('exec')
 
             self.changePath()
 
@@ -80,31 +72,18 @@ class ConfigParser:
             log('W', str(e))
 
     def changeSourcePath(self, path, execname):
-        try:
-            for d in self.data:
-                if d["name"] == execname:
-                    d["path"] = path
-                    self.source_path = path
-                    return
-            raise ArgumentError(0)
+        for d in self.data:
+            if d["name"] == execname:
+                d["path"] = path
+                self.source_path = path
 
-        except ArgumentError as e:
-            log('W', str(e))
-            raise SystemExit
 
     def changeOutputPath(self, path, execname):
-        try:
-            for d in self.data:
-                if d["name"] == execname:
-                    d["output"] = path
-                    self.output_path = path
-                    return
-
-            raise ArgumentError(0)
-
-        except ArgumentError as e:
-            log('W', str(e))
-            raise SystemExit
+        for d in self.data:
+            if d["name"] == execname:
+                d["output"] = path
+                self.output_path = path
+                return
 
     def verify(self):
         if self.exec_name == ' ':
