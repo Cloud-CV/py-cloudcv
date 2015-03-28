@@ -10,7 +10,7 @@ Config File can be downloaded from `here`_
 | Keep in mind the following things while creating your own config file:
 | 1. ``exec`` will take a valid functionality name.Valid names can be
   checked
-  `here <https://github.com/batra-mlp-lab/pcloudcv/wiki#functionalities>`__
+  :ref:`here <functionalities>`
 | 2. ``path`` takes full path to the input folder where the images are
   present.
 | 3. ``output`` takes full path to the output directory where the output

@@ -23,7 +23,10 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pcloudcv  documentation" href="index.html" /> 
+    <link rel="top" title="pcloudcv  documentation" href="index.html" />
+    <link rel="up" title="pcloudcv package" href="pcloudcv.html" />
+    <link rel="next" title="demo package" href="demo.html" />
+    <link rel="prev" title="pcloudcv package" href="pcloudcv.html" /> 
   </head>
   <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
@@ -35,7 +38,15 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pcloudcv  documentation</a> &raquo;</li> 
+        <li class="right" >
+          <a href="demo.html" title="demo package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pcloudcv.html" title="pcloudcv package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pcloudcv  documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="contents.html" >Package Contents</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="pcloudcv.html" accesskey="U">pcloudcv package</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -52,6 +63,12 @@
 </li>
 </ul>
 
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pcloudcv.html"
+                        title="previous chapter">pcloudcv package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="demo.html"
+                        title="next chapter">demo package</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -90,21 +107,35 @@
 <dl class="function">
 <dt id="connections.local_server.GET">
 <code class="descclassname">connections.local_server.</code><code class="descname">GET</code><span class="sig-paren">(</span><em>self</em>, <em>name</em>, <em>**params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/local_server.html#GET"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.local_server.GET" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Sends a GET request to the Google callback endpoint of CloudCV API&#8217;s.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>str</em>) &#8211; Specifies a flag for sending a request to Google callback endpoint.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The response of the GET request if name is &#8216;google&#8217;.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="class">
 <dt id="connections.local_server.HTTPServer">
 <em class="property">class </em><code class="descclassname">connections.local_server.</code><code class="descname">HTTPServer</code><a class="reference internal" href="_modules/connections/local_server.html#HTTPServer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.local_server.HTTPServer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></p>
+<p>Instantiates a HTTPserver object with condition variable <cite>sync</cite> that provides synchronization mechanism for multithreading.</p>
 <dl class="method">
 <dt id="connections.local_server.HTTPServer.run">
 <code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/local_server.html#HTTPServer.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.local_server.HTTPServer.run" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Checks if port 8000 is free and starts running CherryPy server on the port.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="connections.local_server.HTTPServer.stop">
 <code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/local_server.html#HTTPServer.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.local_server.HTTPServer.stop" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Stops CherryPy server.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -114,7 +145,9 @@
 <dd><dl class="method">
 <dt id="connections.local_server.Path.callback">
 <code class="descname">callback</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/local_server.html#Path.callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.local_server.Path.callback" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>A callback handler for Google OAuth. It collects the state and code from the callback and posts them to the CloudCV API endpoint for Google callback.
+The response is stored in a local config file to avoid Auth process in future.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="connections.local_server.Path.classify_output">
@@ -124,13 +157,14 @@
 <dl class="method">
 <dt id="connections.local_server.Path.dropbox_callback">
 <code class="descname">dropbox_callback</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/local_server.html#Path.dropbox_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.local_server.Path.dropbox_callback" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>A callback handler for Dropbox authentication. It requires a user to be authenticated with A Google account first.The <cite>code</cite> and <cite>state</cite> 
+parameters in the callback are posted to CloudCV API endpoint.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="connections.local_server.Path.exit">
 <code class="descname">exit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/local_server.html#Path.exit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.local_server.Path.exit" title="Permalink to this definition">¶</a></dt>
-<dd><p>/exit
-Quits the application</p>
+<dd><p>Quits the application</p>
 </dd></dl>
 
 <dl class="method">
@@ -143,68 +177,7 @@ Quits the application</p>
 <dl class="function">
 <dt id="connections.local_server.exit_program">
 <code class="descclassname">connections.local_server.</code><code class="descname">exit_program</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/local_server.html#exit_program"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.local_server.exit_program" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="data">
-<dt id="connections.local_server.redis_obj">
-<code class="descclassname">connections.local_server.</code><code class="descname">redis_obj</code><em class="property"> = StrictRedis&lt;ConnectionPool&lt;Connection&lt;host=localhost,port=6379,db=0&gt;&gt;&gt;</em><a class="headerlink" href="#connections.local_server.redis_obj" title="Permalink to this definition">¶</a></dt>
-<dd><p>class MakoHandler(cherrypy.dispatch.LateParamPageHandler):</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>def __init__(self, template, next_handler):</dt>
-<dd>self.template = template
-self.next_handler = next_handler</dd>
-<dt>def __call__(self):</dt>
-<dd><p class="first">env = globals().copy()
-env.update(self.next_handler())
-try:</p>
-<blockquote>
-<div>return self.template.render(<a href="#id1"><span class="problematic" id="id2">**</span></a>env)</div></blockquote>
-<dl class="last docutils">
-<dt>except:</dt>
-<dd># something went wrong rendering the template
-# this will generate a pretty error page with details
-cherrypy.response.status = &#8220;500&#8221;
-return cherrypy.exceptions.html_error_template().render()</dd>
-</dl>
-</dd>
-</dl>
-</div></blockquote>
-<p>class MakoLoader(object):</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>def __init__(self):</dt>
-<dd>self.lookups = {}</dd>
-<dt>def __call__(self, filename, directories, module_directory=None,</dt>
-<dd><blockquote class="first">
-<div>collection_size=-1):</div></blockquote>
-<p># Find the appropriate template lookup.
-key = (tuple(directories), module_directory)
-try:</p>
-<blockquote>
-<div>lookup = self.lookups[key]</div></blockquote>
-<dl class="docutils">
-<dt>except KeyError:</dt>
-<dd><dl class="first docutils">
-<dt>lookup = TemplateLookup(directories=directories,</dt>
-<dd>module_directory=module_directory,
-collection_size=collection_size,
-)</dd>
-</dl>
-<p class="last">self.lookups[key] = lookup</p>
-</dd>
-</dl>
-<p>cherrypy.request.lookup = lookup</p>
-<p class="last"># Replace the current handler.
-cherrypy.request.template = t = lookup.get_template(filename)
-cherrypy.request.handler = MakoHandler(t, cherrypy.request.handler)</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>main = MakoLoader()
-cherrypy.tools.mako = cherrypy.Tool(&#8216;on_start_resource&#8217;, main)
-cherrypy.tools.mako.collection_size = 500
-cherrypy.tools.mako.directories = &#8216;html&#8217;</p>
+<dd><p>An alias for exit system call.</p>
 </dd></dl>
 
 </div>
@@ -269,6 +242,19 @@ cherrypy.tools.mako.directories = &#8216;html&#8217;</p>
 <dt id="connections.uploadData.RedisListenForPostThread">
 <em class="property">class </em><code class="descclassname">connections.uploadData.</code><code class="descname">RedisListenForPostThread</code><span class="sig-paren">(</span><em>ps</em>, <em>r</em>, <em>udobj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#RedisListenForPostThread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.RedisListenForPostThread" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></p>
+<p>Redis Connection for Inter Thread Communication.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ps</strong> &#8211; Publisher/Subscriber features to communicate in real-time.</li>
+<li><strong>r</strong> &#8211; An instance of</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="connections.uploadData.RedisListenForPostThread.listenToChannel">
 <code class="descname">listenToChannel</code><span class="sig-paren">(</span><em>ps</em>, <em>r</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#RedisListenForPostThread.listenToChannel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.RedisListenForPostThread.listenToChannel" title="Permalink to this definition">¶</a></dt>
@@ -277,7 +263,8 @@ cherrypy.tools.mako.directories = &#8216;html&#8217;</p>
 <dl class="method">
 <dt id="connections.uploadData.RedisListenForPostThread.run">
 <code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#RedisListenForPostThread.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.RedisListenForPostThread.run" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Entry point for redis connection</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -285,30 +272,64 @@ cherrypy.tools.mako.directories = &#8216;html&#8217;</p>
 <dt id="connections.uploadData.UploadData">
 <em class="property">class </em><code class="descclassname">connections.uploadData.</code><code class="descname">UploadData</code><span class="sig-paren">(</span><em>config_parser</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#UploadData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.UploadData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></p>
+<p>Starts a data uploading instance in a new thread.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>config_parser</strong> (<a class="reference internal" href="utility.html#utility.parseArguments.ConfigParser" title="utility.parseArguments.ConfigParser"><code class="xref py py-class docutils literal"><span class="pre">utility.parseArguments.ConfigParser</span></code></a>) &#8211; An instance of <a class="reference internal" href="utility.html#utility.parseArguments.ConfigParser" title="utility.parseArguments.ConfigParser"><code class="xref py py-class docutils literal"><span class="pre">utility.parseArguments.ConfigParser</span></code></a></td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="connections.uploadData.UploadData.addAccountParameters">
 <code class="descname">addAccountParameters</code><span class="sig-paren">(</span><em>params_data</em>, <em>source</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#UploadData.addAccountParameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.UploadData.addAccountParameters" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Read the config.cfg file and adds required Google/Dropbox account parameters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>params_data</strong> (<em>dict</em>) &#8211; Contains userID and/or Dropbox token.</li>
+<li><strong>source</strong> (<em>str</em>) &#8211; Specifies whether to upload the images from Dropox or a local directory.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="connections.uploadData.UploadData.addFileParameters">
 <code class="descname">addFileParameters</code><span class="sig-paren">(</span><em>source</em>, <em>source_path</em>, <em>params_data</em>, <em>params_for_request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#UploadData.addFileParameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.UploadData.addFileParameters" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Sets</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="connections.uploadData.UploadData.filesInDirectory">
 <code class="descname">filesInDirectory</code><span class="sig-paren">(</span><em>dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#UploadData.filesInDirectory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.UploadData.filesInDirectory" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>A regex filter for images in the input directory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dir</strong> (<em>str</em>) &#8211; An input directory.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="connections.uploadData.UploadData.getRequest">
 <code class="descname">getRequest</code><span class="sig-paren">(</span><em>url</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#UploadData.getRequest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.UploadData.getRequest" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Sets a CSRF token as a session cookie.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="connections.uploadData.UploadData.identifySourcePath">
 <code class="descname">identifySourcePath</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#UploadData.identifySourcePath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.UploadData.identifySourcePath" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Identifies whether the input path is a local directory or a Dropbox folder.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="connections.uploadData.UploadData.openFile">
@@ -323,12 +344,14 @@ cherrypy.tools.mako.directories = &#8216;html&#8217;</p>
 <dl class="method">
 <dt id="connections.uploadData.UploadData.run">
 <code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#UploadData.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.UploadData.run" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Entry point for upload data thread. see <a class="reference internal" href="#connections.uploadData.UploadData.sendPostRequest" title="connections.uploadData.UploadData.sendPostRequest"><code class="xref py py-func docutils literal"><span class="pre">connections.uploadData.UploadData.sendPostRequest()</span></code></a></p>
+</dd></dl>
 
 <dl class="method">
 <dt id="connections.uploadData.UploadData.sendPostRequest">
 <code class="descname">sendPostRequest</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#UploadData.sendPostRequest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.UploadData.sendPostRequest" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Sends POST request containing the images to the server.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="connections.uploadData.UploadData.socketid">
@@ -358,7 +381,15 @@ cherrypy.tools.mako.directories = &#8216;html&#8217;</p>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pcloudcv  documentation</a> &raquo;</li> 
+        <li class="right" >
+          <a href="demo.html" title="demo package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pcloudcv.html" title="pcloudcv package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pcloudcv  documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="contents.html" >Package Contents</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="pcloudcv.html" >pcloudcv package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

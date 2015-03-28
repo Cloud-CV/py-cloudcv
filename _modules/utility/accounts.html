@@ -83,7 +83,10 @@
 
 <span class="n">redis_obj</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">StrictRedis</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">6379</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">GoogleAccounts</span><span class="p">:</span>
-<div class="viewcode-block" id="GoogleAccounts"><a class="viewcode-back" href="../../utility.html#utility.accounts.GoogleAccounts">[docs]</a>    <span class="n">userid</span> <span class="o">=</span> <span class="bp">None</span>
+<div class="viewcode-block" id="GoogleAccounts"><a class="viewcode-back" href="../../utility.html#utility.accounts.GoogleAccounts">[docs]</a>    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class type stores the `userid` and `emailid` of a user&#39;s Google account.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">userid</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="n">emailid</span> <span class="o">=</span> <span class="bp">None</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">userid</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">emailid</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
@@ -92,7 +95,11 @@
 
 
 <span class="k">class</span> <span class="nc">DropboxAccounts</span><span class="p">:</span></div>
-<div class="viewcode-block" id="DropboxAccounts"><a class="viewcode-back" href="../../utility.html#utility.accounts.DropboxAccounts">[docs]</a>    <span class="n">userid</span> <span class="o">=</span> <span class="bp">None</span>
+<div class="viewcode-block" id="DropboxAccounts"><a class="viewcode-back" href="../../utility.html#utility.accounts.DropboxAccounts">[docs]</a>    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class type stores the `userid` and `access_token` of a user&#39;s Dropbox account. These details are updated when a user authorizes CloudCV to</span>
+<span class="sd">    access data from his Dropbox folders.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">userid</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="n">access_token</span> <span class="o">=</span> <span class="bp">None</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">userid</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">access_token</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
@@ -101,35 +108,62 @@
 
 
 <span class="k">class</span> <span class="nc">Accounts</span><span class="p">:</span></div>
-<div class="viewcode-block" id="Accounts"><a class="viewcode-back" href="../../utility.html#utility.accounts.Accounts">[docs]</a>    <span class="n">gaccount</span> <span class="o">=</span> <span class="n">GoogleAccounts</span><span class="p">()</span>
+<div class="viewcode-block" id="Accounts"><a class="viewcode-back" href="../../utility.html#utility.accounts.Accounts">[docs]</a>    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class type stores the information about user&#39;s Dropbox and Google accounts.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">gaccount</span> <span class="o">=</span> <span class="n">GoogleAccounts</span><span class="p">()</span>
     <span class="n">dbaccount</span> <span class="o">=</span> <span class="n">DropboxAccounts</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
 
     <span class="k">def</span> <span class="nf">getGoogleUserID</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<div class="viewcode-block" id="Accounts.getGoogleUserID"><a class="viewcode-back" href="../../utility.html#utility.accounts.Accounts.getGoogleUserID">[docs]</a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gaccount</span><span class="o">.</span><span class="n">userid</span>
+<div class="viewcode-block" id="Accounts.getGoogleUserID"><a class="viewcode-back" href="../../utility.html#utility.accounts.Accounts.getGoogleUserID">[docs]</a>        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns Google userId of user.</span>
+
+<span class="sd">        :return: Google `userid` of a user.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gaccount</span><span class="o">.</span><span class="n">userid</span>
 
 <span class="n">PATH_TO_CONFIG_FILE</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))))</span><span class="o">+</span><span class="s">&#39;/config.cfg&#39;</span></div></div>
+    
 
 <span class="k">def</span> <span class="nf">readAccounts</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">PATH_TO_CONFIG_FILE</span><span class="p">):</span>
-<div class="viewcode-block" id="readAccounts"><a class="viewcode-back" href="../../utility.html#utility.accounts.readAccounts">[docs]</a>        <span class="k">print</span> <span class="n">path</span>
-        <span class="n">reader</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span>
-        <span class="n">account</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">reader</span><span class="p">)</span>
-        <span class="n">reader</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">account</span>
+<div class="viewcode-block" id="readAccounts"><a class="viewcode-back" href="../../utility.html#utility.accounts.readAccounts">[docs]</a>    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads the account info from the serialized config file. </span>
+
+<span class="sd">    :param path: Path to the config file. (not to be confused with `config.json`)</span>
+<span class="sd">    :type path: str</span>
+<span class="sd">    :return: Deserialized account information.  </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">print</span> <span class="n">path</span>
+    <span class="n">reader</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span>
+    <span class="n">account</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">reader</span><span class="p">)</span>
+    <span class="n">reader</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">account</span>
 
 <span class="k">def</span> <span class="nf">writeAccounts</span><span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="n">PATH_TO_CONFIG_FILE</span><span class="p">):</span></div>
-<div class="viewcode-block" id="writeAccounts"><a class="viewcode-back" href="../../utility.html#utility.accounts.writeAccounts">[docs]</a>        <span class="n">writer</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span>
-        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="n">writer</span><span class="p">)</span>
-        <span class="n">writer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<div class="viewcode-block" id="writeAccounts"><a class="viewcode-back" href="../../utility.html#utility.accounts.writeAccounts">[docs]</a>    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Writes the account info by serializing it to the config file.</span>
+
+<span class="sd">    :param account: An instance of :class:`Accounts`.</span>
+<span class="sd">    :type account: :class:`Accounts`</span>
+<span class="sd">    :param path: Path to the config.cfg file.(Not to be confused with config.json file.)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">writer</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span>
+    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="n">writer</span><span class="p">)</span>
+    <span class="n">writer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 
 <span class="n">random_key</span> <span class="o">=</span> <span class="s">&#39;&#39;</span></div>
 
 
 <span class="k">def</span> <span class="nf">dropboxAuthenticate</span><span class="p">():</span>
-<div class="viewcode-block" id="dropboxAuthenticate"><a class="viewcode-back" href="../../utility.html#utility.accounts.dropboxAuthenticate">[docs]</a>    <span class="k">global</span> <span class="n">random_key</span><span class="p">,</span> <span class="n">account_obj</span><span class="p">,</span> <span class="n">googleAuthentication</span><span class="p">,</span> <span class="n">dropboxAuthentication</span>
+<div class="viewcode-block" id="dropboxAuthenticate"><a class="viewcode-back" href="../../utility.html#utility.accounts.dropboxAuthenticate">[docs]</a>    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This prompts a new CloudCV user for permission to access his DropBox account. This requires user to be already </span>
+<span class="sd">    authenticated using Google account.  </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">random_key</span><span class="p">,</span> <span class="n">account_obj</span><span class="p">,</span> <span class="n">googleAuthentication</span><span class="p">,</span> <span class="n">dropboxAuthentication</span>
 
     <span class="k">if</span> <span class="n">googleAuthentication</span><span class="p">:</span>
         <span class="n">db_userid</span> <span class="o">=</span> <span class="n">account_obj</span><span class="o">.</span><span class="n">dbaccount</span><span class="o">.</span><span class="n">userid</span>
@@ -168,7 +202,9 @@
 
 
 <span class="k">def</span> <span class="nf">authenticate</span><span class="p">():</span></div>
-<div class="viewcode-block" id="authenticate"><a class="viewcode-back" href="../../utility.html#utility.accounts.authenticate">[docs]</a>
+<div class="viewcode-block" id="authenticate"><a class="viewcode-back" href="../../utility.html#utility.accounts.authenticate">[docs]</a>    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A new user is authenticated using his Google account. If the user is already authenticated, a Welcom message is displayed in a new browser tab. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">random_key</span><span class="p">,</span> <span class="n">account_obj</span><span class="p">,</span> <span class="n">googleAuthentication</span>
     <span class="n">random_key</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">())</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>

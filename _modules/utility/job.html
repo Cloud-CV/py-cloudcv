@@ -69,30 +69,71 @@
 <span class="kn">import</span> <span class="nn">utility.logging</span> <span class="kn">as</span> <span class="nn">logging</span>
 
 <div class="viewcode-block" id="Job"><a class="viewcode-back" href="../../utility.html#utility.job.Job">[docs]</a><span class="k">class</span> <span class="nc">Job</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class represents a Job that is submitted to the servers for execution. </span>
+<span class="sd">    </span>
+<span class="sd">    :param imagepath: Input path for the images. </span>
+<span class="sd">    :type imagepath: str</span>
+<span class="sd">    :param resultpath: Path where result file is created.</span>
+<span class="sd">    :type resultpath: str</span>
+<span class="sd">    :param executable: Name of the executable. Available options are :ref:`here &lt;functionalities&gt;`</span>
+<span class="sd">    :type executable: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">jobid</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A job identifier.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">output</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Output obtained from the executable. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A list of files associated with a job. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">jobinfo</span> <span class="o">=</span> <span class="p">{}</span>
+    
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imagepath</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">resultpath</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">executable</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imagepath</span> <span class="o">=</span> <span class="n">imagepath</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">resultpath</span> <span class="o">=</span> <span class="n">resultpath</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">executable</span> <span class="o">=</span> <span class="n">executable</span>
 
 <div class="viewcode-block" id="Job.setJobParameters"><a class="viewcode-back" href="../../utility.html#utility.job.Job.setJobParameters">[docs]</a>    <span class="k">def</span> <span class="nf">setJobParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imagepath</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">resultpath</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">executable</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Assigns Job parameters.</span>
+
+<span class="sd">        .. seealso:: :class:`Constructor &lt;utility.job.Job&gt;` of this class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imagepath</span> <span class="o">=</span> <span class="n">imagepath</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">resultpath</span> <span class="o">=</span> <span class="n">resultpath</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">executable</span> <span class="o">=</span> <span class="n">executable</span>
 </div>
 <div class="viewcode-block" id="Job.setJobID"><a class="viewcode-back" href="../../utility.html#utility.job.Job.setJobID">[docs]</a>    <span class="k">def</span> <span class="nf">setJobID</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jobid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A setter method for JobID.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">jobid</span> <span class="o">=</span> <span class="n">jobid</span>
 </div>
 <div class="viewcode-block" id="Job.setOutput"><a class="viewcode-back" href="../../utility.html#utility.job.Job.setOutput">[docs]</a>    <span class="k">def</span> <span class="nf">setOutput</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A setter method for output obtained from executable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">output</span>
 </div>
 <div class="viewcode-block" id="Job.addFiles"><a class="viewcode-back" href="../../utility.html#utility.job.Job.addFiles">[docs]</a>    <span class="k">def</span> <span class="nf">addFiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Associates a job with its result path. See :func:`here &lt;connections.socketConnection.SocketIOConnection.on_aaa_response&gt;`</span>
+<span class="sd">        </span>
+<span class="sd">        :param path: Path of the output file asscoiated with a Job. </span>
+<span class="sd">        :type path: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Job.outputToFile"><a class="viewcode-back" href="../../utility.html#utility.job.Job.outputToFile">[docs]</a>    <span class="k">def</span> <span class="nf">outputToFile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a output file with appropriate permissions and writes obtained output to it. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resultpath</span><span class="p">):</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resultpath</span><span class="p">)</span>

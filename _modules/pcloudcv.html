@@ -130,7 +130,7 @@
 
 <div class="viewcode-block" id="PCloudCV.ec2_demo"><a class="viewcode-back" href="../pcloudcv.html#pcloudcv.PCloudCV.ec2_demo">[docs]</a>    <span class="k">def</span> <span class="nf">ec2_demo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        A method to demonstrate </span>
+<span class="sd">        </span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params_data</span><span class="o">=</span> <span class="p">{}</span>
@@ -141,9 +141,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">stop_local_server</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="PCloudCV.azure_demo"><a class="viewcode-back" href="../pcloudcv.html#pcloudcv.PCloudCV.azure_demo">[docs]</a>    <span class="k">def</span> <span class="nf">azure_demo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">emailid</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        A method to </span>
-<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">params_data</span><span class="o">=</span> <span class="p">{}</span>
         <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;dropbox_token&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">accounts</span><span class="o">.</span><span class="n">account_obj</span><span class="o">.</span><span class="n">dbaccount</span><span class="o">.</span><span class="n">access_token</span>
         <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;emailid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">emailid</span>
@@ -160,6 +158,9 @@
         <span class="n">local_server</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="PCloudCV.signal_handler"><a class="viewcode-back" href="../pcloudcv.html#pcloudcv.PCloudCV.signal_handler">[docs]</a>    <span class="k">def</span> <span class="nf">signal_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A call back function for receiving a &#39;Ctrl+C&#39; KeyboardInterrupt.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">print</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">You pressed Ctrl+C! Exiting Now&#39;</span>
         <span class="n">local_server</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
         <span class="n">local_server</span><span class="o">.</span><span class="n">exit_program</span><span class="p">()</span>
@@ -178,7 +179,7 @@
 </div>
 <div class="viewcode-block" id="PCloudCV.run"><a class="viewcode-back" href="../pcloudcv.html#pcloudcv.PCloudCV.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Entry point for current CloudCV instance. Starts Auth process and starts uploading data in a child thread.</span>
+<span class="sd">        Entry point for the thread containing a CloudCV instance. Starts Auth process and uploads the data to the servers in a child thread.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">login_required</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">authenticate</span><span class="p">()</span>

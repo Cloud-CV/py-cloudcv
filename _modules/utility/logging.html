@@ -70,6 +70,9 @@
 
 
 <div class="viewcode-block" id="log"><a class="viewcode-back" href="../../utility.html#utility.logging.log">[docs]</a><span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="n">logType</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Defines logging tags for debugging.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">logType</span> <span class="o">==</span> <span class="s">&#39;W&#39;</span><span class="p">):</span>
         <span class="k">print</span> <span class="n">Fore</span><span class="o">.</span><span class="n">RED</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
         <span class="k">print</span> <span class="n">Fore</span><span class="o">.</span><span class="n">RESET</span>
@@ -85,6 +88,12 @@
 
 </div>
 <div class="viewcode-block" id="ArgumentError"><a class="viewcode-back" href="../../utility.html#utility.logging.ArgumentError">[docs]</a><span class="k">class</span> <span class="nc">ArgumentError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Used for error logging. </span>
+<span class="sd">    </span>
+<span class="sd">    :param value: Each value indicates a different possible argument error.</span>
+<span class="sd">    :type value: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
 

@@ -80,56 +80,11 @@
 
 <span class="n">lookup</span> <span class="o">=</span> <span class="n">TemplateLookup</span><span class="p">(</span><span class="n">directories</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;html&#39;</span><span class="p">])</span>
 <span class="n">redis_obj</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">StrictRedis</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">6379</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">class MakoHandler(cherrypy.dispatch.LateParamPageHandler):</span>
-
-
-<span class="sd">    def __init__(self, template, next_handler):</span>
-<span class="sd">        self.template = template</span>
-<span class="sd">        self.next_handler = next_handler</span>
-
-<span class="sd">    def __call__(self):</span>
-<span class="sd">        env = globals().copy()</span>
-<span class="sd">        env.update(self.next_handler())</span>
-<span class="sd">        try:</span>
-<span class="sd">            return self.template.render(**env)</span>
-<span class="sd">        except:</span>
-<span class="sd">            # something went wrong rendering the template</span>
-<span class="sd">            # this will generate a pretty error page with details</span>
-<span class="sd">            cherrypy.response.status = &quot;500&quot;</span>
-<span class="sd">            return cherrypy.exceptions.html_error_template().render()</span>
-
-
-<span class="sd">class MakoLoader(object):</span>
-
-<span class="sd">    def __init__(self):</span>
-<span class="sd">        self.lookups = {}</span>
-
-<span class="sd">    def __call__(self, filename, directories, module_directory=None,</span>
-<span class="sd">                 collection_size=-1):</span>
-<span class="sd">        # Find the appropriate template lookup.</span>
-<span class="sd">        key = (tuple(directories), module_directory)</span>
-<span class="sd">        try:</span>
-<span class="sd">            lookup = self.lookups[key]</span>
-<span class="sd">        except KeyError:</span>
-<span class="sd">            lookup = TemplateLookup(directories=directories,</span>
-<span class="sd">                                    module_directory=module_directory,</span>
-<span class="sd">                                    collection_size=collection_size,</span>
-<span class="sd">                                    )</span>
-<span class="sd">            self.lookups[key] = lookup</span>
-<span class="sd">        cherrypy.request.lookup = lookup</span>
-
-<span class="sd">        # Replace the current handler.</span>
-<span class="sd">        cherrypy.request.template = t = lookup.get_template(filename)</span>
-<span class="sd">        cherrypy.request.handler = MakoHandler(t, cherrypy.request.handler)</span>
-
-<span class="sd">main = MakoLoader()</span>
-<span class="sd">cherrypy.tools.mako = cherrypy.Tool(&#39;on_start_resource&#39;, main)</span>
-<span class="sd">cherrypy.tools.mako.collection_size = 500</span>
-<span class="sd">cherrypy.tools.mako.directories = &#39;html&#39;</span>
-<span class="sd">&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="exit_program"><a class="viewcode-back" href="../../connections.html#connections.local_server.exit_program">[docs]</a><span class="k">def</span> <span class="nf">exit_program</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An alias for exit system call. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Path"><a class="viewcode-back" href="../../connections.html#connections.local_server.Path">[docs]</a><span class="k">class</span> <span class="nc">Path</span><span class="p">:</span>
@@ -159,6 +114,10 @@
 </div>
     <span class="nd">@cherrypy.expose</span>
 <div class="viewcode-block" id="Path.dropbox_callback"><a class="viewcode-back" href="../../connections.html#connections.local_server.Path.dropbox_callback">[docs]</a>    <span class="k">def</span> <span class="nf">dropbox_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A callback handler for Dropbox authentication. It requires a user to be authenticated with A Google account first.The `code` and `state` </span>
+<span class="sd">        parameters in the callback are posted to CloudCV API endpoint. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">state</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;state&#39;</span><span class="p">]</span>
         <span class="n">code</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;code&#39;</span><span class="p">]</span>
 
@@ -189,6 +148,10 @@
 </div>
     <span class="nd">@cherrypy.expose</span>
 <div class="viewcode-block" id="Path.callback"><a class="viewcode-back" href="../../connections.html#connections.local_server.Path.callback">[docs]</a>    <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A callback handler for Google OAuth. It collects the state and code from the callback and posts them to the CloudCV API endpoint for Google callback.</span>
+<span class="sd">        The response is stored in a local config file to avoid Auth process in future.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">state</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;state&#39;</span><span class="p">]</span>
         <span class="n">code</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;code&#39;</span><span class="p">]</span>
 
@@ -213,7 +176,6 @@
 </div>
 <div class="viewcode-block" id="Path.exit"><a class="viewcode-back" href="../../connections.html#connections.local_server.Path.exit">[docs]</a>    <span class="k">def</span> <span class="nf">exit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        /exit</span>
 <span class="sd">        Quits the application</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -221,6 +183,13 @@
         <span class="k">return</span> <span class="s">&quot;Local Server Stopped&quot;</span>
 </div></div>
 <div class="viewcode-block" id="GET"><a class="viewcode-back" href="../../connections.html#connections.local_server.GET">[docs]</a><span class="k">def</span> <span class="nf">GET</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sends a GET request to the Google callback endpoint of CloudCV API&#39;s.</span>
+<span class="sd">    </span>
+<span class="sd">    :param name: Specifies a flag for sending a request to Google callback endpoint. </span>
+<span class="sd">    :type name: str</span>
+<span class="sd">    :return: The response of the GET request if name is &#39;google&#39;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">print</span> <span class="nb">str</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="s">&#39;google&#39;</span><span class="p">:</span>
@@ -240,11 +209,18 @@
 
 </div>
 <div class="viewcode-block" id="HTTPServer"><a class="viewcode-back" href="../../connections.html#connections.local_server.HTTPServer">[docs]</a><span class="k">class</span> <span class="nc">HTTPServer</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Instantiates a HTTPserver object with condition variable `sync` that provides synchronization mechanism for multithreading.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sync</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Condition</span><span class="p">()</span>
 
 <div class="viewcode-block" id="HTTPServer.run"><a class="viewcode-back" href="../../connections.html#connections.local_server.HTTPServer.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if port 8000 is free and starts running CherryPy server on the port.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">sync</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">cherrypy</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">check_port</span><span class="p">(</span><span class="s">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">8000</span><span class="p">)</span>
@@ -261,6 +237,9 @@
         <span class="n">cherrypy</span><span class="o">.</span><span class="n">quickstart</span><span class="p">(</span><span class="n">Path</span><span class="p">())</span>
 </div>
 <div class="viewcode-block" id="HTTPServer.stop"><a class="viewcode-back" href="../../connections.html#connections.local_server.HTTPServer.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stops CherryPy server. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cherrypy</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
         <span class="c">#cherrypy.server.stop()</span>
         <span class="c">#cherrypy.process.bus.exit()</span>

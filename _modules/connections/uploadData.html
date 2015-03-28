@@ -87,6 +87,13 @@
 
 
 <div class="viewcode-block" id="UploadData"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData">[docs]</a><span class="k">class</span> <span class="nc">UploadData</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Starts a data uploading instance in a new thread.</span>
+
+<span class="sd">    :param config_parser: An instance of :class:`utility.parseArguments.ConfigParser`</span>
+<span class="sd">    :type config_parser: :class:`utility.parseArguments.ConfigParser`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">socketid</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_parser</span><span class="p">):</span>
         <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -106,23 +113,43 @@
         <span class="n">redisThread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
 <div class="viewcode-block" id="UploadData.run"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Entry point for upload data thread. see :func:`connections.uploadData.UploadData.sendPostRequest`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">,</span> <span class="s">&#39;Starting Post Request&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sendPostRequest</span><span class="p">()</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">,</span> <span class="s">&#39;Exiting From the Post Request Thread&#39;</span><span class="p">)</span>
 
     <span class="c">#get all files in the directory and create a params dictionary.</span></div>
 <div class="viewcode-block" id="UploadData.filesInDirectory"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData.filesInDirectory">[docs]</a>    <span class="k">def</span> <span class="nf">filesInDirectory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">dir</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A regex filter for images in the input directory.</span>
+
+<span class="sd">        :param dir: An input directory. </span>
+<span class="sd">        :type dir: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">onlyfiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">listdir</span><span class="p">(</span><span class="nb">dir</span><span class="p">)</span> <span class="k">if</span> <span class="n">isfile</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="nb">dir</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">]</span>
         <span class="n">onlyfiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">onlyfiles</span> <span class="k">if</span> <span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">&#39;([^\s]+(\.(jpg|png|gif|bmp|jpeg|JPG|PNG|GIF|BMP|JPEG))$)&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">)]</span>
         <span class="k">return</span> <span class="n">onlyfiles</span>
 </div>
 <div class="viewcode-block" id="UploadData.identifySourcePath"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData.identifySourcePath">[docs]</a>    <span class="k">def</span> <span class="nf">identifySourcePath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Identifies whether the input path is a local directory or a Dropbox folder. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Image Input Path not in proper format. &#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="nb">list</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="UploadData.addAccountParameters"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData.addAccountParameters">[docs]</a>    <span class="k">def</span> <span class="nf">addAccountParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params_data</span><span class="p">,</span> <span class="n">source</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read the config.cfg file and adds required Google/Dropbox account parameters.</span>
+
+<span class="sd">        :param params_data: Contains userID and/or Dropbox token.</span>
+<span class="sd">        :type params_data: dict</span>
+<span class="sd">        :param source: Specifies whether to upload the images from Dropox or a local directory.</span>
+<span class="sd">        :type source: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">accounts</span><span class="o">.</span><span class="n">login_required</span><span class="p">:</span>
             <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;userid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">accounts</span><span class="o">.</span><span class="n">account_obj</span><span class="o">.</span><span class="n">getGoogleUserID</span><span class="p">()</span>
             <span class="c">#print &#39;UserId: &#39;+ params_data[&#39;userid&#39;]</span>
@@ -139,6 +166,9 @@
             <span class="k">print</span> <span class="s">&#39;Dropbox Token: &#39;</span><span class="p">,</span> <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;dropbox_token&#39;</span><span class="p">]</span>
 </div>
 <div class="viewcode-block" id="UploadData.resize"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData.resize">[docs]</a>    <span class="k">def</span> <span class="nf">resize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">resized_path</span><span class="p">,</span> <span class="n">source_path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">resized_path</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;/&#39;</span> <span class="o">+</span> <span class="n">f</span><span class="p">):</span>
                 <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">source_path</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">),</span><span class="n">f</span><span class="p">))</span>
@@ -153,6 +183,9 @@
         <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="UploadData.addFileParameters"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData.addFileParameters">[docs]</a>    <span class="k">def</span> <span class="nf">addFileParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">source_path</span><span class="p">,</span> <span class="n">params_data</span><span class="p">,</span> <span class="n">params_for_request</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets </span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">source</span> <span class="o">==</span> <span class="s">&#39;dropbox&#39;</span><span class="p">:</span>
             <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;dropbox_path&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">source_path</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c"># path given by user is on local system</span>
@@ -181,8 +214,11 @@
             <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">))</span>
 
 
-    <span class="c">#send post requests containing images to the server    </span></div>
+    </div>
 <div class="viewcode-block" id="UploadData.sendPostRequest"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData.sendPostRequest">[docs]</a>    <span class="k">def</span> <span class="nf">sendPostRequest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sends POST request containing the images to the server. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">params_for_request</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">params_data</span> <span class="o">=</span> <span class="p">{}</span>
@@ -241,14 +277,26 @@
 
     <span class="c">#get request to obtain csrf token</span></div>
 <div class="viewcode-block" id="UploadData.getRequest"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData.getRequest">[docs]</a>    <span class="k">def</span> <span class="nf">getRequest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets a CSRF token as a session cookie. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">client</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">session</span><span class="p">()</span>
         <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;http://cloudcv.org/classify&#39;</span><span class="p">)</span>
         <span class="n">token</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">cookies</span><span class="p">[</span><span class="s">&#39;csrftoken&#39;</span><span class="p">]</span>
         <span class="k">print</span> <span class="n">token</span>
         <span class="k">return</span> <span class="n">token</span>
+
 </div></div>
-<span class="sd">&quot;&quot;&quot;Redis Connection for Inter Thread Communication&quot;&quot;&quot;</span>
 <div class="viewcode-block" id="RedisListenForPostThread"><a class="viewcode-back" href="../../connections.html#connections.uploadData.RedisListenForPostThread">[docs]</a><span class="k">class</span> <span class="nc">RedisListenForPostThread</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Redis Connection for Inter Thread Communication.</span>
+
+<span class="sd">    :param ps: Publisher/Subscriber features to communicate in real-time.</span>
+<span class="sd">    :param r: An instance of </span>
+<span class="sd">    :type udobj: :class:`connections.uploadData.UploadData`</span>
+
+<span class="sd"> </span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">udobj</span><span class="p">):</span>
         <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">r</span>
@@ -256,6 +304,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">udobj</span> <span class="o">=</span> <span class="n">udobj</span>
 
 <div class="viewcode-block" id="RedisListenForPostThread.run"><a class="viewcode-back" href="../../connections.html#connections.uploadData.RedisListenForPostThread.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Entry point for redis connection </span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">,</span> <span class="s">&#39;Starting Listening to Redis Channel for HTTP Post Requests&#39;</span><span class="p">)</span>
         <span class="k">while</span> <span class="p">(</span><span class="bp">True</span><span class="p">):</span>
             <span class="n">shouldEnd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">listenToChannel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">)</span>

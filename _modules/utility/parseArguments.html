@@ -70,21 +70,47 @@
 
 <div class="viewcode-block" id="ConfigParser"><a class="viewcode-back" href="../../utility.html#utility.parseArguments.ConfigParser">[docs]</a><span class="k">class</span> <span class="nc">ConfigParser</span><span class="p">:</span>
     <span class="n">data</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Contains info from the ``config`` attribute of the :doc:`config file &lt;configfile&gt;`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">exec_name</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Name of the executable. See :ref:`this &lt;functionalities&gt;` for available executables.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">source_path</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Path of the input directory.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">output_path</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Path where output will be stored.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">params</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set of config file attributes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">maxim</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
 
 <div class="viewcode-block" id="ConfigParser.changePath"><a class="viewcode-back" href="../../utility.html#utility.parseArguments.ConfigParser.changePath">[docs]</a>    <span class="k">def</span> <span class="nf">changePath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If a user provides different input/output paths and doesn&#39;t want to use the ones mentioned in the config.json, then the default paths</span>
+<span class="sd">        are overriden using this function. Used :func:`here &lt;utility.parseArguments.ConfigParser.parseArguments&gt;`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_name</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">source_path</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s">&#39;path&#39;</span><span class="p">]</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s">&#39;output&#39;</span><span class="p">]</span>
 </div>
 <div class="viewcode-block" id="ConfigParser.setParams"><a class="viewcode-back" href="../../utility.html#utility.parseArguments.ConfigParser.setParams">[docs]</a>    <span class="k">def</span> <span class="nf">setParams</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the config parameters for a job.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_name</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s">&#39;params&#39;</span><span class="p">]</span>
@@ -95,6 +121,12 @@
         <span class="k">pass</span>
 </div>
 <div class="viewcode-block" id="ConfigParser.readConfigFile"><a class="viewcode-back" href="../../utility.html#utility.parseArguments.ConfigParser.readConfigFile">[docs]</a>    <span class="k">def</span> <span class="nf">readConfigFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to read the config.json file and obtain the required config attributes.</span>
+
+<span class="sd">        :param file: Path to the `config.json` file.</span>
+<span class="sd">        :type file: str </span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
         <span class="n">complete_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data_file</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">complete_data</span><span class="p">[</span><span class="s">&#39;config&#39;</span><span class="p">]</span>
@@ -102,10 +134,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">maxim</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">complete_data</span><span class="p">[</span><span class="s">&#39;maxim&#39;</span><span class="p">])</span>
 </div>
 <div class="viewcode-block" id="ConfigParser.writeToConfigFile"><a class="viewcode-back" href="../../utility.html#utility.parseArguments.ConfigParser.writeToConfigFile">[docs]</a>    <span class="k">def</span> <span class="nf">writeToConfigFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to write to the :doc:`config.json &lt;configfile&gt;` file. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
         <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">complete_data</span><span class="p">,</span> <span class="n">data_file</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="ConfigParser.parseArguments"><a class="viewcode-back" href="../../utility.html#utility.parseArguments.ConfigParser.parseArguments">[docs]</a>    <span class="k">def</span> <span class="nf">parseArguments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parses the command line args, if any. If a required config attribute is not provided explicitly then </span>
+<span class="sd">        its value in config.json file is used as a default.</span>
+
+<span class="sd">        :param args: Contains all the config parameters from user. </span>
+<span class="sd">        :type args: dict</span>
+<span class="sd">        :param file: Path to the config.json file.</span>
+<span class="sd">        :type file: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sourcepath</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="n">resultpath</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="n">name</span> <span class="o">=</span> <span class="bp">None</span>
@@ -146,6 +190,14 @@
             <span class="n">log</span><span class="p">(</span><span class="s">&#39;W&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
 </div>
 <div class="viewcode-block" id="ConfigParser.changeSourcePath"><a class="viewcode-back" href="../../utility.html#utility.parseArguments.ConfigParser.changeSourcePath">[docs]</a>    <span class="k">def</span> <span class="nf">changeSourcePath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">execname</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Changes the config source path to that of provided by the user. </span>
+
+<span class="sd">        :param path: Source path of the images. </span>
+<span class="sd">        :type path: str</span>
+<span class="sd">        :param execname: Name of the :ref:`executable &lt;functionalities&gt;` to be run. </span>
+<span class="sd">        :type execname: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">execname</span><span class="p">:</span>
@@ -159,6 +211,13 @@
             <span class="k">raise</span> <span class="ne">SystemExit</span>
 </div>
 <div class="viewcode-block" id="ConfigParser.changeOutputPath"><a class="viewcode-back" href="../../utility.html#utility.parseArguments.ConfigParser.changeOutputPath">[docs]</a>    <span class="k">def</span> <span class="nf">changeOutputPath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">execname</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Changes the config output path to that of provided by the user.</span>
+
+<span class="sd">        :param path: Path where output will be stored. </span>
+<span class="sd">        :type path: str</span>
+<span class="sd">        :param execname: Name of the :ref:`executable &lt;functionalities&gt;` to be run.</span>
+<span class="sd">        &quot;&quot;&quot;</span> 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">execname</span><span class="p">:</span>
@@ -173,6 +232,9 @@
             <span class="k">raise</span> <span class="ne">SystemExit</span>
 </div>
 <div class="viewcode-block" id="ConfigParser.verify"><a class="viewcode-back" href="../../utility.html#utility.parseArguments.ConfigParser.verify">[docs]</a>    <span class="k">def</span> <span class="nf">verify</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Verifies the config attributes provided by user.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_name</span> <span class="o">==</span> <span class="s">&#39; &#39;</span><span class="p">:</span>
             <span class="n">log</span><span class="p">(</span><span class="s">&#39;W&#39;</span><span class="p">,</span> <span class="s">&#39;Undefined Executable Name. Please try again&#39;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">SystemExit</span>
