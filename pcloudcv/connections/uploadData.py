@@ -21,6 +21,13 @@ init()
 
 
 class UploadData(threading.Thread):
+    """
+    Starts a data uploading instance in a new thread.
+
+    :param config_parser: An instance of :class:`utility.parseArguments.ConfigParser`
+    :type config_parser: :class:`utility.parseArguments.ConfigParser`
+
+    """
     socketid = None
     def __init__(self, config_parser):
         threading.Thread.__init__(self)
@@ -40,23 +47,43 @@ class UploadData(threading.Thread):
         redisThread.start()
 
     def run(self):
+        """
+        Entry point for upload data thread. see :func:`connections.uploadData.UploadData.sendPostRequest`
+        """
         logging.log('I', 'Starting Post Request')
         self.sendPostRequest()
         logging.log('I', 'Exiting From the Post Request Thread')
 
     #get all files in the directory and create a params dictionary.
     def filesInDirectory(self, dir):
+        """
+        A regex filter for images in the input directory.
+
+        :param dir: An input directory. 
+        :type dir: str
+        """
         onlyfiles = [f for f in listdir(dir) if isfile(join(dir, f)) is not None]
         onlyfiles = [f for f in onlyfiles if (re.search('([^\s]+(\.(jpg|png|gif|bmp|jpeg|JPG|PNG|GIF|BMP|JPEG))$)', str(f)) is not None)]
         return onlyfiles
 
     def identifySourcePath(self):
+        """
+        Identifies whether the input path is a local directory or a Dropbox folder. 
+        """
         list = self.source_path.split(':')
         if len(list) < 2:
             raise Exception('Image Input Path not in proper format. ')
         return list[0].lower().strip(), list[1].strip()
 
     def addAccountParameters(self, params_data, source):
+        """
+        Read the config.cfg file and adds required Google/Dropbox account parameters.
+
+        :param params_data: Contains userID and/or Dropbox token.
+        :type params_data: dict
+        :param source: Specifies whether to upload the images from Dropox or a local directory.
+        :type source: str
+        """
         if accounts.login_required:
             params_data['userid'] = accounts.account_obj.getGoogleUserID()
             #print 'UserId: '+ params_data['userid']
@@ -73,6 +100,9 @@ class UploadData(threading.Thread):
             print 'Dropbox Token: ', params_data['dropbox_token']
 
     def resize(self, files, resized_path, source_path):
+        """
+
+        """
         for f in files:
             if not exists(resized_path.rstrip('/') + '/' + f):
                 im = Image.open(join(source_path.rstrip('/'),f))
@@ -87,6 +117,9 @@ class UploadData(threading.Thread):
         return f.read()
 
     def addFileParameters(self, source, source_path, params_data, params_for_request):
+        """
+        Sets 
+        """
         if source == 'dropbox':
             params_data['dropbox_path'] = source_path
         else:  # path given by user is on local system
@@ -115,8 +148,11 @@ class UploadData(threading.Thread):
             params_data['count'] = str(len(files))
 
 
-    #send post requests containing images to the server    
+    
     def sendPostRequest(self):
+        """
+        Sends POST request containing the images to the server. 
+        """
         try:
             params_for_request = {}
             params_data = {}
@@ -175,14 +211,26 @@ class UploadData(threading.Thread):
 
     #get request to obtain csrf token
     def getRequest(self, url):
+        """
+        Sets a CSRF token as a session cookie. 
+        """
         client = requests.session()
         client.get('http://cloudcv.org/classify')
         token = client.cookies['csrftoken']
         print token
         return token
 
-"""Redis Connection for Inter Thread Communication"""
+
 class RedisListenForPostThread(threading.Thread):
+    """
+    Redis Connection for Inter Thread Communication.
+
+    :param ps: Publisher/Subscriber features to communicate in real-time.
+    :param r: An instance of 
+    :type udobj: :class:`connections.uploadData.UploadData`
+
+ 
+    """
     def __init__(self, ps, r, udobj):
         threading.Thread.__init__(self)
         self.r = r
@@ -190,6 +238,9 @@ class RedisListenForPostThread(threading.Thread):
         self.udobj = udobj
 
     def run(self):
+        """
+        Entry point for redis connection 
+        """
         logging.log('I', 'Starting Listening to Redis Channel for HTTP Post Requests')
         while (True):
             shouldEnd = self.listenToChannel(self.ps, self.r)

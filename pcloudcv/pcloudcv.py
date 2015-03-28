@@ -92,6 +92,9 @@ class PCloudCV(threading.Thread):
         local_server.server.stop()
 
     def signal_handler(self, signal, frame):
+        """
+        A call back function for receiving a 'Ctrl+C' KeyboardInterrupt.
+        """
         print '\nYou pressed Ctrl+C! Exiting Now'
         local_server.server.stop()
         local_server.exit_program()
@@ -110,7 +113,7 @@ class PCloudCV(threading.Thread):
 
     def run(self):
         """
-        Entry point for current CloudCV instance. Starts Auth process and starts uploading data in a child thread.
+        Entry point for the thread containing a CloudCV instance. Starts Auth process and uploads the data to the servers in a child thread.
         """
         if self.login_required:
             self.authenticate()

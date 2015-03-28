@@ -11,7 +11,7 @@ Welcome to the pcloudcv wiki.
    Tutorial
 
 
-**Functionalities** :
+.. _functionalities:
 
 Currently the python APIs support
 the following functionalities:

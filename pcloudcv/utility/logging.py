@@ -4,6 +4,9 @@ init()
 
 
 def log(logType, e):
+    """
+    Defines logging tags for debugging.
+    """
     if (logType == 'W'):
         print Fore.RED + str(e)
         print Fore.RESET
@@ -19,6 +22,12 @@ def log(logType, e):
 
 
 class ArgumentError(Exception):
+    """
+    Used for error logging. 
+    
+    :param value: Each value indicates a different possible argument error.
+    :type value: int
+    """
     def __init__(self, value):
         self.value = value
 

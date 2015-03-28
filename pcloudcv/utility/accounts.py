@@ -18,6 +18,9 @@ login_required = True
 
 redis_obj = redis.StrictRedis(host='localhost', port=6379, db=0)
 class GoogleAccounts:
+    """
+    This class type stores the `userid` and `emailid` of a user's Google account.
+    """
     userid = None
     emailid = None
 
@@ -27,6 +30,10 @@ class GoogleAccounts:
 
 
 class DropboxAccounts:
+    """
+    This class type stores the `userid` and `access_token` of a user's Dropbox account. These details are updated when a user authorizes CloudCV to
+    access data from his Dropbox folders.
+    """
     userid = None
     access_token = None
 
@@ -36,6 +43,9 @@ class DropboxAccounts:
 
 
 class Accounts:
+    """
+    This class type stores the information about user's Dropbox and Google accounts.
+    """
     gaccount = GoogleAccounts()
     dbaccount = DropboxAccounts()
 
@@ -43,27 +53,51 @@ class Accounts:
         pass
 
     def getGoogleUserID(self):
+        """
+        Returns Google userId of user.
+
+        :return: Google `userid` of a user.
+        """
         return self.gaccount.userid
 
 PATH_TO_CONFIG_FILE = str(path.dirname(path.dirname(path.realpath(__file__))))+'/config.cfg'
+    
 
 def readAccounts(path=PATH_TO_CONFIG_FILE):
-        print path
-        reader = open(path, 'rb')
-        account = pickle.load(reader)
-        reader.close()
-        return account
+    """
+    Reads the account info from the serialized config file. 
+
+    :param path: Path to the config file. (not to be confused with `config.json`)
+    :type path: str
+    :return: Deserialized account information.  
+    """
+    print path
+    reader = open(path, 'rb')
+    account = pickle.load(reader)
+    reader.close()
+    return account
 
 def writeAccounts(account, path = PATH_TO_CONFIG_FILE):
-        writer = open(path, 'wb')
-        pickle.dump(account, writer)
-        writer.close()
+    """
+    Writes the account info by serializing it to the config file.
+
+    :param account: An instance of :class:`Accounts`.
+    :type account: :class:`Accounts`
+    :param path: Path to the config.cfg file.(Not to be confused with config.json file.)
+    """
+    writer = open(path, 'wb')
+    pickle.dump(account, writer)
+    writer.close()
 
 
 random_key = ''
 
 
 def dropboxAuthenticate():
+    """
+    This prompts a new CloudCV user for permission to access his DropBox account. This requires user to be already 
+    authenticated using Google account.  
+    """
     global random_key, account_obj, googleAuthentication, dropboxAuthentication
 
     if googleAuthentication:
@@ -103,7 +137,9 @@ def dropboxAuthenticate():
 
 
 def authenticate():
-
+    """
+    A new user is authenticated using his Google account. If the user is already authenticated, a Welcom message is displayed in a new browser tab. 
+    """
     global random_key, account_obj, googleAuthentication
     random_key = str(uuid.uuid1())
     for i in range(100):
