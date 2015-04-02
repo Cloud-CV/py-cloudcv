@@ -157,7 +157,7 @@ The response is stored in a local config file to avoid Auth process in future.</
 <dl class="method">
 <dt id="connections.local_server.Path.dropbox_callback">
 <code class="descname">dropbox_callback</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/local_server.html#Path.dropbox_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.local_server.Path.dropbox_callback" title="Permalink to this definition">¶</a></dt>
-<dd><p>A callback handler for Dropbox authentication. It requires a user to be authenticated with A Google account first.The <cite>code</cite> and <cite>state</cite> 
+<dd><p>A callback handler for Dropbox authentication. It requires a user to be authenticated with A Google account first. The <cite>code</cite> and <cite>state</cite> 
 parameters in the callback are posted to CloudCV API endpoint.</p>
 </dd></dl>
 
@@ -187,10 +187,28 @@ parameters in the callback are posted to CloudCV API endpoint.</p>
 <dt id="connections.socketConnection.RedisListen">
 <em class="property">class </em><code class="descclassname">connections.socketConnection.</code><code class="descname">RedisListen</code><span class="sig-paren">(</span><em>ps</em>, <em>r</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/socketConnection.html#RedisListen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.socketConnection.RedisListen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></p>
+<p>Listens to the Redis channel.</p>
 <dl class="method">
 <dt id="connections.socketConnection.RedisListen.listenToChannel">
 <code class="descname">listenToChannel</code><span class="sig-paren">(</span><em>ps</em>, <em>r</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/socketConnection.html#RedisListen.listenToChannel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.socketConnection.RedisListen.listenToChannel" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Listens to the Redis channel <code class="docutils literal"><span class="pre">intercomm2</span></code> for messages. Depending on the message content
+either ends the socket connection to the server or poll the CloudCV server for a socketID.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ps</strong> &#8211; A publisher/subscriber instance.</li>
+<li><strong>r</strong> &#8211; A redis object.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A boolean flag denoting the need to end the socket connection.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="connections.socketConnection.RedisListen.run">
@@ -203,35 +221,64 @@ parameters in the callback are posted to CloudCV API endpoint.</p>
 <dt id="connections.socketConnection.SocketIOConnection">
 <em class="property">class </em><code class="descclassname">connections.socketConnection.</code><code class="descname">SocketIOConnection</code><span class="sig-paren">(</span><em>executable</em>, <em>imagepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/socketConnection.html#SocketIOConnection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.socketConnection.SocketIOConnection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></p>
+<p>Configures a socket client to connect to CloudCV server so data upload can start. Once the data upload is finished client waits for the result.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>executable</strong> (<em>str</em>) &#8211; Name of the executable to be run on CloudCV servers.</li>
+<li><strong>imagepath</strong> (<em>str</em>) &#8211; Path of the input directory.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="connections.socketConnection.SocketIOConnection.connection">
 <code class="descname">connection</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/socketConnection.html#SocketIOConnection.connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.socketConnection.SocketIOConnection.connection" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>A handler method for <code class="docutils literal"><span class="pre">connect</span></code> event of the socket connection.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="connections.socketConnection.SocketIOConnection.on_aaa_response">
 <code class="descname">on_aaa_response</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/socketConnection.html#SocketIOConnection.on_aaa_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.socketConnection.SocketIOConnection.on_aaa_response" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Handler for messages received during the socket connection. Depending on the message received this method
+can assign a <code class="docutils literal"><span class="pre">jobID</span></code>, <code class="docutils literal"><span class="pre">socketID</span></code>, provides job completion acknowledgment, gives output of a job. At the end, the resultant image/text file
+is downloaded from the message received.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="connections.socketConnection.SocketIOConnection.on_error_response">
 <code class="descname">on_error_response</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/socketConnection.html#SocketIOConnection.on_error_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.socketConnection.SocketIOConnection.on_error_response" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Error handler for the socket connection. In case of an error, It publishes an end flag across the channel <code class="docutils literal"><span class="pre">intercomm</span></code>.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="connections.socketConnection.SocketIOConnection.run">
 <code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/socketConnection.html#SocketIOConnection.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.socketConnection.SocketIOConnection.run" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>An entry point for the Socket Connection thread.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="connections.socketConnection.SocketIOConnection.setupRedis">
 <code class="descname">setupRedis</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/socketConnection.html#SocketIOConnection.setupRedis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.socketConnection.SocketIOConnection.setupRedis" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Instantiates a Redis object at specfied port and starts listening to the <code class="docutils literal"><span class="pre">intercomm2</span></code> channel.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A thread containing listner for the Redis channel.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="connections.socketConnection.SocketIOConnection.setupSocketIO">
 <code class="descname">setupSocketIO</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/socketConnection.html#SocketIOConnection.setupSocketIO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.socketConnection.SocketIOConnection.setupSocketIO" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Establishes a socket connection and adds event handlers for <code class="docutils literal"><span class="pre">connet</span></code>, <code class="docutils literal"><span class="pre">message</span></code>, <code class="docutils literal"><span class="pre">error</span></code> events.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -249,7 +296,8 @@ parameters in the callback are posted to CloudCV API endpoint.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>ps</strong> &#8211; Publisher/Subscriber features to communicate in real-time.</li>
-<li><strong>r</strong> &#8211; An instance of</li>
+<li><strong>r</strong> &#8211; An Redis instance.</li>
+<li><strong>udobj</strong> (<a class="reference internal" href="#connections.uploadData.UploadData" title="connections.uploadData.UploadData"><code class="xref py py-class docutils literal"><span class="pre">connections.uploadData.UploadData</span></code></a>) &#8211; An instance of UploadData class.</li>
 </ul>
 </td>
 </tr>
@@ -258,12 +306,29 @@ parameters in the callback are posted to CloudCV API endpoint.</p>
 <dl class="method">
 <dt id="connections.uploadData.RedisListenForPostThread.listenToChannel">
 <code class="descname">listenToChannel</code><span class="sig-paren">(</span><em>ps</em>, <em>r</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#RedisListenForPostThread.listenToChannel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.RedisListenForPostThread.listenToChannel" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Listens to channel <code class="docutils literal"><span class="pre">intercomm</span></code>. If it has an end flag ( <code class="docutils literal"><span class="pre">***end***</span></code>) then a message containing another end flag ( <code class="docutils literal"><span class="pre">***endcomplete***</span></code>) is pushed to the
+channel <code class="docutils literal"><span class="pre">intercomm2</span></code> else a <code class="docutils literal"><span class="pre">SocketID</span></code> is assigned to the data uploading instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ps</strong> &#8211; A publisher/subscriber object.</li>
+<li><strong>r</strong> &#8211; A Redis instance.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A boolean flag denoting the need to end the thread for HTTP POST requests.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="connections.uploadData.RedisListenForPostThread.run">
 <code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#RedisListenForPostThread.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.RedisListenForPostThread.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Entry point for redis connection</p>
+<dd><p>Entry point for Redis channel listening thread. Thread is ended depending on the current message across the channel.</p>
 </dd></dl>
 
 </dd></dl>
@@ -272,12 +337,13 @@ parameters in the callback are posted to CloudCV API endpoint.</p>
 <dt id="connections.uploadData.UploadData">
 <em class="property">class </em><code class="descclassname">connections.uploadData.</code><code class="descname">UploadData</code><span class="sig-paren">(</span><em>config_parser</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#UploadData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.UploadData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></p>
-<p>Starts a data uploading instance in a new thread.</p>
+<p>Starts a data uploading instance in a new thread. This instance subscribs to a Redis Channel <code class="docutils literal"><span class="pre">intercomm</span></code> and starts 
+listening to it in a new thread.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>config_parser</strong> (<a class="reference internal" href="utility.html#utility.parseArguments.ConfigParser" title="utility.parseArguments.ConfigParser"><code class="xref py py-class docutils literal"><span class="pre">utility.parseArguments.ConfigParser</span></code></a>) &#8211; An instance of <a class="reference internal" href="utility.html#utility.parseArguments.ConfigParser" title="utility.parseArguments.ConfigParser"><code class="xref py py-class docutils literal"><span class="pre">utility.parseArguments.ConfigParser</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>config_parser</strong> (<a class="reference internal" href="utility.html#utility.parseArguments.ConfigParser" title="utility.parseArguments.ConfigParser"><code class="xref py py-class docutils literal"><span class="pre">type</span></code></a>) &#8211; An instance of <a class="reference internal" href="utility.html#utility.parseArguments.ConfigParser" title="utility.parseArguments.ConfigParser"><code class="xref py py-class docutils literal"><span class="pre">ConfigParser</span></code></a> class.</td>
 </tr>
 </tbody>
 </table>
@@ -302,7 +368,21 @@ parameters in the callback are posted to CloudCV API endpoint.</p>
 <dl class="method">
 <dt id="connections.uploadData.UploadData.addFileParameters">
 <code class="descname">addFileParameters</code><span class="sig-paren">(</span><em>source</em>, <em>source_path</em>, <em>params_data</em>, <em>params_for_request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#UploadData.addFileParameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.UploadData.addFileParameters" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets</p>
+<dd><p>Checks input directory against corner cases such as empty directory, upload limit. The <cite>dict</cite> to be uploaded
+is updated with the binary data of the image files.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>source</strong> (<em>str</em>) &#8211; Source of the input images. (dropbox/local)</li>
+<li><strong>source_path</strong> (<em>str</em>) &#8211; In case of local directory, this contains the absolute path of input folder. In case of input from Dropbox, the path is relative to <code class="docutils literal"><span class="pre">/Apps/CloudCV</span></code>.</li>
+<li><strong>params_data</strong> (<em>dict</em>) &#8211; Contains payload for the POST request. Contains <code class="docutils literal"><span class="pre">csrf</span> <span class="pre">token</span></code>, <code class="docutils literal"><span class="pre">Dropbox</span> <span class="pre">path</span></code>, <code class="docutils literal"><span class="pre">Dropbox</span> <span class="pre">token</span></code>, <code class="docutils literal"><span class="pre">Google</span> <span class="pre">UserID</span></code>, <code class="docutils literal"><span class="pre">SOcketID</span></code>, and <code class="docutils literal"><span class="pre">Executable</span> <span class="pre">parameters</span></code>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -314,6 +394,8 @@ parameters in the callback are posted to CloudCV API endpoint.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dir</strong> (<em>str</em>) &#8211; An input directory.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A list of all the image files that match the regex for image formats.</td>
 </tr>
 </tbody>
 </table>
@@ -329,28 +411,61 @@ parameters in the callback are posted to CloudCV API endpoint.</p>
 <dt id="connections.uploadData.UploadData.identifySourcePath">
 <code class="descname">identifySourcePath</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#UploadData.identifySourcePath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.UploadData.identifySourcePath" title="Permalink to this definition">¶</a></dt>
 <dd><p>Identifies whether the input path is a local directory or a Dropbox folder.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A tuple containing the <code class="docutils literal"><span class="pre">source</span></code> (dropbox/local) and the source path.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="connections.uploadData.UploadData.openFile">
 <code class="descname">openFile</code><span class="sig-paren">(</span><em>path_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#UploadData.openFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.UploadData.openFile" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Opens an image in binary read mode.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path_name</strong> &#8211; Path to an image.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Binary content of an image.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="connections.uploadData.UploadData.resize">
 <code class="descname">resize</code><span class="sig-paren">(</span><em>files</em>, <em>resized_path</em>, <em>source_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#UploadData.resize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.UploadData.resize" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Resizes the images depending on the <code class="docutils literal"><span class="pre">maxim</span></code> attribute of the <a class="reference internal" href="configfile.html"><em>config file</em></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>files</strong> (<em>list</em>) &#8211; A list of image files.</li>
+<li><strong>resized_path</strong> (<em>str</em>) &#8211; Path of the new directory contaning resized images.</li>
+<li><strong>source_path</strong> &#8211; Path of the input directory.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="connections.uploadData.UploadData.run">
 <code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#UploadData.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.UploadData.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Entry point for upload data thread. see <a class="reference internal" href="#connections.uploadData.UploadData.sendPostRequest" title="connections.uploadData.UploadData.sendPostRequest"><code class="xref py py-func docutils literal"><span class="pre">connections.uploadData.UploadData.sendPostRequest()</span></code></a></p>
+<dd><p>Entry point for UploadData thread. Details about the uploading method <a class="reference internal" href="#connections.uploadData.UploadData.sendPostRequest" title="connections.uploadData.UploadData.sendPostRequest"><code class="xref py py-func docutils literal"><span class="pre">here</span></code></a>.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="connections.uploadData.UploadData.sendPostRequest">
 <code class="descname">sendPostRequest</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#UploadData.sendPostRequest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.UploadData.sendPostRequest" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sends POST request containing the images to the server.</p>
+<dd><p>Sends POST request containing the images to the server. For the payload data refer <code class="docutils literal"><span class="pre">params_data</span></code> parameter of <a class="reference internal" href="#connections.uploadData.UploadData.addFileParameters" title="connections.uploadData.UploadData.addFileParameters"><code class="xref py py-func docutils literal"><span class="pre">this</span></code></a> function.</p>
 </dd></dl>
 
 <dl class="attribute">

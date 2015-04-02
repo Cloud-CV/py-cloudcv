@@ -1,9 +1,6 @@
 demo package
 ============
 
-Submodules
-----------
-
 demo.demo_visualize module
 --------------------------
 
@@ -13,10 +10,3 @@ demo.demo_visualize module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: demo
-    :members:
-    :undoc-members:
-    :show-inheritance:

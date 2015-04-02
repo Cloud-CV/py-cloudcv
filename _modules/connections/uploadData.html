@@ -88,10 +88,11 @@
 
 <div class="viewcode-block" id="UploadData"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData">[docs]</a><span class="k">class</span> <span class="nc">UploadData</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Starts a data uploading instance in a new thread.</span>
+<span class="sd">    Starts a data uploading instance in a new thread. This instance subscribs to a Redis Channel ``intercomm`` and starts </span>
+<span class="sd">    listening to it in a new thread.  </span>
 
-<span class="sd">    :param config_parser: An instance of :class:`utility.parseArguments.ConfigParser`</span>
-<span class="sd">    :type config_parser: :class:`utility.parseArguments.ConfigParser`</span>
+<span class="sd">    :param config_parser: An instance of :class:`ConfigParser &lt;utility.parseArguments.ConfigParser&gt;` class.</span>
+<span class="sd">    :type config_parser: :class:`type &lt;utility.parseArguments.ConfigParser&gt;`</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">socketid</span> <span class="o">=</span> <span class="bp">None</span>
@@ -114,7 +115,7 @@
 
 <div class="viewcode-block" id="UploadData.run"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Entry point for upload data thread. see :func:`connections.uploadData.UploadData.sendPostRequest`</span>
+<span class="sd">        Entry point for UploadData thread. Details about the uploading method :func:`here &lt;connections.uploadData.UploadData.sendPostRequest&gt;`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">,</span> <span class="s">&#39;Starting Post Request&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sendPostRequest</span><span class="p">()</span>
@@ -127,7 +128,8 @@
 
 <span class="sd">        :param dir: An input directory. </span>
 <span class="sd">        :type dir: str</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        :return: A list of all the image files that match the regex for image formats. </span>
+<span class="sd">        &quot;&quot;&quot;</span> 
         <span class="n">onlyfiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">listdir</span><span class="p">(</span><span class="nb">dir</span><span class="p">)</span> <span class="k">if</span> <span class="n">isfile</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="nb">dir</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">]</span>
         <span class="n">onlyfiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">onlyfiles</span> <span class="k">if</span> <span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">&#39;([^\s]+(\.(jpg|png|gif|bmp|jpeg|JPG|PNG|GIF|BMP|JPEG))$)&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">)]</span>
         <span class="k">return</span> <span class="n">onlyfiles</span>
@@ -135,6 +137,8 @@
 <div class="viewcode-block" id="UploadData.identifySourcePath"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData.identifySourcePath">[docs]</a>    <span class="k">def</span> <span class="nf">identifySourcePath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Identifies whether the input path is a local directory or a Dropbox folder. </span>
+
+<span class="sd">        :return: A tuple containing the ``source`` (dropbox/local) and the source path. </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
@@ -167,7 +171,13 @@
 </div>
 <div class="viewcode-block" id="UploadData.resize"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData.resize">[docs]</a>    <span class="k">def</span> <span class="nf">resize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">resized_path</span><span class="p">,</span> <span class="n">source_path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-
+<span class="sd">        Resizes the images depending on the ``maxim`` attribute of the :doc:`config file &lt;configfile&gt;`</span>
+<span class="sd">        </span>
+<span class="sd">        :param files: A list of image files.</span>
+<span class="sd">        :type files: list</span>
+<span class="sd">        :param resized_path: Path of the new directory contaning resized images.</span>
+<span class="sd">        :type resized_path: str</span>
+<span class="sd">        :param source_path: Path of the input directory.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">resized_path</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;/&#39;</span> <span class="o">+</span> <span class="n">f</span><span class="p">):</span>
@@ -179,12 +189,27 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">print</span> <span class="s">&quot;Resized image already present in the directory&quot;</span></div>
 <div class="viewcode-block" id="UploadData.openFile"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData.openFile">[docs]</a>    <span class="k">def</span> <span class="nf">openFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Opens an image in binary read mode. </span>
+<span class="sd">        </span>
+<span class="sd">        :param path_name: Path to an image.</span>
+<span class="sd">        :type path: str</span>
+<span class="sd">        :return: Binary content of an image. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path_name</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="UploadData.addFileParameters"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData.addFileParameters">[docs]</a>    <span class="k">def</span> <span class="nf">addFileParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">source_path</span><span class="p">,</span> <span class="n">params_data</span><span class="p">,</span> <span class="n">params_for_request</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Sets </span>
+<span class="sd">        Checks input directory against corner cases such as empty directory, upload limit. The `dict` to be uploaded</span>
+<span class="sd">        is updated with the binary data of the image files.</span>
+
+<span class="sd">        :param source: Source of the input images. (dropbox/local)</span>
+<span class="sd">        :type source: str</span>
+<span class="sd">        :param source_path: In case of local directory, this contains the absolute path of input folder. In case of input from Dropbox, the path is relative to ``/Apps/CloudCV``.</span>
+<span class="sd">        :type source_path: str </span>
+<span class="sd">        :param params_data: Contains payload for the POST request. Contains ``csrf token``, ``Dropbox path``, ``Dropbox token``, ``Google UserID``, ``SOcketID``, and ``Executable parameters``. </span>
+<span class="sd">        :type params_data: dict</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">source</span> <span class="o">==</span> <span class="s">&#39;dropbox&#39;</span><span class="p">:</span>
             <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;dropbox_path&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">source_path</span>
@@ -217,7 +242,7 @@
     </div>
 <div class="viewcode-block" id="UploadData.sendPostRequest"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData.sendPostRequest">[docs]</a>    <span class="k">def</span> <span class="nf">sendPostRequest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Sends POST request containing the images to the server. </span>
+<span class="sd">        Sends POST request containing the images to the server. For the payload data refer ``params_data`` parameter of :func:`this &lt;connections.uploadData.UploadData.addFileParameters&gt;` function.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">params_for_request</span> <span class="o">=</span> <span class="p">{}</span>
@@ -292,7 +317,8 @@
 <span class="sd">    Redis Connection for Inter Thread Communication.</span>
 
 <span class="sd">    :param ps: Publisher/Subscriber features to communicate in real-time.</span>
-<span class="sd">    :param r: An instance of </span>
+<span class="sd">    :param r: An Redis instance.</span>
+<span class="sd">    :param udobj: An instance of UploadData class. </span>
 <span class="sd">    :type udobj: :class:`connections.uploadData.UploadData`</span>
 
 <span class="sd"> </span>
@@ -305,7 +331,7 @@
 
 <div class="viewcode-block" id="RedisListenForPostThread.run"><a class="viewcode-back" href="../../connections.html#connections.uploadData.RedisListenForPostThread.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Entry point for redis connection </span>
+<span class="sd">        Entry point for Redis channel listening thread. Thread is ended depending on the current message across the channel. </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">,</span> <span class="s">&#39;Starting Listening to Redis Channel for HTTP Post Requests&#39;</span><span class="p">)</span>
         <span class="k">while</span> <span class="p">(</span><span class="bp">True</span><span class="p">):</span>
@@ -316,6 +342,14 @@
 
 </div>
 <div class="viewcode-block" id="RedisListenForPostThread.listenToChannel"><a class="viewcode-back" href="../../connections.html#connections.uploadData.RedisListenForPostThread.listenToChannel">[docs]</a>    <span class="k">def</span> <span class="nf">listenToChannel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Listens to channel ``intercomm``. If it has an end flag ( ``***end***``) then a message containing another end flag ( ``***endcomplete***``) is pushed to the</span>
+<span class="sd">        channel ``intercomm2`` else a ``SocketID`` is assigned to the data uploading instance.</span>
+<span class="sd">       </span>
+<span class="sd">        :param ps: A publisher/subscriber object. </span>
+<span class="sd">        :param r: A Redis instance.</span>
+<span class="sd">        :return: A boolean flag denoting the need to end the thread for HTTP POST requests. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">ps</span><span class="o">.</span><span class="n">listen</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;message&#39;</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s">&#39;channel&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;intercomm&#39;</span><span class="p">:</span>

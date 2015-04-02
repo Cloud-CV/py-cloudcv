@@ -87,9 +87,8 @@
 
 <span class="n">init</span><span class="p">()</span>
 
-<div class="viewcode-block" id="getfullpath"><a class="viewcode-back" href="../pcloudcv.html#pcloudcv.getfullpath">[docs]</a><span class="k">def</span> <span class="nf">getfullpath</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">s</span><span class="p">)</span>
-</div>
+
+
 <div class="viewcode-block" id="PCloudCV"><a class="viewcode-back" href="../pcloudcv.html#pcloudcv.PCloudCV">[docs]</a><span class="k">class</span> <span class="nc">PCloudCV</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Creates a PCloudCV instance in a new thread.</span>
 
@@ -99,7 +98,6 @@
 <span class="sd">    :type list: dict</span>
 <span class="sd">    :param login_required: Specifies if a user wants to use a service that requires authentication. Default value is True.</span>
 <span class="sd">    :type login_required: bool</span>
-<span class="sd">    .. todo:: Update services that require login.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">config_obj</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -153,7 +151,7 @@
 </div>
 <div class="viewcode-block" id="PCloudCV.stop_local_server"><a class="viewcode-back" href="../pcloudcv.html#pcloudcv.PCloudCV.stop_local_server">[docs]</a>    <span class="k">def</span> <span class="nf">stop_local_server</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        An Alias for :func:`connections.local_server.server.stop`</span>
+<span class="sd">        An Alias for :func:`connections.local_server.server.stop`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">local_server</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 </div>
@@ -167,13 +165,13 @@
 </div>
 <div class="viewcode-block" id="PCloudCV.dropbox_authenticate"><a class="viewcode-back" href="../pcloudcv.html#pcloudcv.PCloudCV.dropbox_authenticate">[docs]</a>    <span class="k">def</span> <span class="nf">dropbox_authenticate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        An Alias for :func:`utility.accounts.dropboxAuthenticate`</span>
+<span class="sd">        An Alias for :func:`utility.accounts.dropboxAuthenticate`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">accounts</span><span class="o">.</span><span class="n">dropboxAuthenticate</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="PCloudCV.authenticate"><a class="viewcode-back" href="../pcloudcv.html#pcloudcv.PCloudCV.authenticate">[docs]</a>    <span class="k">def</span> <span class="nf">authenticate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        An Alias for :func:`utility.accounts.authenticate`</span>
+<span class="sd">        An Alias for :func:`utility.accounts.authenticate`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">accounts</span><span class="o">.</span><span class="n">authenticate</span><span class="p">()</span>
 </div>

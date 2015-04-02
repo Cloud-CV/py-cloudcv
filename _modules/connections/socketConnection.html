@@ -87,10 +87,24 @@
 <span class="c">#logging.log.basicConfig(level=logging.log.DEBUG)</span>
 
 <div class="viewcode-block" id="SocketIOConnection"><a class="viewcode-back" href="../../connections.html#connections.socketConnection.SocketIOConnection">[docs]</a><span class="k">class</span> <span class="nc">SocketIOConnection</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Configures a socket client to connect to CloudCV server so data upload can start. Once the data upload is finished client waits for the result. </span>
+
+<span class="sd">    :param executable: Name of the executable to be run on CloudCV servers.</span>
+<span class="sd">    :type executable: str</span>
+<span class="sd">    :param imagepath: Path of the input directory.</span>
+<span class="sd">    :type imagepath: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_executable</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
     <span class="n">_imagepath</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
     <span class="n">_redis_obj</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An instance of Redis class.    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_pubsub_obj</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A publisher/subscriber object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable</span><span class="p">,</span> <span class="n">imagepath</span><span class="p">):</span>
         <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -103,6 +117,11 @@
         <span class="n">redis_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
 <div class="viewcode-block" id="SocketIOConnection.setupRedis"><a class="viewcode-back" href="../../connections.html#connections.socketConnection.SocketIOConnection.setupRedis">[docs]</a>    <span class="k">def</span> <span class="nf">setupRedis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Instantiates a Redis object at specfied port and starts listening to the ``intercomm2`` channel. </span>
+
+<span class="sd">        :return: A thread containing listner for the Redis channel.  </span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_redis_obj</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">StrictRedis</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">6379</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pubsub_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redis_obj</span><span class="o">.</span><span class="n">pubsub</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pubsub_obj</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="s">&#39;intercomm2&#39;</span><span class="p">)</span>
@@ -111,6 +130,9 @@
         <span class="k">return</span> <span class="n">redis_thread</span>
 </div>
 <div class="viewcode-block" id="SocketIOConnection.run"><a class="viewcode-back" href="../../connections.html#connections.socketConnection.SocketIOConnection.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        An entry point for the Socket Connection thread.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">,</span> <span class="s">&#39;Starting Socket Connection Thread&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">setupSocketIO</span><span class="p">()</span>
@@ -119,9 +141,15 @@
 
 </div>
 <div class="viewcode-block" id="SocketIOConnection.connection"><a class="viewcode-back" href="../../connections.html#connections.socketConnection.SocketIOConnection.connection">[docs]</a>    <span class="k">def</span> <span class="nf">connection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A handler method for ``connect`` event of the socket connection. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">print</span> <span class="s">&#39;Connected using websockets&#39;</span>
 </div>
 <div class="viewcode-block" id="SocketIOConnection.on_error_response"><a class="viewcode-back" href="../../connections.html#connections.socketConnection.SocketIOConnection.on_error_response">[docs]</a>    <span class="k">def</span> <span class="nf">on_error_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Error handler for the socket connection. In case of an error, It publishes an end flag across the channel ``intercomm``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">error_message</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="k">if</span><span class="p">(</span><span class="s">&#39;error&#39;</span> <span class="ow">in</span> <span class="n">error_message</span><span class="p">):</span>
@@ -130,6 +158,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_redis_obj</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="s">&#39;intercomm&#39;</span><span class="p">,</span> <span class="s">&#39;***end***&#39;</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="SocketIOConnection.on_aaa_response"><a class="viewcode-back" href="../../connections.html#connections.socketConnection.SocketIOConnection.on_aaa_response">[docs]</a>    <span class="k">def</span> <span class="nf">on_aaa_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handler for messages received during the socket connection. Depending on the message received this method</span>
+<span class="sd">        can assign a ``jobID``, ``socketID``, provides job completion acknowledgment, gives output of a job. At the end, the resultant image/text file</span>
+<span class="sd">        is downloaded from the message received. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">message</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="p">(</span><span class="s">&#39;socketid&#39;</span> <span class="ow">in</span> <span class="n">message</span><span class="p">):</span>
@@ -219,6 +252,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_redis_obj</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="s">&#39;intercomm&#39;</span><span class="p">,</span> <span class="s">&#39;***end***&#39;</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="SocketIOConnection.setupSocketIO"><a class="viewcode-back" href="../../connections.html#connections.socketConnection.SocketIOConnection.setupSocketIO">[docs]</a>    <span class="k">def</span> <span class="nf">setupSocketIO</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Establishes a socket connection and adds event handlers for ``connet``, ``message``, ``error`` events.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">global</span> <span class="n">socketio</span>
 
         <span class="k">try</span><span class="p">:</span>
@@ -236,6 +272,9 @@
 
 </div></div>
 <div class="viewcode-block" id="RedisListen"><a class="viewcode-back" href="../../connections.html#connections.socketConnection.RedisListen">[docs]</a><span class="k">class</span> <span class="nc">RedisListen</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Listens to the Redis channel.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
         <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_redis_obj</span> <span class="o">=</span> <span class="n">r</span>
@@ -247,9 +286,16 @@
             <span class="n">shouldEnd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">listenToChannel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pubsub_obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redis_obj</span><span class="p">)</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">shouldEnd</span><span class="p">):</span>
                 <span class="k">break</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">,</span> <span class="s">&#39;Ending Listing to Redis Channel&#39;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">,</span> <span class="s">&#39;Ending Listening to Redis Channel&#39;</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="RedisListen.listenToChannel"><a class="viewcode-back" href="../../connections.html#connections.socketConnection.RedisListen.listenToChannel">[docs]</a>    <span class="k">def</span> <span class="nf">listenToChannel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Listens to the Redis channel ``intercomm2`` for messages. Depending on the message content</span>
+<span class="sd">        either ends the socket connection to the server or poll the CloudCV server for a socketID. </span>
+
+<span class="sd">        :param ps: A publisher/subscriber instance. </span>
+<span class="sd">        :param r: A redis object. </span>
+<span class="sd">        :return: A boolean flag denoting the need to end the socket connection.   </span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">global</span> <span class="n">socketio</span>
 
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">ps</span><span class="o">.</span><span class="n">listen</span><span class="p">():</span>
