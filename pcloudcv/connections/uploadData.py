@@ -22,10 +22,11 @@ init()
 
 class UploadData(threading.Thread):
     """
-    Starts a data uploading instance in a new thread.
+    Starts a data uploading instance in a new thread. This instance subscribs to a Redis Channel ``intercomm`` and starts 
+    listening to it in a new thread.  
 
-    :param config_parser: An instance of :class:`utility.parseArguments.ConfigParser`
-    :type config_parser: :class:`utility.parseArguments.ConfigParser`
+    :param config_parser: An instance of :class:`ConfigParser <utility.parseArguments.ConfigParser>` class.
+    :type config_parser: :class:`type <utility.parseArguments.ConfigParser>`
 
     """
     socketid = None
@@ -48,7 +49,7 @@ class UploadData(threading.Thread):
 
     def run(self):
         """
-        Entry point for upload data thread. see :func:`connections.uploadData.UploadData.sendPostRequest`
+        Entry point for UploadData thread. Details about the uploading method :func:`here <connections.uploadData.UploadData.sendPostRequest>`.
         """
         logging.log('I', 'Starting Post Request')
         self.sendPostRequest()
@@ -61,7 +62,8 @@ class UploadData(threading.Thread):
 
         :param dir: An input directory. 
         :type dir: str
-        """
+        :return: A list of all the image files that match the regex for image formats. 
+        """ 
         onlyfiles = [f for f in listdir(dir) if isfile(join(dir, f)) is not None]
         onlyfiles = [f for f in onlyfiles if (re.search('([^\s]+(\.(jpg|png|gif|bmp|jpeg|JPG|PNG|GIF|BMP|JPEG))$)', str(f)) is not None)]
         return onlyfiles
@@ -69,6 +71,8 @@ class UploadData(threading.Thread):
     def identifySourcePath(self):
         """
         Identifies whether the input path is a local directory or a Dropbox folder. 
+
+        :return: A tuple containing the ``source`` (dropbox/local) and the source path. 
         """
         list = self.source_path.split(':')
         if len(list) < 2:
@@ -101,7 +105,13 @@ class UploadData(threading.Thread):
 
     def resize(self, files, resized_path, source_path):
         """
-
+        Resizes the images depending on the ``maxim`` attribute of the :doc:`config file <configfile>`
+        
+        :param files: A list of image files.
+        :type files: list
+        :param resized_path: Path of the new directory contaning resized images.
+        :type resized_path: str
+        :param source_path: Path of the input directory.
         """
         for f in files:
             if not exists(resized_path.rstrip('/') + '/' + f):
@@ -113,12 +123,27 @@ class UploadData(threading.Thread):
             else:
                 print "Resized image already present in the directory"
     def openFile(self, path_name):
+        """
+        Opens an image in binary read mode. 
+        
+        :param path_name: Path to an image.
+        :type path: str
+        :return: Binary content of an image. 
+        """
         f = open(path_name, 'rb')
         return f.read()
 
     def addFileParameters(self, source, source_path, params_data, params_for_request):
         """
-        Sets 
+        Checks input directory against corner cases such as empty directory, upload limit. The `dict` to be uploaded
+        is updated with the binary data of the image files.
+
+        :param source: Source of the input images. (dropbox/local)
+        :type source: str
+        :param source_path: In case of local directory, this contains the absolute path of input folder. In case of input from Dropbox, the path is relative to ``/Apps/CloudCV``.
+        :type source_path: str 
+        :param params_data: Contains payload for the POST request. Contains ``csrf token``, ``Dropbox path``, ``Dropbox token``, ``Google UserID``, ``SOcketID``, and ``Executable parameters``. 
+        :type params_data: dict
         """
         if source == 'dropbox':
             params_data['dropbox_path'] = source_path
@@ -151,7 +176,7 @@ class UploadData(threading.Thread):
     
     def sendPostRequest(self):
         """
-        Sends POST request containing the images to the server. 
+        Sends POST request containing the images to the server. For the payload data refer ``params_data`` parameter of :func:`this <connections.uploadData.UploadData.addFileParameters>` function.
         """
         try:
             params_for_request = {}
@@ -226,7 +251,8 @@ class RedisListenForPostThread(threading.Thread):
     Redis Connection for Inter Thread Communication.
 
     :param ps: Publisher/Subscriber features to communicate in real-time.
-    :param r: An instance of 
+    :param r: An Redis instance.
+    :param udobj: An instance of UploadData class. 
     :type udobj: :class:`connections.uploadData.UploadData`
 
  
@@ -239,7 +265,7 @@ class RedisListenForPostThread(threading.Thread):
 
     def run(self):
         """
-        Entry point for redis connection 
+        Entry point for Redis channel listening thread. Thread is ended depending on the current message across the channel. 
         """
         logging.log('I', 'Starting Listening to Redis Channel for HTTP Post Requests')
         while (True):
@@ -250,6 +276,14 @@ class RedisListenForPostThread(threading.Thread):
 
 
     def listenToChannel(self, ps, r):
+        """
+        Listens to channel ``intercomm``. If it has an end flag ( ``***end***``) then a message containing another end flag ( ``***endcomplete***``) is pushed to the
+        channel ``intercomm2`` else a ``SocketID`` is assigned to the data uploading instance.
+       
+        :param ps: A publisher/subscriber object. 
+        :param r: A Redis instance.
+        :return: A boolean flag denoting the need to end the thread for HTTP POST requests. 
+        """
         for item in ps.listen():
             if item['type'] == 'message':
                 if item['channel'] == 'intercomm':

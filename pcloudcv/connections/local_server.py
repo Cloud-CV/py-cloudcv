@@ -49,7 +49,7 @@ class Path:
     @cherrypy.expose
     def dropbox_callback(self, *args, **kwargs):
         """
-        A callback handler for Dropbox authentication. It requires a user to be authenticated with A Google account first.The `code` and `state` 
+        A callback handler for Dropbox authentication. It requires a user to be authenticated with A Google account first. The `code` and `state` 
         parameters in the callback are posted to CloudCV API endpoint. 
         """
         state = kwargs['state']

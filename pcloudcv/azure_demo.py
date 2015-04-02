@@ -4,7 +4,7 @@ from pcloudcv import PCloudCV
 import signal
 import argparse
 import os
-from connections.local_server import server
+
 
 #------------------------------Initial Setup :- Argument Parser--------------------------
 parser = argparse.ArgumentParser()

@@ -146,7 +146,7 @@ class ConfigParser:
 
     def changeOutputPath(self, path, execname):
         """
-        Changes the config output path to that of provided by the user.
+        Changes the config output path to that of provided by user.
 
         :param path: Path where output will be stored. 
         :type path: str

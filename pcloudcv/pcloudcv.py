@@ -21,8 +21,7 @@ from connections.socketConnection import SocketIOConnection
 
 init()
 
-def getfullpath(s):
-    return os.path.join(os.getcwd(), s)
+
 
 class PCloudCV(threading.Thread):
     """Creates a PCloudCV instance in a new thread.
@@ -33,7 +32,6 @@ class PCloudCV(threading.Thread):
     :type list: dict
     :param login_required: Specifies if a user wants to use a service that requires authentication. Default value is True.
     :type login_required: bool
-    .. todo:: Update services that require login.
     """
     config_obj = None
     """
@@ -87,7 +85,7 @@ class PCloudCV(threading.Thread):
 
     def stop_local_server(self):
         """
-        An Alias for :func:`connections.local_server.server.stop`
+        An Alias for :func:`connections.local_server.server.stop`.
         """
         local_server.server.stop()
 
@@ -101,13 +99,13 @@ class PCloudCV(threading.Thread):
 
     def dropbox_authenticate(self):
         """
-        An Alias for :func:`utility.accounts.dropboxAuthenticate`
+        An Alias for :func:`utility.accounts.dropboxAuthenticate`.
         """
         accounts.dropboxAuthenticate()
 
     def authenticate(self):
         """
-        An Alias for :func:`utility.accounts.authenticate`
+        An Alias for :func:`utility.accounts.authenticate`.
         """
         accounts.authenticate()
 
