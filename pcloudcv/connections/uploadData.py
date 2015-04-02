@@ -142,7 +142,7 @@ class UploadData(threading.Thread):
         :type source: str
         :param source_path: In case of local directory, this contains the absolute path of input folder. In case of input from Dropbox, the path is relative to ``/Apps/CloudCV``.
         :type source_path: str 
-        :param params_data: Contains payload for the POST request. Contains ``csrf token``, ``Dropbox path``, ``Dropbox token``, ``Google UserID``, ``SOcketID``, and ``Executable parameters``. 
+        :param params_data: Contains payload for the POST request. Contains ``csrf token``, ``Dropbox path``, ``Dropbox token``, ``Google UserID``, ``SocketID``, and ``Executable parameters``. 
         :type params_data: dict
         """
         if source == 'dropbox':
@@ -251,7 +251,7 @@ class RedisListenForPostThread(threading.Thread):
     Redis Connection for Inter Thread Communication.
 
     :param ps: Publisher/Subscriber features to communicate in real-time.
-    :param r: An Redis instance.
+    :param r: A Redis instance.
     :param udobj: An instance of UploadData class. 
     :type udobj: :class:`connections.uploadData.UploadData`
 
