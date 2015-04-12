@@ -105,12 +105,12 @@ class Path:
         accounts.account_obj.gaccount = accounts.GoogleAccounts(str(account_info['id']), str(account_info['email']))
         accounts.writeAccounts(accounts.account_obj)
         accounts.googleAuthentication=True
-        http_response = "You have been authenticated to CloudCV using your google account"
+        http_response = "You have been authenticated to CloudCV using your google account."
         return http_response
 
     def exit(self):
         """
-        Quits the application
+        Quits the application.
         """
 
         threading.Timer(1, lambda: os._exit(0)).start()

@@ -46,12 +46,17 @@ class Job:
     def setJobID(self, jobid):
         """
         A setter method for JobID.
+
+        :param jobid: A job identifier. 
+        :type jobid: int
         """
         self.jobid = jobid
 
     def setOutput(self, output):
         """
         A setter method for output obtained from executable.
+
+        :param output: Output obtained from a Job.
         """
         self.output = output
 

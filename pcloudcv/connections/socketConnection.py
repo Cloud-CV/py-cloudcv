@@ -29,8 +29,6 @@ class SocketIOConnection(threading.Thread):
     :param imagepath: Path of the input directory.
     :type imagepath: str
     """
-    _executable = ''
-    _imagepath = ''
     _redis_obj = None
     """
     An instance of Redis class.    
@@ -40,7 +38,7 @@ class SocketIOConnection(threading.Thread):
     A publisher/subscriber object.
     """
 
-    def __init__(self, executable, imagepath):
+    def __init__(self, executable='', imagepath=''):
         threading.Thread.__init__(self)
 
         self._executable = str(executable)

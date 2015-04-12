@@ -88,7 +88,6 @@ class ConfigParser:
         resultpath = None
         name = None
 
-        i = 0
 
         if 'input' in arg:
             sourcepath = arg['input']

@@ -20,9 +20,10 @@ redis_obj = redis.StrictRedis(host='localhost', port=6379, db=0)
 class GoogleAccounts:
     """
     This class type stores the `userid` and `emailid` of a user's Google account.
+
+    :param userid: Google UserId. 
+    :param emailid: User's email Id. 
     """
-    userid = None
-    emailid = None
 
     def __init__(self, userid='', emailid=''):
         self.userid = userid
@@ -34,8 +35,6 @@ class DropboxAccounts:
     This class type stores the `userid` and `access_token` of a user's Dropbox account. These details are updated when a user authorizes CloudCV to
     access data from his Dropbox folders.
     """
-    userid = None
-    access_token = None
 
     def __init__(self, userid='', access_token=''):
         self.userid = userid

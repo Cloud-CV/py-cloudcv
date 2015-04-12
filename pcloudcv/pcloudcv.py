@@ -37,12 +37,8 @@ class PCloudCV(threading.Thread):
     """
     An instance of :class:`utility.parseArguments.ConfigParser` class. Default is set to None.
     """
-    login_required = True
-    """
-    Variable to mention the requirement of authentication before using the API's.
-    """
 
-    def __init__(self, file, list, login_required):
+    def __init__(self, file, list, login_required=True):
         threading.Thread.__init__(self)
         self.login_required = login_required
         accounts.login_required = login_required
