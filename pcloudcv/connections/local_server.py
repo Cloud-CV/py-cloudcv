@@ -157,9 +157,9 @@ class HTTPServer(threading.Thread):
         """
         with self.sync:
             try:
-                cherrypy.process.servers.check_port('127.0.0.1', 8000)
+                cherrypy.process.servers.check_port('127.0.0.1', 8123)
             except IOError:
-                sys.stderr.write("The port %s is not free\n" % 8000)
+                sys.stderr.write("The port %s is not free\n" % 8123)
 
 
         cherrypy.config.update({'log.screen': False,
@@ -167,7 +167,7 @@ class HTTPServer(threading.Thread):
                         #'log.error_log': None
                         })
 
-        cherrypy.server.socket_port = 8000
+        cherrypy.server.socket_port = 8123
         cherrypy.quickstart(Path())
 
     def stop(self):
