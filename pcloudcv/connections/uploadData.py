@@ -6,6 +6,8 @@ import traceback
 from os import listdir, makedirs, chmod
 from os.path import isfile, join, exists
 
+from concurrent.futures import ThreadPoolExecutor 
+
 import redis
 import requests
 from colorama import init
@@ -31,21 +33,14 @@ class UploadData(threading.Thread):
     """
     socketid = None
     def __init__(self, config_parser):
-        threading.Thread.__init__(self)
-
         self.source_path = config_parser.source_path
         self.output_path = config_parser.output_path
         self.exec_name = config_parser.exec_name
         self.params = config_parser.params
         self.maxim = config_parser.maxim
-
         self._redis_obj = redis.StrictRedis(host='localhost', port=6379, db=0)
         self._pubsub = self._redis_obj.pubsub()
         self._pubsub.subscribe('intercomm')
-
-        redisThread = RedisListenForPostThread(self._pubsub, self._redis_obj, self)
-        redisThread.setDaemon(True)
-        redisThread.start()
 
     def run(self):
         """
@@ -203,14 +198,14 @@ class UploadData(threading.Thread):
             logging.log('D', 'Source Path: ' + self.source_path)
             logging.log('D', 'Executable: ' + params_data['executable'])
             logging.log('D', 'Executable Params: ' + params_data['exec_params'])
-
+            self.socketid = self._redis_obj.get('socketid')
             while True:
                 if self.socketid != '' and self.socketid is not None:
                     params_data['socketid'] = (self.socketid)
                     print 'SocketID: ', (self.socketid)
                     break
                 else:
-                    self._redis_obj.publish('intercomm2', 'getsocketid')
+                    self.socketid = self._redis_obj.get('socketid')
                     time.sleep(3)
                     logging.log('W', 'Waiting for Socket Connection to complete')
 
@@ -244,56 +239,3 @@ class UploadData(threading.Thread):
         token = client.cookies['csrftoken']
         print token
         return token
-
-
-class RedisListenForPostThread(threading.Thread):
-    """
-    Redis Connection for Inter Thread Communication.
-
-    :param ps: Publisher/Subscriber features to communicate in real-time.
-    :param r: A Redis instance.
-    :param udobj: An instance of UploadData class. 
-    :type udobj: :class:`connections.uploadData.UploadData`
-
- 
-    """
-    def __init__(self, ps, r, udobj):
-        threading.Thread.__init__(self)
-        self.r = r
-        self.ps = ps
-        self.udobj = udobj
-
-    def run(self):
-        """
-        Entry point for Redis channel listening thread. Thread is ended depending on the current message across the channel. 
-        """
-        logging.log('I', 'Starting Listening to Redis Channel for HTTP Post Requests')
-        while (True):
-            shouldEnd = self.listenToChannel(self.ps, self.r)
-            if (shouldEnd):
-                break
-        logging.log('I', 'Exiting Redis Thread for HTTP Post requests')
-
-
-    def listenToChannel(self, ps, r):
-        """
-        Listens to channel ``intercomm``. If it has an end flag ( ``***end***``) then a message containing another end flag ( ``***endcomplete***``) is pushed to the
-        channel ``intercomm2`` else a ``SocketID`` is assigned to the data uploading instance.
-       
-        :param ps: A publisher/subscriber object. 
-        :param r: A Redis instance.
-        :return: A boolean flag denoting the need to end the thread for HTTP POST requests. 
-        """
-        for item in ps.listen():
-            if item['type'] == 'message':
-                if item['channel'] == 'intercomm':
-
-                    if '***end***' in item['data']:
-                        r.publish('intercomm2', '***endcomplete***')
-                        return True
-                    else:
-                        print 'SocketID: ', item['data']
-                        self.udobj.socketid = item['data']
-        return False
-                  
-

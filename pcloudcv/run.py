@@ -1,4 +1,4 @@
-from pcloudcv import PCloudCV
+from cloudcv import CloudCV
 import signal
 import argparse
 import os
@@ -28,14 +28,14 @@ def parseCommandLineArgs():
 if __name__ == "__main__":
     parsedDict, config_file, login_required = parseCommandLineArgs()
     print parsedDict
-    p = PCloudCV(os.getcwd() + '/' + str(config_file), parsedDict, login_required)
-    signal.signal(signal.SIGINT, p.signal_handler)
 
-    if login_required:
-        p.dropbox_authenticate()
-        
-    print "Press Any Key to Continue..."
-    raw_input()
+    ccv = CloudCV(login_required)
+    
+    if(login_required):
+        ccv.dropbox_authenticate()
 
-    p.start()
-    signal.pause()
+    ccv.execute(os.getcwd() + '/' + str(config_file), parsedDict)
+    ccv.execute(os.getcwd() + '/' + str(config_file), parsedDict)
+
+    #TODO
+    #p.visualize() or p.job_history()
