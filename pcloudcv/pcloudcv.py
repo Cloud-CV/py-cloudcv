@@ -109,8 +109,7 @@ class PCloudCV(threading.Thread):
         """
         Entry point for the thread containing a CloudCV instance. Starts Auth process and uploads the data to the servers in a child thread.
         """
-        if self.login_required:
-            self.authenticate()
+        
 
         self.sioc.start()
         time.sleep(4)

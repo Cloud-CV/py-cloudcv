@@ -30,12 +30,14 @@ if __name__ == "__main__":
     print parsedDict
 
     ccv = CloudCV(login_required)
-    
-    if(login_required):
+    if login_required :
         ccv.dropbox_authenticate()
+    
 
     ccv.execute(os.getcwd() + '/' + str(config_file), parsedDict)
+    print "first function called"
     ccv.execute(os.getcwd() + '/' + str(config_file), parsedDict)
-
+    print "second once execute"
+    ccv.exit(10)
     #TODO
     #p.visualize() or p.job_history()

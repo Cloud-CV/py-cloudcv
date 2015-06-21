@@ -106,10 +106,10 @@ class SocketIOConnection(threading.Thread):
 
         if ('name' in message):
             logging.log('O',message['name'])
-            # self._socket_io.emit('send_message', self._executable)
+            # self.socket_io.emit('send_message', self._executable)
 
         if ('done' in message):
-            self._socket_io.emit('send_message', self._executable)
+            self.socket_io.emit('send_message', self._executable)
 
         if ('jobinfo' in message):
             # logging.log('O', 'Received information regarding the current job')
@@ -176,7 +176,7 @@ class SocketIOConnection(threading.Thread):
 
         if ('request_data' in message):
             print 'Data request from Server'
-            self._socket_io.emit('send_message', 'data')
+            self.socket_io.emit('send_message', 'data')
 
         if ('exit' in message):
             logging.log('W', message['exit'])
@@ -189,14 +189,14 @@ class SocketIOConnection(threading.Thread):
         global socketio
 
         try:
-            self._socket_io = SocketIO(conf.SOCKET_URL, 80)
-            self._socket_io.on('connect', self.connection)
-            self._socket_io.on('message', self.on_aaa_response)
-            self._socket_io.on('error', self.on_error_response)
-            socketio = self._socket_io
-            self._socket_io.emit('getsocketid','socketid')
+            self.socket_io = SocketIO(conf.SOCKET_URL, 80)
+            self.socket_io.on('connect', self.connection)
+            self.socket_io.on('message', self.on_aaa_response)
+            self.socket_io.on('error', self.on_error_response)
+            socketio = self.socket_io
+            self.socket_io.emit('getsocketid','socketid')
             print "socket waiting started"
-            self._socket_io.wait()
+            self.socket_io.wait()
             print 'Socket waiting finished. \n'
 
         except Exception as e:

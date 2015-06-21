@@ -18,7 +18,7 @@ from utility import accounts, logging
 from utility.parseArguments import ConfigParser
 import utility.job as job
 from connections.uploadData import UploadData
-from connections.socketConnection import SocketIOConnection
+from connections.socketConnection import SocketIOConnection , socketio
 
 init()
 
@@ -96,12 +96,17 @@ class CloudCV(threading.Thread):
 
     
 
-    def exit(self):
+    def exit(self, timeout, forced=True):
         """
         An Alias for :func:`connections.local_server.server.stop`.
         """
         local_server.server.stop()
-        self.sioc.socketio.disconnect()
+        if forced:
+            time.sleep(timeout)
+            self.sioc.socket_io.disconnect()
+        # here socket is closed but we need to care about the upload threads running 
+        # by closing sockets we do not want results but upload is still working
+        # or they get killed once the main thread is killed (daemons)
 
 
     def dropbox_authenticate(self):
@@ -121,8 +126,5 @@ class CloudCV(threading.Thread):
         Entry point for the thread containing a CloudCV instance. Starts Auth process and uploads the data to the servers in a child thread.
         """
 
-        if self.login_required:
-            self.authenticate()
-        # while not self.sioc:
-        #     pass
-        
+        #communication with socketio with redis (if number_of_launched_jobs = number_of_results_recieved then
+        close the socket )    
