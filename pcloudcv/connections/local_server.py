@@ -14,56 +14,11 @@ import collections
 
 lookup = TemplateLookup(directories=['html'])
 redis_obj = redis.StrictRedis(host='localhost', port=6379, db=0)
-"""
-class MakoHandler(cherrypy.dispatch.LateParamPageHandler):
-
-
-    def __init__(self, template, next_handler):
-        self.template = template
-        self.next_handler = next_handler
-
-    def __call__(self):
-        env = globals().copy()
-        env.update(self.next_handler())
-        try:
-            return self.template.render(**env)
-        except:
-            # something went wrong rendering the template
-            # this will generate a pretty error page with details
-            cherrypy.response.status = "500"
-            return cherrypy.exceptions.html_error_template().render()
-
-
-class MakoLoader(object):
-
-    def __init__(self):
-        self.lookups = {}
-
-    def __call__(self, filename, directories, module_directory=None,
-                 collection_size=-1):
-        # Find the appropriate template lookup.
-        key = (tuple(directories), module_directory)
-        try:
-            lookup = self.lookups[key]
-        except KeyError:
-            lookup = TemplateLookup(directories=directories,
-                                    module_directory=module_directory,
-                                    collection_size=collection_size,
-                                    )
-            self.lookups[key] = lookup
-        cherrypy.request.lookup = lookup
-
-        # Replace the current handler.
-        cherrypy.request.template = t = lookup.get_template(filename)
-        cherrypy.request.handler = MakoHandler(t, cherrypy.request.handler)
-
-main = MakoLoader()
-cherrypy.tools.mako = cherrypy.Tool('on_start_resource', main)
-cherrypy.tools.mako.collection_size = 500
-cherrypy.tools.mako.directories = 'html'
-"""
 
 def exit_program():
+    """
+    An alias for exit system call. 
+    """
     sys.exit(0)
 
 class Path:
@@ -93,6 +48,10 @@ class Path:
 
     @cherrypy.expose
     def dropbox_callback(self, *args, **kwargs):
+        """
+        A callback handler for Dropbox authentication. It requires a user to be authenticated with A Google account first. The `code` and `state` 
+        parameters in the callback are posted to CloudCV API endpoint. 
+        """
         state = kwargs['state']
         code = kwargs['code']
 
@@ -123,6 +82,10 @@ class Path:
 
     @cherrypy.expose
     def callback(self, *args, **kwargs):
+        """
+        A callback handler for Google OAuth. It collects the state and code from the callback and posts them to the CloudCV API endpoint for Google callback.
+        The response is stored in a local config file to avoid Auth process in future.
+        """
         state = kwargs['state']
         code = kwargs['code']
 
@@ -142,19 +105,25 @@ class Path:
         accounts.account_obj.gaccount = accounts.GoogleAccounts(str(account_info['id']), str(account_info['email']))
         accounts.writeAccounts(accounts.account_obj)
         accounts.googleAuthentication=True
-        http_response = "You have been authenticated to CloudCV using your google account"
+        http_response = "You have been authenticated to CloudCV using your google account."
         return http_response
 
     def exit(self):
         """
-        /exit
-        Quits the application
+        Quits the application.
         """
 
         threading.Timer(1, lambda: os._exit(0)).start()
         return "Local Server Stopped"
 
 def GET(self, name, **params):
+    """
+    Sends a GET request to the Google callback endpoint of CloudCV API's.
+    
+    :param name: Specifies a flag for sending a request to Google callback endpoint. 
+    :type name: str
+    :return: The response of the GET request if name is 'google'.
+    """
     print str(params)
 
     if name is 'google':
@@ -174,11 +143,18 @@ def GET(self, name, **params):
 
 
 class HTTPServer(threading.Thread):
+    """
+    Instantiates a HTTPserver object with condition variable `sync` that provides synchronization mechanism for multithreading.
+
+    """
     def __init__(self):
         threading.Thread.__init__(self)
         self.sync = threading.Condition()
 
     def run(self):
+        """
+        Checks if port 8000 is free and starts running CherryPy server on the port.
+        """
         with self.sync:
             try:
                 cherrypy.process.servers.check_port('127.0.0.1', 8000)
@@ -195,6 +171,9 @@ class HTTPServer(threading.Thread):
         cherrypy.quickstart(Path())
 
     def stop(self):
+        """
+        Stops CherryPy server. 
+        """
         cherrypy.engine.exit()
         #cherrypy.server.stop()
         #cherrypy.process.bus.exit()

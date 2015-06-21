@@ -4,7 +4,7 @@ from pcloudcv import PCloudCV
 import signal
 import argparse
 import os
-from connections.local_server import server
+
 
 #------------------------------Initial Setup :- Argument Parser--------------------------
 parser = argparse.ArgumentParser()
@@ -36,4 +36,4 @@ if __name__ == "__main__":
     if login_required:
         p.dropbox_authenticate()
     raw_input()
-    p.azure_demo('h.agrawal092@gmail.com', '/classify_azure/')
+    p.azure_demo('shubham.desale@gmail.com', '/classify_azure/')

@@ -21,14 +21,24 @@ from connections.socketConnection import SocketIOConnection
 
 init()
 
-def getfullpath(s):
-    return os.path.join(os.getcw(), s)
+
 
 class PCloudCV(threading.Thread):
-    config_obj = None
-    login_required = True
+    """Creates a PCloudCV instance in a new thread.
 
-    def __init__(self, file, list, login_required):
+    :param file: Path to :doc:`config <configfile>` file.
+    :type file:  str
+    :param list: Config input from user to override the :doc:`Config file <configfile>` defaults.(Pass an empty dict to use defaults from config.json )
+    :type list: dict
+    :param login_required: Specifies if a user wants to use a service that requires authentication. Default value is True.
+    :type login_required: bool
+    """
+    config_obj = None
+    """
+    An instance of :class:`utility.parseArguments.ConfigParser` class. Default is set to None.
+    """
+
+    def __init__(self, file, list, login_required=True):
         threading.Thread.__init__(self)
         self.login_required = login_required
         accounts.login_required = login_required
@@ -47,6 +57,10 @@ class PCloudCV(threading.Thread):
 
 
     def ec2_demo(self):
+        """
+        
+
+        """
         params_data= {}
         params_data['dropbox_token'] = accounts.account_obj.dbaccount.access_token
         params_data['emailid'] = 'h.agrawal092@gmail.com'
@@ -55,6 +69,7 @@ class PCloudCV(threading.Thread):
         self.stop_local_server()
 
     def azure_demo(self, emailid, path):
+
         params_data= {}
         params_data['dropbox_token'] = accounts.account_obj.dbaccount.access_token
         params_data['emailid'] = emailid
@@ -65,21 +80,35 @@ class PCloudCV(threading.Thread):
 
 
     def stop_local_server(self):
+        """
+        An Alias for :func:`connections.local_server.server.stop`.
+        """
         local_server.server.stop()
 
     def signal_handler(self, signal, frame):
+        """
+        A call back function for receiving a 'Ctrl+C' KeyboardInterrupt.
+        """
         print '\nYou pressed Ctrl+C! Exiting Now'
         local_server.server.stop()
         local_server.exit_program()
 
     def dropbox_authenticate(self):
+        """
+        An Alias for :func:`utility.accounts.dropboxAuthenticate`.
+        """
         accounts.dropboxAuthenticate()
 
     def authenticate(self):
+        """
+        An Alias for :func:`utility.accounts.authenticate`.
+        """
         accounts.authenticate()
 
     def run(self):
-
+        """
+        Entry point for the thread containing a CloudCV instance. Starts Auth process and uploads the data to the servers in a child thread.
+        """
         if self.login_required:
             self.authenticate()
 
