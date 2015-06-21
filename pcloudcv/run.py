@@ -1,4 +1,4 @@
-from cloudcv import CloudCV
+from pcloudcv import PCloudCV
 import signal
 import argparse
 import os
@@ -16,23 +16,26 @@ args = parser.parse_args()
 
 
 def parseCommandLineArgs():
-    parsedDict = {}
+    i = 0
+    parsedList = {}
     if args.input:
-        parsedDict['input'] = args.input
+        parsedList['input'] = args.input
     if args.output:
-        parsedDict['output'] = args.output
+        parsedList['output'] = args.output
     if args.executable:
-        parsedDict['exec'] = args.executable
-    return parsedDict, args.config, not args.nologin
+        parsedList['exec'] = args.executable
+    return parsedList, args.config, not args.nologin
 
 if __name__ == "__main__":
-    parsedDict, config_file, login_required = parseCommandLineArgs()
-    print parsedDict
+    parsedList, config_file, login_required = parseCommandLineArgs()
+    print parsedList
+    p = PCloudCV(os.getcwd() + '/' + str(config_file), parsedList, login_required)
+    signal.signal(signal.SIGINT, p.signal_handler)
 
-    ccv = CloudCV(login_required)
-    
-    ccv.execute(os.getcwd() + '/' + str(config_file), parsedDict)
-    ccv.execute(os.getcwd() + '/' + str(config_file), parsedDict)
+    if login_required:
+        p.dropbox_authenticate()
 
-    #TODO
-    #p.visualize() or p.job_history()
+    raw_input()
+
+    p.start()
+    signal.pause()
