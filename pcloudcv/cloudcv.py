@@ -126,5 +126,4 @@ class CloudCV(threading.Thread):
         Entry point for the thread containing a CloudCV instance. Starts Auth process and uploads the data to the servers in a child thread.
         """
 
-        #communication with socketio with redis (if number_of_launched_jobs = number_of_results_recieved then
-        close the socket )    
+        #communication with socketio with redis (if number_of_launched_jobs = number_of_results_recieved then close the socket )    
