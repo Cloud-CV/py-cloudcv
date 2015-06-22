@@ -35,9 +35,8 @@ if __name__ == "__main__":
     
 
     ccv.execute(os.getcwd() + '/' + str(config_file), parsedDict)
-    print "first function called"
-    ccv.execute(os.getcwd() + '/' + str(config_file), parsedDict)
-    print "second once execute"
+    config_dict = {'input':'local: /home/shubham/Pictures/test_download/4','output':'/home/shubham/Pictures/test_download/','exec':'classify'}
+    ccv.execute(os.getcwd() + '/' + str(config_file), config_dict)
     ccv.exit(10)
     #TODO
     #p.visualize() or p.job_history()

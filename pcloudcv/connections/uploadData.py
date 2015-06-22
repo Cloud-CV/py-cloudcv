@@ -195,9 +195,9 @@ class UploadData(threading.Thread):
             params_data['executable'] = self.exec_name
             params_data['exec_params'] = str(self.params)
 
-            logging.log('D', 'Source Path: ' + self.source_path)
-            logging.log('D', 'Executable: ' + params_data['executable'])
-            logging.log('D', 'Executable Params: ' + params_data['exec_params'])
+            # logging.log('D', 'Source Path: ' + self.source_path)
+            # logging.log('D', 'Executable: ' + params_data['executable'])
+            # logging.log('D', 'Executable Params: ' + params_data['exec_params'])
             self.socketid = self._redis_obj.get('socketid')
             while True:
                 if self.socketid != '' and self.socketid is not None:

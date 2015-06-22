@@ -13,7 +13,8 @@ from urlparse import urlparse
 from os.path import splitext, basename
 from utility import conf
 import json
-
+from prettytable import PrettyTable
+import ast
 init()
 socketio = None
 
@@ -117,7 +118,15 @@ class SocketIOConnection(threading.Thread):
             job.job.jobinfo = message['jobinfo']
 
         if ('data' in message):
-            logging.log('O', message['data'])
+            data = ast.literal_eval(message['data'])
+            table = PrettyTable(["Image","Prediction","Probability"])
+            for imageName in data.keys():
+                # x.add_row([str(imageName),*data[i]])
+
+                for li in data[imageName]:
+                    table.add_row([imageName,li[0],li[1]])
+                
+            print table
             job.job.output = message['data']
 
             if(job.job.jobid is None):
