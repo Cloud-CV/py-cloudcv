@@ -1,5 +1,5 @@
 import json
-from logging import log, ArgumentError
+from logger import ArgumentError
 import job
 
 class ConfigParser:
@@ -48,10 +48,8 @@ class ConfigParser:
         for d in self.data:
             if d['name'] == self.exec_name:
                 self.params = d['params']
-                #print str(self.params)
 
     def getParams(self):
-        #pprint(self.params)
         pass
 
     def readConfigFile(self, file):

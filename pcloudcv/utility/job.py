@@ -1,6 +1,6 @@
 __author__ = 'dexter'
 import os, traceback
-import utility.logging as logging
+from logger import warn, info, debug, error
 
 class Job:
     """
@@ -82,15 +82,15 @@ class Job:
                 f = open(self.resultpath + '/output.txt', 'w')
                 f.write(self.output)
                 f.close()
-                print 'Output Written to File: ' + self.resultpath + '/output.txt'
+                info('Output Written to File: ' + self.resultpath + '/output.txt')
             else:
-                print 'No Output Present'
+                info('No Output Present')
         except OSError as oserror:
-            logging.log('W', 'Check Output Path in your config. This is usually caused while trying to write in a directory with limited permissions')
-            logging.log('W', str(traceback.format_exc()))
+            warn('Check Output Path in your config. This is usually caused while trying to write in a directory with limited permissions')
+            warn(str(traceback.format_exc()))
 
         except Exception as e:
-            logging.log('W', 'Error Writing Output.')
-            logging.log('W', str(traceback.format_exc()))
+            warn('Error Writing Output.')
+            warn(str(traceback.format_exc()))
 
 job = Job()

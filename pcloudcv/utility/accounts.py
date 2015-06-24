@@ -7,7 +7,7 @@ from os import path
 import sys
 import json
 import time
-from logging import log
+from logger import info, debug, error, warn
 import conf
 import redis
 
@@ -70,7 +70,7 @@ def readAccounts(path=PATH_TO_CONFIG_FILE):
     :type path: str
     :return: Deserialized account information.  
     """
-    print path
+    debug(path)
     reader = open(path, 'rb')
     account = pickle.load(reader)
     reader.close()
@@ -114,14 +114,14 @@ def dropboxAuthenticate():
         try:
             response_json = json.loads(response.text)
         except ValueError:
-            print response.text
+            debug(response.text)
             sys.exit()
 
         if 'redirect' in response_json and response_json['redirect'] == 'True':
             webbrowser.open_new_tab(str(response_json['url']))
 
         elif 'isValid' in response_json and response_json['isValid'] == 'True':
-            print 'DropBox Authentication Successful'
+            info('DropBox Authentication Successful')
             if account_obj.dbaccount.access_token is None or account_obj.dbaccount.access_token == '':
                 account_obj.dbaccount.access_token = response_json['token']
                 redis_obj.set('dropbox_token', response_json['token'])
@@ -146,7 +146,7 @@ def authenticate():
             if path.exists('config.cfg'):
                 account_obj = readAccounts()
                 userid = account_obj.gaccount.userid
-                print userid
+                debug(userid)
 
                 response = requests.get(conf.BASE_URL + '/auth/google/', params={'type': 'api',
                                                                                           'state': random_key,
@@ -161,11 +161,11 @@ def authenticate():
     try:
         response_json = json.loads(response.text)
     except ValueError:
-        print response.text
+        debug(response.text)
         sys.exit()
     if 'error' in response_json:
-        print "Possible Error Finding this userid in the server database. Remove the config file and start again."
-        print response_json['error']
+        error("Possible Error Finding this userid in the server database. Remove the config file and start again.")
+        debug(response_json['error'])
         sys.exit()
 
     if 'redirect' in response_json and response_json['redirect'] == 'True':
@@ -174,8 +174,8 @@ def authenticate():
             time.sleep(2)
 
     elif 'isValid' in response_json and response_json['isValid'] == 'True':
-        print 'User Authenticated'
-        print 'Welcome ' + str(response_json['first_name'])
+        info('User Authenticated')
+        info('Welcome ' + str(response_json['first_name']))
         googleAuthentication = True
 
 account_obj = Accounts()

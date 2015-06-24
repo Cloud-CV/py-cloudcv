@@ -6,6 +6,7 @@ import redis
 import requests
 import cherrypy
 from utility import accounts, conf
+from utility.logger import debug, info, warn, error
 from mako.template import Template
 from mako.lookup import TemplateLookup
 import utility.job as job
@@ -40,7 +41,6 @@ class Path:
             imagepath.append(os.path.join(conf.BASE_URL+job.job.jobinfo['url'], k))
             scores = output_dict[k]
             result.append(scores)
-        print imagepath, result
         return template.render(imagepath=imagepath, result = result)
 
 
@@ -68,8 +68,8 @@ class Path:
             return result.text
 
         accounts.account_obj.dbaccount = accounts.DropboxAccounts(str(account_info['uid']), str(account_info['token']))
-        print "Dropbox Account:", str(account_info['uid'])
-        print "Dropbox Token:", str(account_info['token'])
+        info('Dropbox Account:'+str(account_info['uid']))
+        info("Dropbox Token:"+str(account_info['token']))
 
         redis_obj.set('dropbox_token', account_info['token'])
         redis_obj.set('dropbox_account', account_info['uid'])
@@ -94,7 +94,7 @@ class Path:
                                 'code': code,
                                 'state': state
                                 })
-        print result.text
+        debug(result.text)
         try:
             account_info = json.loads(result.text)
 
@@ -124,7 +124,7 @@ def GET(self, name, **params):
     :type name: str
     :return: The response of the GET request if name is 'google'.
     """
-    print str(params)
+    info(str(params))
 
     if name is 'google':
         state = params.get('state')
@@ -177,7 +177,6 @@ class HTTPServer(threading.Thread):
         cherrypy.engine.exit()
         #cherrypy.server.stop()
         #cherrypy.process.bus.exit()
-        print 'Local Server Stopped'
+        debug('Local Server Stopped')
 
-        #pass
 server = HTTPServer()

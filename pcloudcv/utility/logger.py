@@ -1,26 +1,28 @@
-from colorama import init, Fore
+import logging
+from colorlog import ColoredFormatter
 
-init()
+LOG_LEVEL = logging.DEBUG
+logging.root.setLevel(LOG_LEVEL)
+LOGFORMAT = "%(log_color)s[%(asctime)s] %(levelname)-8s | %(message)s%(reset)s"
+formatter = ColoredFormatter(LOGFORMAT,datefmt="%H:%M:%s")
+stream = logging.StreamHandler()
+stream.setLevel(LOG_LEVEL)
+stream.setFormatter(formatter)
+log = logging.getLogger('pythonConfig')
+log.setLevel(LOG_LEVEL)
+log.addHandler(stream)
 
-
-def log(logType, e):
-    """
-    Defines logging tags for debugging.
-    """
-    if (logType == 'W'):
-        print Fore.RED + str(e)
-        print Fore.RESET
-    if (logType == 'I'):
-        print Fore.MAGENTA + str(e)
-        print Fore.RESET
-    if (logType == 'D'):
-        print Fore.CYAN + str(e)
-        print Fore.RESET
-    if (logType == 'O'):
-        print Fore.BLUE + str(e)
-        print Fore.RESET
-
-
+def debug(message):
+    log.debug(message)
+def info(message):
+    log.info(message)
+def warn(message):
+    log.warn(message)
+def error( message):
+    log.error(message)
+def critical( message):
+    log.critical(message)
+    
 class ArgumentError(Exception):
     """
     Used for error logging. 

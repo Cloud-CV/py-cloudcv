@@ -5,23 +5,18 @@ import time
 import requests
 from concurrent.futures import ThreadPoolExecutor 
 path = os.path.dirname(os.path.realpath(__file__))
-print "Added Path: " + path
 if path not in sys.path:
     sys.path.append(path)
 
 import threading
 
-from colorama import init
-from colorama import Fore
 from connections import local_server
-from utility import accounts, logging
+from utility import accounts
+from utility.logger import warn, error, debug, critical
 from utility.parseArguments import ConfigParser
 import utility.job as job
 from connections.uploadData import UploadData
 from connections.socketConnection import SocketIOConnection , socketio
-
-init()
-
 
 
 class CloudCV(threading.Thread):
@@ -81,7 +76,7 @@ class CloudCV(threading.Thread):
         params_data['dropbox_token'] = accounts.account_obj.dbaccount.access_token
         params_data['emailid'] = 'h.agrawal092@gmail.com'
         response = requests.get('http://godel.ece.vt.edu/cloudcv/ec2/', params=params_data)
-        print response.text
+        # print response.text
         self.stop_local_server()
 
     def azure_demo(self, emailid, path):
@@ -91,7 +86,7 @@ class CloudCV(threading.Thread):
         params_data['emailid'] = emailid
         params_data['dropbox_path'] = path
         response = requests.post('http://mlpmasternode.cloudapp.net/api', data=params_data)
-        print response.text
+        # print response.text
         self.stop_local_server()
 
     
