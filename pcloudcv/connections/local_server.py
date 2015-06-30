@@ -148,27 +148,36 @@ class HTTPServer(threading.Thread):
 
     """
     def __init__(self):
-        threading.Thread.__init__(self)
+        threading.Thread.__init__(self, name="CherryPy")
         self.sync = threading.Condition()
+
+        
 
     def run(self):
         """
         Checks if port 8000 is free and starts running CherryPy server on the port.
         """
+        
+
         with self.sync:
             try:
                 cherrypy.process.servers.check_port('127.0.0.1', 8000)
             except IOError:
                 sys.stderr.write("The port %s is not free\n" % 8000)
 
-
-        cherrypy.config.update({'log.screen': False,
-                        'log.error_file': None,
-                        #'log.error_log': None
-                        })
+        
+        
+        
 
         cherrypy.server.socket_port = 8000
-        cherrypy.quickstart(Path())
+        config = {'global': {
+                                   'log.screen': False,
+                                   'log.error_file': '',
+                                   'log.access_file': ''
+                            }
+                 }
+        cherrypy.quickstart(Path(),'',config)
+        
 
     def stop(self):
         """

@@ -30,6 +30,6 @@ config.cfg
 docs/conf.py
 docs/Makefile
 docs/make.bat
-
+pcloudcv/cloudcv.db
 #redis db dump
 dump.rdb

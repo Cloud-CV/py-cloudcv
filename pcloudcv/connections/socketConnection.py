@@ -38,7 +38,7 @@ class SocketIOConnection(threading.Thread):
     """
 
     def __init__(self, executable='', imagepath=''):
-        threading.Thread.__init__(self)
+        threading.Thread.__init__(self, name="SocketIOConnection")
 
         self._executable = str(executable)
         self._imagepath = str(imagepath)

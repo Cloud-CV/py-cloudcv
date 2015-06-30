@@ -204,6 +204,8 @@ class UploadData(threading.Thread):
 
 
 
+            # for k,v in params_for_request.items():
+            #     params_data[k] = v
             debug('Starting The POST request')
             for i in range(1,5):
                 try:

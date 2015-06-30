@@ -1,10 +1,10 @@
 import logging
 from colorlog import ColoredFormatter
-
+from datetime import datetime
 LOG_LEVEL = logging.DEBUG
 logging.root.setLevel(LOG_LEVEL)
-LOGFORMAT = "%(log_color)s[%(asctime)s] %(levelname)-8s | %(message)s%(reset)s"
-formatter = ColoredFormatter(LOGFORMAT,datefmt="%H:%M:%s")
+LOGFORMAT = "%(log_color)s[%(asctime)s] %(levelname)-6s | %(threadName)s | %(message)s%(reset)s"
+formatter = ColoredFormatter(LOGFORMAT,datefmt="%d/"+datetime.now().strftime('%b')+"/%y %H:%M:%S")
 stream = logging.StreamHandler()
 stream.setLevel(LOG_LEVEL)
 stream.setFormatter(formatter)

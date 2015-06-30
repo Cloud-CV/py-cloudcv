@@ -156,7 +156,7 @@ def authenticate():
                                                                                           'state': random_key})
             break
         except Exception as e:
-            log('W', 'Error connecting to cloudcv. Retrying: ' + str(i) + ' attempt\n')
+            warn('Error connecting to cloudcv. Retrying: ' + str(i) + ' attempt\n')
 
     try:
         response_json = json.loads(response.text)
