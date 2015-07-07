@@ -25,6 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="pcloudcv  documentation" href="index.html" />
     <link rel="up" title="pcloudcv package" href="pcloudcv.html" />
+    <link rel="next" title="New Architecture" href="new_architecture.html" />
     <link rel="prev" title="demo package" href="demo.html" /> 
   </head>
   <body role="document">
@@ -37,6 +38,9 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="new_architecture.html" title="New Architecture"
+             accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="demo.html" title="demo package"
              accesskey="P">previous</a> |</li>
@@ -54,7 +58,7 @@
 <li><a class="reference internal" href="#module-utility.accounts">utility.accounts module</a></li>
 <li><a class="reference internal" href="#module-utility.conf">utility.conf module</a></li>
 <li><a class="reference internal" href="#module-utility.job">utility.job module</a></li>
-<li><a class="reference internal" href="#module-utility.logging">utility.logging module</a></li>
+<li><a class="reference internal" href="#utility-logging-module">utility.logging module</a></li>
 <li><a class="reference internal" href="#module-utility.parseArguments">utility.parseArguments module</a></li>
 <li><a class="reference internal" href="#module-utility">Module contents</a></li>
 </ul>
@@ -64,6 +68,9 @@
   <h4>Previous topic</h4>
   <p class="topless"><a href="demo.html"
                         title="previous chapter">demo package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="new_architecture.html"
+                        title="next chapter">New Architecture</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -134,32 +141,24 @@
 <em class="property">class </em><code class="descclassname">utility.accounts.</code><code class="descname">DropboxAccounts</code><span class="sig-paren">(</span><em>userid=''</em>, <em>access_token=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/accounts.html#DropboxAccounts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.accounts.DropboxAccounts" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class type stores the <cite>userid</cite> and <cite>access_token</cite> of a user&#8217;s Dropbox account. These details are updated when a user authorizes CloudCV to
 access data from his Dropbox folders.</p>
-<dl class="attribute">
-<dt id="utility.accounts.DropboxAccounts.access_token">
-<code class="descname">access_token</code><em class="property"> = None</em><a class="headerlink" href="#utility.accounts.DropboxAccounts.access_token" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="utility.accounts.DropboxAccounts.userid">
-<code class="descname">userid</code><em class="property"> = None</em><a class="headerlink" href="#utility.accounts.DropboxAccounts.userid" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="class">
 <dt id="utility.accounts.GoogleAccounts">
 <em class="property">class </em><code class="descclassname">utility.accounts.</code><code class="descname">GoogleAccounts</code><span class="sig-paren">(</span><em>userid=''</em>, <em>emailid=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/accounts.html#GoogleAccounts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.accounts.GoogleAccounts" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class type stores the <cite>userid</cite> and <cite>emailid</cite> of a user&#8217;s Google account.</p>
-<dl class="attribute">
-<dt id="utility.accounts.GoogleAccounts.emailid">
-<code class="descname">emailid</code><em class="property"> = None</em><a class="headerlink" href="#utility.accounts.GoogleAccounts.emailid" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="utility.accounts.GoogleAccounts.userid">
-<code class="descname">userid</code><em class="property"> = None</em><a class="headerlink" href="#utility.accounts.GoogleAccounts.userid" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>userid</strong> &#8211; Google UserId.</li>
+<li><strong>emailid</strong> &#8211; User&#8217;s email Id.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -177,7 +176,7 @@ authenticated using Google account.</p>
 
 <dl class="function">
 <dt id="utility.accounts.readAccounts">
-<code class="descclassname">utility.accounts.</code><code class="descname">readAccounts</code><span class="sig-paren">(</span><em>path='/home/shubham/github/pcloudcv/pcloudcv/config.cfg'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/accounts.html#readAccounts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.accounts.readAccounts" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">utility.accounts.</code><code class="descname">readAccounts</code><span class="sig-paren">(</span><em>path='/home/shubham/github/ccv_curr/pcloudcv/config.cfg'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/accounts.html#readAccounts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.accounts.readAccounts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads the account info from the serialized config file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -193,7 +192,7 @@ authenticated using Google account.</p>
 
 <dl class="function">
 <dt id="utility.accounts.writeAccounts">
-<code class="descclassname">utility.accounts.</code><code class="descname">writeAccounts</code><span class="sig-paren">(</span><em>account</em>, <em>path='/home/shubham/github/pcloudcv/pcloudcv/config.cfg'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/accounts.html#writeAccounts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.accounts.writeAccounts" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">utility.accounts.</code><code class="descname">writeAccounts</code><span class="sig-paren">(</span><em>account</em>, <em>path='/home/shubham/github/ccv_curr/pcloudcv/config.cfg'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/accounts.html#writeAccounts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.accounts.writeAccounts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes the account info by serializing it to the config file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -279,6 +278,14 @@ authenticated using Google account.</p>
 <dt id="utility.job.Job.setJobID">
 <code class="descname">setJobID</code><span class="sig-paren">(</span><em>jobid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/job.html#Job.setJobID"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.job.Job.setJobID" title="Permalink to this definition">¶</a></dt>
 <dd><p>A setter method for JobID.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>jobid</strong> (<em>int</em>) &#8211; A job identifier.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -295,34 +302,21 @@ authenticated using Google account.</p>
 <dt id="utility.job.Job.setOutput">
 <code class="descname">setOutput</code><span class="sig-paren">(</span><em>output</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/job.html#Job.setOutput"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.job.Job.setOutput" title="Permalink to this definition">¶</a></dt>
 <dd><p>A setter method for output obtained from executable.</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-utility.logging">
-<span id="utility-logging-module"></span><h2>utility.logging module<a class="headerlink" href="#module-utility.logging" title="Permalink to this headline">¶</a></h2>
-<dl class="exception">
-<dt id="utility.logging.ArgumentError">
-<em class="property">exception </em><code class="descclassname">utility.logging.</code><code class="descname">ArgumentError</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/logging.html#ArgumentError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.logging.ArgumentError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></p>
-<p>Used for error logging.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> (<em>int</em>) &#8211; Each value indicates a different possible argument error.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>output</strong> &#8211; Output obtained from a Job.</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
-<dl class="function">
-<dt id="utility.logging.log">
-<code class="descclassname">utility.logging.</code><code class="descname">log</code><span class="sig-paren">(</span><em>logType</em>, <em>e</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/logging.html#log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utility.logging.log" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines logging tags for debugging.</p>
 </dd></dl>
 
+</div>
+<div class="section" id="utility-logging-module">
+<h2>utility.logging module<a class="headerlink" href="#utility-logging-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-utility.parseArguments">
 <span id="utility-parsearguments-module"></span><h2>utility.parseArguments module<a class="headerlink" href="#module-utility.parseArguments" title="Permalink to this headline">¶</a></h2>
@@ -486,6 +480,9 @@ its value in config.json file is used as a default.</p>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="new_architecture.html" title="New Architecture"
+             >next</a> |</li>
         <li class="right" >
           <a href="demo.html" title="demo package"
              >previous</a> |</li>

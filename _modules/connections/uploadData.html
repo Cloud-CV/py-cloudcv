@@ -72,10 +72,12 @@
 <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">listdir</span><span class="p">,</span> <span class="n">makedirs</span><span class="p">,</span> <span class="n">chmod</span>
 <span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">isfile</span><span class="p">,</span> <span class="n">join</span><span class="p">,</span> <span class="n">exists</span>
 
+<span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="kn">import</span> <span class="n">ThreadPoolExecutor</span> 
+
 <span class="kn">import</span> <span class="nn">redis</span>
 <span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">from</span> <span class="nn">colorama</span> <span class="kn">import</span> <span class="n">init</span>
-<span class="kn">from</span> <span class="nn">utility</span> <span class="kn">import</span> <span class="n">logging</span>
+<span class="kn">from</span> <span class="nn">utility.logger</span> <span class="kn">import</span> <span class="n">debug</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span><span class="p">,</span> <span class="n">error</span>
 <span class="kn">from</span> <span class="nn">utility</span> <span class="kn">import</span> <span class="n">accounts</span>
 
 <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
@@ -97,29 +99,22 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">socketid</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_parser</span><span class="p">):</span>
-        <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">source_path</span> <span class="o">=</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">source_path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span> <span class="o">=</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">output_path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exec_name</span> <span class="o">=</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">exec_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">params</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">maxim</span> <span class="o">=</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">maxim</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">_redis_obj</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">StrictRedis</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">6379</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pubsub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redis_obj</span><span class="o">.</span><span class="n">pubsub</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pubsub</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="s">&#39;intercomm&#39;</span><span class="p">)</span>
-
-        <span class="n">redisThread</span> <span class="o">=</span> <span class="n">RedisListenForPostThread</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pubsub</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redis_obj</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
-        <span class="n">redisThread</span><span class="o">.</span><span class="n">setDaemon</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
-        <span class="n">redisThread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
 <div class="viewcode-block" id="UploadData.run"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Entry point for UploadData thread. Details about the uploading method :func:`here &lt;connections.uploadData.UploadData.sendPostRequest&gt;`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">,</span> <span class="s">&#39;Starting Post Request&#39;</span><span class="p">)</span>
+        <span class="n">info</span><span class="p">(</span><span class="s">&#39;Starting Post Request&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sendPostRequest</span><span class="p">()</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">,</span> <span class="s">&#39;Exiting From the Post Request Thread&#39;</span><span class="p">)</span>
+        <span class="n">info</span><span class="p">(</span><span class="s">&#39;Exiting From the Post Request Thread&#39;</span><span class="p">)</span>
 
     <span class="c">#get all files in the directory and create a params dictionary.</span></div>
 <div class="viewcode-block" id="UploadData.filesInDirectory"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData.filesInDirectory">[docs]</a>    <span class="k">def</span> <span class="nf">filesInDirectory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">dir</span><span class="p">):</span>
@@ -156,7 +151,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">accounts</span><span class="o">.</span><span class="n">login_required</span><span class="p">:</span>
             <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;userid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">accounts</span><span class="o">.</span><span class="n">account_obj</span><span class="o">.</span><span class="n">getGoogleUserID</span><span class="p">()</span>
-            <span class="c">#print &#39;UserId: &#39;+ params_data[&#39;userid&#39;]</span>
 
         <span class="k">if</span> <span class="n">source</span> <span class="o">==</span> <span class="s">&#39;dropbox&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">accounts</span><span class="o">.</span><span class="n">dropboxAuthentication</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
@@ -167,7 +161,7 @@
 
             <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;userid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">accounts</span><span class="o">.</span><span class="n">account_obj</span><span class="o">.</span><span class="n">getGoogleUserID</span><span class="p">()</span>
             <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;dropbox_token&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dbtoken</span>
-            <span class="k">print</span> <span class="s">&#39;Dropbox Token: &#39;</span><span class="p">,</span> <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;dropbox_token&#39;</span><span class="p">]</span>
+            <span class="n">debug</span><span class="p">(</span><span class="s">&#39;Dropbox Token: &#39;</span><span class="p">,</span> <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;dropbox_token&#39;</span><span class="p">])</span>
 </div>
 <div class="viewcode-block" id="UploadData.resize"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData.resize">[docs]</a>    <span class="k">def</span> <span class="nf">resize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">resized_path</span><span class="p">,</span> <span class="n">source_path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -187,7 +181,7 @@
                     <span class="n">im</span><span class="o">.</span><span class="n">thumbnail</span><span class="p">((</span><span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">),</span> <span class="n">Image</span><span class="o">.</span><span class="n">ANTIALIAS</span><span class="p">)</span>
                 <span class="n">im</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">resized_path</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;/&#39;</span> <span class="o">+</span> <span class="n">f</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">print</span> <span class="s">&quot;Resized image already present in the directory&quot;</span></div>
+                <span class="n">warn</span><span class="p">(</span><span class="s">&quot;Resized image already present in the directory&quot;</span><span class="p">)</span></div>
 <div class="viewcode-block" id="UploadData.openFile"><a class="viewcode-back" href="../../connections.html#connections.uploadData.UploadData.openFile">[docs]</a>    <span class="k">def</span> <span class="nf">openFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Opens an image in binary read mode. </span>
@@ -208,7 +202,7 @@
 <span class="sd">        :type source: str</span>
 <span class="sd">        :param source_path: In case of local directory, this contains the absolute path of input folder. In case of input from Dropbox, the path is relative to ``/Apps/CloudCV``.</span>
 <span class="sd">        :type source_path: str </span>
-<span class="sd">        :param params_data: Contains payload for the POST request. Contains ``csrf token``, ``Dropbox path``, ``Dropbox token``, ``Google UserID``, ``SOcketID``, and ``Executable parameters``. </span>
+<span class="sd">        :param params_data: Contains payload for the POST request. Contains ``csrf token``, ``Dropbox path``, ``Dropbox token``, ``Google UserID``, ``SocketID``, and ``Executable parameters``. </span>
 <span class="sd">        :type params_data: dict</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">source</span> <span class="o">==</span> <span class="s">&#39;dropbox&#39;</span><span class="p">:</span>
@@ -228,14 +222,11 @@
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;No of images in the directory is zero. &quot;</span>
                                 <span class="s">&quot;Please check the path, and the extension of the files present.&quot;</span><span class="p">)</span>
-            <span class="k">print</span> <span class="s">&#39;No of files to be uploaded: &#39;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s">&#39;No of files to be uploaded: &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)))</span>
             <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
                 <span class="n">params_for_request</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">source_path</span><span class="o">+</span><span class="s">&#39;/resized/&#39;</span><span class="o">+</span><span class="n">f</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span>
-                <span class="c">#params_for_request[&#39;file&#39; + str(i)] = self.openFile(source_path+&#39;/resized/&#39;+f)</span>
                 <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
 
-
-            <span class="c">#print params_for_request</span>
             <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">))</span>
 
 
@@ -249,9 +240,9 @@
             <span class="n">params_data</span> <span class="o">=</span> <span class="p">{}</span>
 
             <span class="n">token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getRequest</span><span class="p">(</span><span class="s">&#39;http://cloudcv.org/api&#39;</span><span class="p">)</span>
-            <span class="k">print</span> <span class="n">token</span>
+            
             <span class="k">if</span> <span class="n">token</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;W&#39;</span><span class="p">,</span> <span class="s">&#39;token not found&#39;</span><span class="p">)</span>
+                <span class="n">warn</span><span class="p">(</span><span class="s">&#39;token not found&#39;</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">SystemExit</span>
 
             <span class="n">source</span><span class="p">,</span> <span class="n">source_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifySourcePath</span><span class="p">()</span>
@@ -266,37 +257,33 @@
             <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;executable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_name</span>
             <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;exec_params&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
 
-            <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;D&#39;</span><span class="p">,</span> <span class="s">&#39;Source Path: &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_path</span><span class="p">)</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;D&#39;</span><span class="p">,</span> <span class="s">&#39;Executable: &#39;</span> <span class="o">+</span> <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;executable&#39;</span><span class="p">])</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;D&#39;</span><span class="p">,</span> <span class="s">&#39;Executable Params: &#39;</span> <span class="o">+</span> <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;exec_params&#39;</span><span class="p">])</span>
-
+            <span class="bp">self</span><span class="o">.</span><span class="n">socketid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redis_obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;socketid&#39;</span><span class="p">)</span>
             <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">socketid</span> <span class="o">!=</span> <span class="s">&#39;&#39;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">socketid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
                     <span class="n">params_data</span><span class="p">[</span><span class="s">&#39;socketid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">socketid</span><span class="p">)</span>
-                    <span class="k">print</span> <span class="s">&#39;SocketID: &#39;</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">socketid</span><span class="p">)</span>
+                    <span class="n">info</span><span class="p">(</span><span class="s">&#39;SocketID: &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">socketid</span><span class="p">))</span>
                     <span class="k">break</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_redis_obj</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="s">&#39;intercomm2&#39;</span><span class="p">,</span> <span class="s">&#39;getsocketid&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">socketid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redis_obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;socketid&#39;</span><span class="p">)</span>
                     <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-                    <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;W&#39;</span><span class="p">,</span> <span class="s">&#39;Waiting for Socket Connection to complete&#39;</span><span class="p">)</span>
+                    <span class="n">warn</span><span class="p">(</span><span class="s">&#39;Waiting for Socket Connection to complete&#39;</span><span class="p">)</span>
 
 
 
             <span class="c"># for k,v in params_for_request.items():</span>
             <span class="c">#     params_data[k] = v</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;D&#39;</span><span class="p">,</span> <span class="s">&#39;Starting The POST request&#39;</span><span class="p">)</span>
+            <span class="n">debug</span><span class="p">(</span><span class="s">&#39;Starting The POST request&#39;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">):</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">request</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s">&quot;http://cloudcv.org/api/&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">params_data</span><span class="p">,</span>
                                             <span class="n">files</span><span class="o">=</span><span class="n">params_for_request</span><span class="p">)</span>
 
-                    <span class="c"># logging.log(&#39;D&#39;, &#39;Response:   &#39; + request.text)</span>
-                    <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;D&#39;</span><span class="p">,</span> <span class="s">&#39;Info:   &#39;</span> <span class="o">+</span> <span class="s">&#39;Please wait while CloudCV runs your job request&#39;</span><span class="p">)</span>
+                    <span class="n">warn</span><span class="p">(</span><span class="s">&#39;Please wait while CloudCV runs your job request&#39;</span><span class="p">)</span>
                     <span class="k">break</span>
                 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;W&#39;</span><span class="p">,</span> <span class="s">&#39;Error in sendPostRequest&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()))</span>
+                    <span class="n">warn</span><span class="p">(</span><span class="s">&#39;Error in sendPostRequest&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()))</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;W&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()))</span>
+            <span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_redis_obj</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="s">&#39;intercomm&#39;</span><span class="p">,</span> <span class="s">&#39;***end***&#39;</span><span class="p">)</span>
 
 
@@ -308,61 +295,8 @@
         <span class="n">client</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">session</span><span class="p">()</span>
         <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;http://cloudcv.org/classify&#39;</span><span class="p">)</span>
         <span class="n">token</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">cookies</span><span class="p">[</span><span class="s">&#39;csrftoken&#39;</span><span class="p">]</span>
-        <span class="k">print</span> <span class="n">token</span>
-        <span class="k">return</span> <span class="n">token</span>
-
-</div></div>
-<div class="viewcode-block" id="RedisListenForPostThread"><a class="viewcode-back" href="../../connections.html#connections.uploadData.RedisListenForPostThread">[docs]</a><span class="k">class</span> <span class="nc">RedisListenForPostThread</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Redis Connection for Inter Thread Communication.</span>
-
-<span class="sd">    :param ps: Publisher/Subscriber features to communicate in real-time.</span>
-<span class="sd">    :param r: An Redis instance.</span>
-<span class="sd">    :param udobj: An instance of UploadData class. </span>
-<span class="sd">    :type udobj: :class:`connections.uploadData.UploadData`</span>
-
-<span class="sd"> </span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">udobj</span><span class="p">):</span>
-        <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">r</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ps</span> <span class="o">=</span> <span class="n">ps</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">udobj</span> <span class="o">=</span> <span class="n">udobj</span>
-
-<div class="viewcode-block" id="RedisListenForPostThread.run"><a class="viewcode-back" href="../../connections.html#connections.uploadData.RedisListenForPostThread.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Entry point for Redis channel listening thread. Thread is ended depending on the current message across the channel. </span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">,</span> <span class="s">&#39;Starting Listening to Redis Channel for HTTP Post Requests&#39;</span><span class="p">)</span>
-        <span class="k">while</span> <span class="p">(</span><span class="bp">True</span><span class="p">):</span>
-            <span class="n">shouldEnd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">listenToChannel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">)</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">shouldEnd</span><span class="p">):</span>
-                <span class="k">break</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">,</span> <span class="s">&#39;Exiting Redis Thread for HTTP Post requests&#39;</span><span class="p">)</span>
-
-</div>
-<div class="viewcode-block" id="RedisListenForPostThread.listenToChannel"><a class="viewcode-back" href="../../connections.html#connections.uploadData.RedisListenForPostThread.listenToChannel">[docs]</a>    <span class="k">def</span> <span class="nf">listenToChannel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Listens to channel ``intercomm``. If it has an end flag ( ``***end***``) then a message containing another end flag ( ``***endcomplete***``) is pushed to the</span>
-<span class="sd">        channel ``intercomm2`` else a ``SocketID`` is assigned to the data uploading instance.</span>
-<span class="sd">       </span>
-<span class="sd">        :param ps: A publisher/subscriber object. </span>
-<span class="sd">        :param r: A Redis instance.</span>
-<span class="sd">        :return: A boolean flag denoting the need to end the thread for HTTP POST requests. </span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">ps</span><span class="o">.</span><span class="n">listen</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;message&#39;</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s">&#39;channel&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;intercomm&#39;</span><span class="p">:</span>
-
-                    <span class="k">if</span> <span class="s">&#39;***end***&#39;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="s">&#39;data&#39;</span><span class="p">]:</span>
-                        <span class="n">r</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="s">&#39;intercomm2&#39;</span><span class="p">,</span> <span class="s">&#39;***endcomplete***&#39;</span><span class="p">)</span>
-                        <span class="k">return</span> <span class="bp">True</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="k">print</span> <span class="s">&#39;SocketID: &#39;</span><span class="p">,</span> <span class="n">item</span><span class="p">[</span><span class="s">&#39;data&#39;</span><span class="p">]</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">udobj</span><span class="o">.</span><span class="n">socketid</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s">&#39;data&#39;</span><span class="p">]</span>
-        <span class="k">return</span> <span class="bp">False</span>
-                  
-</pre></div></div></div>
+        <span class="k">return</span> <span class="n">token</span></div></div>
+</pre></div>
 
           </div>
         </div>

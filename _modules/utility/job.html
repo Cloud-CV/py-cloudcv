@@ -66,7 +66,7 @@
   <h1>Source code for utility.job</h1><div class="highlight"><pre>
 <span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;dexter&#39;</span>
 <span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">traceback</span>
-<span class="kn">import</span> <span class="nn">utility.logging</span> <span class="kn">as</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">logger</span> <span class="kn">import</span> <span class="n">warn</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">debug</span><span class="p">,</span> <span class="n">error</span>
 
 <div class="viewcode-block" id="Job"><a class="viewcode-back" href="../../utility.html#utility.job.Job">[docs]</a><span class="k">class</span> <span class="nc">Job</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -112,12 +112,17 @@
 <div class="viewcode-block" id="Job.setJobID"><a class="viewcode-back" href="../../utility.html#utility.job.Job.setJobID">[docs]</a>    <span class="k">def</span> <span class="nf">setJobID</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jobid</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        A setter method for JobID.</span>
+
+<span class="sd">        :param jobid: A job identifier. </span>
+<span class="sd">        :type jobid: int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">jobid</span> <span class="o">=</span> <span class="n">jobid</span>
 </div>
 <div class="viewcode-block" id="Job.setOutput"><a class="viewcode-back" href="../../utility.html#utility.job.Job.setOutput">[docs]</a>    <span class="k">def</span> <span class="nf">setOutput</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        A setter method for output obtained from executable.</span>
+
+<span class="sd">        :param output: Output obtained from a Job.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">output</span>
 </div>
@@ -143,16 +148,16 @@
                 <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resultpath</span> <span class="o">+</span> <span class="s">&#39;/output.txt&#39;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-                <span class="k">print</span> <span class="s">&#39;Output Written to File: &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">resultpath</span> <span class="o">+</span> <span class="s">&#39;/output.txt&#39;</span>
+                <span class="n">info</span><span class="p">(</span><span class="s">&#39;Output Written to File: &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">resultpath</span> <span class="o">+</span> <span class="s">&#39;/output.txt&#39;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">print</span> <span class="s">&#39;No Output Present&#39;</span>
+                <span class="n">info</span><span class="p">(</span><span class="s">&#39;No Output Present&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">oserror</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;W&#39;</span><span class="p">,</span> <span class="s">&#39;Check Output Path in your config. This is usually caused while trying to write in a directory with limited permissions&#39;</span><span class="p">)</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;W&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()))</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s">&#39;Check Output Path in your config. This is usually caused while trying to write in a directory with limited permissions&#39;</span><span class="p">)</span>
+            <span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()))</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;W&#39;</span><span class="p">,</span> <span class="s">&#39;Error Writing Output.&#39;</span><span class="p">)</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;W&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()))</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s">&#39;Error Writing Output.&#39;</span><span class="p">)</span>
+            <span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()))</span>
 </div></div>
 <span class="n">job</span> <span class="o">=</span> <span class="n">Job</span><span class="p">()</span>
 </pre></div>

@@ -54,7 +54,7 @@
   <ul>
 <li><a class="reference internal" href="#">pcloudcv package</a><ul>
 <li><a class="reference internal" href="#subpackages">Subpackages</a></li>
-<li><a class="reference internal" href="#module-pcloudcv">Module contents</a></li>
+<li><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -108,7 +108,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="demo.html">demo package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="demo.html#module-demo.demo_visualize">demo.demo_visualize module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo.html#demo-demo-visualize-module">demo.demo_visualize module</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="utility.html">utility package</a><ul>
@@ -116,7 +116,7 @@
 <li class="toctree-l2"><a class="reference internal" href="utility.html#module-utility.accounts">utility.accounts module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utility.html#module-utility.conf">utility.conf module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utility.html#module-utility.job">utility.job module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="utility.html#module-utility.logging">utility.logging module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utility.html#utility-logging-module">utility.logging module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utility.html#module-utility.parseArguments">utility.parseArguments module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utility.html#module-utility">Module contents</a></li>
 </ul>
@@ -124,80 +124,8 @@
 </ul>
 </div>
 </div>
-<div class="section" id="module-pcloudcv">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pcloudcv" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="pcloudcv.PCloudCV">
-<em class="property">class </em><code class="descclassname">pcloudcv.</code><code class="descname">PCloudCV</code><span class="sig-paren">(</span><em>file</em>, <em>list</em>, <em>login_required</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pcloudcv.html#PCloudCV"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pcloudcv.PCloudCV" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></p>
-<p>Creates a PCloudCV instance in a new thread.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>file</strong> (<em>str</em>) &#8211; Path to <a class="reference internal" href="configfile.html"><em>config</em></a> file.</li>
-<li><strong>list</strong> (<em>dict</em>) &#8211; Config input from user to override the <a class="reference internal" href="configfile.html"><em>Config file</em></a> defaults.(Pass an empty dict to use defaults from config.json )</li>
-<li><strong>login_required</strong> (<em>bool</em>) &#8211; Specifies if a user wants to use a service that requires authentication. Default value is True.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="pcloudcv.PCloudCV.authenticate">
-<code class="descname">authenticate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pcloudcv.html#PCloudCV.authenticate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pcloudcv.PCloudCV.authenticate" title="Permalink to this definition">¶</a></dt>
-<dd><p>An Alias for <a class="reference internal" href="utility.html#utility.accounts.authenticate" title="utility.accounts.authenticate"><code class="xref py py-func docutils literal"><span class="pre">utility.accounts.authenticate()</span></code></a>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pcloudcv.PCloudCV.azure_demo">
-<code class="descname">azure_demo</code><span class="sig-paren">(</span><em>emailid</em>, <em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pcloudcv.html#PCloudCV.azure_demo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pcloudcv.PCloudCV.azure_demo" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="pcloudcv.PCloudCV.config_obj">
-<code class="descname">config_obj</code><em class="property"> = None</em><a class="headerlink" href="#pcloudcv.PCloudCV.config_obj" title="Permalink to this definition">¶</a></dt>
-<dd><p>An instance of <a class="reference internal" href="utility.html#utility.parseArguments.ConfigParser" title="utility.parseArguments.ConfigParser"><code class="xref py py-class docutils literal"><span class="pre">utility.parseArguments.ConfigParser</span></code></a> class. Default is set to None.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pcloudcv.PCloudCV.dropbox_authenticate">
-<code class="descname">dropbox_authenticate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pcloudcv.html#PCloudCV.dropbox_authenticate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pcloudcv.PCloudCV.dropbox_authenticate" title="Permalink to this definition">¶</a></dt>
-<dd><p>An Alias for <a class="reference internal" href="utility.html#utility.accounts.dropboxAuthenticate" title="utility.accounts.dropboxAuthenticate"><code class="xref py py-func docutils literal"><span class="pre">utility.accounts.dropboxAuthenticate()</span></code></a>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pcloudcv.PCloudCV.ec2_demo">
-<code class="descname">ec2_demo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pcloudcv.html#PCloudCV.ec2_demo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pcloudcv.PCloudCV.ec2_demo" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="pcloudcv.PCloudCV.login_required">
-<code class="descname">login_required</code><em class="property"> = True</em><a class="headerlink" href="#pcloudcv.PCloudCV.login_required" title="Permalink to this definition">¶</a></dt>
-<dd><p>Variable to mention the requirement of authentication before using the API&#8217;s.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pcloudcv.PCloudCV.run">
-<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pcloudcv.html#PCloudCV.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pcloudcv.PCloudCV.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Entry point for the thread containing a CloudCV instance. Starts Auth process and uploads the data to the servers in a child thread.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pcloudcv.PCloudCV.signal_handler">
-<code class="descname">signal_handler</code><span class="sig-paren">(</span><em>signal</em>, <em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pcloudcv.html#PCloudCV.signal_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pcloudcv.PCloudCV.signal_handler" title="Permalink to this definition">¶</a></dt>
-<dd><p>A call back function for receiving a &#8216;Ctrl+C&#8217; KeyboardInterrupt.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pcloudcv.PCloudCV.stop_local_server">
-<code class="descname">stop_local_server</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pcloudcv.html#PCloudCV.stop_local_server"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pcloudcv.PCloudCV.stop_local_server" title="Permalink to this definition">¶</a></dt>
-<dd><p>An Alias for <code class="xref py py-func docutils literal"><span class="pre">connections.local_server.server.stop()</span></code>.</p>
-</dd></dl>
-
-</dd></dl>
-
+<div class="section" id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 

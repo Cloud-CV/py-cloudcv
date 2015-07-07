@@ -72,7 +72,7 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">logger</span> <span class="kn">import</span> <span class="n">info</span><span class="p">,</span> <span class="n">debug</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">warn</span>
 <span class="kn">import</span> <span class="nn">conf</span>
 <span class="kn">import</span> <span class="nn">redis</span>
 
@@ -85,9 +85,10 @@
 <span class="k">class</span> <span class="nc">GoogleAccounts</span><span class="p">:</span>
 <div class="viewcode-block" id="GoogleAccounts"><a class="viewcode-back" href="../../utility.html#utility.accounts.GoogleAccounts">[docs]</a>    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This class type stores the `userid` and `emailid` of a user&#39;s Google account.</span>
+
+<span class="sd">    :param userid: Google UserId. </span>
+<span class="sd">    :param emailid: User&#39;s email Id. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">userid</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">emailid</span> <span class="o">=</span> <span class="bp">None</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">userid</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">emailid</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">userid</span> <span class="o">=</span> <span class="n">userid</span>
@@ -99,8 +100,6 @@
 <span class="sd">    This class type stores the `userid` and `access_token` of a user&#39;s Dropbox account. These details are updated when a user authorizes CloudCV to</span>
 <span class="sd">    access data from his Dropbox folders.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">userid</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">access_token</span> <span class="o">=</span> <span class="bp">None</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">userid</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">access_token</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">userid</span> <span class="o">=</span> <span class="n">userid</span>
@@ -136,7 +135,7 @@
 <span class="sd">    :type path: str</span>
 <span class="sd">    :return: Deserialized account information.  </span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">print</span> <span class="n">path</span>
+    <span class="n">debug</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="n">reader</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span>
     <span class="n">account</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">reader</span><span class="p">)</span>
     <span class="n">reader</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -180,14 +179,14 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">response_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">print</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
+            <span class="n">debug</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="s">&#39;redirect&#39;</span> <span class="ow">in</span> <span class="n">response_json</span> <span class="ow">and</span> <span class="n">response_json</span><span class="p">[</span><span class="s">&#39;redirect&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;True&#39;</span><span class="p">:</span>
             <span class="n">webbrowser</span><span class="o">.</span><span class="n">open_new_tab</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">response_json</span><span class="p">[</span><span class="s">&#39;url&#39;</span><span class="p">]))</span>
 
         <span class="k">elif</span> <span class="s">&#39;isValid&#39;</span> <span class="ow">in</span> <span class="n">response_json</span> <span class="ow">and</span> <span class="n">response_json</span><span class="p">[</span><span class="s">&#39;isValid&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;True&#39;</span><span class="p">:</span>
-            <span class="k">print</span> <span class="s">&#39;DropBox Authentication Successful&#39;</span>
+            <span class="n">info</span><span class="p">(</span><span class="s">&#39;DropBox Authentication Successful&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">account_obj</span><span class="o">.</span><span class="n">dbaccount</span><span class="o">.</span><span class="n">access_token</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">account_obj</span><span class="o">.</span><span class="n">dbaccount</span><span class="o">.</span><span class="n">access_token</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
                 <span class="n">account_obj</span><span class="o">.</span><span class="n">dbaccount</span><span class="o">.</span><span class="n">access_token</span> <span class="o">=</span> <span class="n">response_json</span><span class="p">[</span><span class="s">&#39;token&#39;</span><span class="p">]</span>
                 <span class="n">redis_obj</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s">&#39;dropbox_token&#39;</span><span class="p">,</span> <span class="n">response_json</span><span class="p">[</span><span class="s">&#39;token&#39;</span><span class="p">])</span>
@@ -212,7 +211,7 @@
             <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s">&#39;config.cfg&#39;</span><span class="p">):</span>
                 <span class="n">account_obj</span> <span class="o">=</span> <span class="n">readAccounts</span><span class="p">()</span>
                 <span class="n">userid</span> <span class="o">=</span> <span class="n">account_obj</span><span class="o">.</span><span class="n">gaccount</span><span class="o">.</span><span class="n">userid</span>
-                <span class="k">print</span> <span class="n">userid</span>
+                <span class="n">debug</span><span class="p">(</span><span class="n">userid</span><span class="p">)</span>
 
                 <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">BASE_URL</span> <span class="o">+</span> <span class="s">&#39;/auth/google/&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;api&#39;</span><span class="p">,</span>
                                                                                           <span class="s">&#39;state&#39;</span><span class="p">:</span> <span class="n">random_key</span><span class="p">,</span>
@@ -222,16 +221,16 @@
                                                                                           <span class="s">&#39;state&#39;</span><span class="p">:</span> <span class="n">random_key</span><span class="p">})</span>
             <span class="k">break</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">log</span><span class="p">(</span><span class="s">&#39;W&#39;</span><span class="p">,</span> <span class="s">&#39;Error connecting to cloudcv. Retrying: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39; attempt</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s">&#39;Error connecting to cloudcv. Retrying: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39; attempt</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">response_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-        <span class="k">print</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
+        <span class="n">debug</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
     <span class="k">if</span> <span class="s">&#39;error&#39;</span> <span class="ow">in</span> <span class="n">response_json</span><span class="p">:</span>
-        <span class="k">print</span> <span class="s">&quot;Possible Error Finding this userid in the server database. Remove the config file and start again.&quot;</span>
-        <span class="k">print</span> <span class="n">response_json</span><span class="p">[</span><span class="s">&#39;error&#39;</span><span class="p">]</span>
+        <span class="n">error</span><span class="p">(</span><span class="s">&quot;Possible Error Finding this userid in the server database. Remove the config file and start again.&quot;</span><span class="p">)</span>
+        <span class="n">debug</span><span class="p">(</span><span class="n">response_json</span><span class="p">[</span><span class="s">&#39;error&#39;</span><span class="p">])</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="s">&#39;redirect&#39;</span> <span class="ow">in</span> <span class="n">response_json</span> <span class="ow">and</span> <span class="n">response_json</span><span class="p">[</span><span class="s">&#39;redirect&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;True&#39;</span><span class="p">:</span>
@@ -240,8 +239,8 @@
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
     <span class="k">elif</span> <span class="s">&#39;isValid&#39;</span> <span class="ow">in</span> <span class="n">response_json</span> <span class="ow">and</span> <span class="n">response_json</span><span class="p">[</span><span class="s">&#39;isValid&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;True&#39;</span><span class="p">:</span>
-        <span class="k">print</span> <span class="s">&#39;User Authenticated&#39;</span>
-        <span class="k">print</span> <span class="s">&#39;Welcome &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">response_json</span><span class="p">[</span><span class="s">&#39;first_name&#39;</span><span class="p">])</span>
+        <span class="n">info</span><span class="p">(</span><span class="s">&#39;User Authenticated&#39;</span><span class="p">)</span>
+        <span class="n">info</span><span class="p">(</span><span class="s">&#39;Welcome &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">response_json</span><span class="p">[</span><span class="s">&#39;first_name&#39;</span><span class="p">]))</span>
         <span class="n">googleAuthentication</span> <span class="o">=</span> <span class="bp">True</span>
 
 <span class="n">account_obj</span> <span class="o">=</span> <span class="n">Accounts</span><span class="p">()</span></div>

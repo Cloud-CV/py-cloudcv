@@ -65,7 +65,7 @@
             
   <h1>Source code for utility.parseArguments</h1><div class="highlight"><pre>
 <span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">log</span><span class="p">,</span> <span class="n">ArgumentError</span>
+<span class="kn">from</span> <span class="nn">logger</span> <span class="kn">import</span> <span class="n">ArgumentError</span>
 <span class="kn">import</span> <span class="nn">job</span>
 
 <div class="viewcode-block" id="ConfigParser"><a class="viewcode-back" href="../../utility.html#utility.parseArguments.ConfigParser">[docs]</a><span class="k">class</span> <span class="nc">ConfigParser</span><span class="p">:</span>
@@ -114,10 +114,8 @@
         <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_name</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s">&#39;params&#39;</span><span class="p">]</span>
-                <span class="c">#print str(self.params)</span>
 </div>
 <div class="viewcode-block" id="ConfigParser.getParams"><a class="viewcode-back" href="../../utility.html#utility.parseArguments.ConfigParser.getParams">[docs]</a>    <span class="k">def</span> <span class="nf">getParams</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c">#pprint(self.params)</span>
         <span class="k">pass</span>
 </div>
 <div class="viewcode-block" id="ConfigParser.readConfigFile"><a class="viewcode-back" href="../../utility.html#utility.parseArguments.ConfigParser.readConfigFile">[docs]</a>    <span class="k">def</span> <span class="nf">readConfigFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
@@ -154,7 +152,6 @@
         <span class="n">resultpath</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="n">name</span> <span class="o">=</span> <span class="bp">None</span>
 
-        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="k">if</span> <span class="s">&#39;input&#39;</span> <span class="ow">in</span> <span class="n">arg</span><span class="p">:</span>
             <span class="n">sourcepath</span> <span class="o">=</span> <span class="n">arg</span><span class="p">[</span><span class="s">&#39;input&#39;</span><span class="p">]</span>

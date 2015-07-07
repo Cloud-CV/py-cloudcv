@@ -164,7 +164,7 @@ parameters in the callback are posted to CloudCV API endpoint.</p>
 <dl class="method">
 <dt id="connections.local_server.Path.exit">
 <code class="descname">exit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/local_server.html#Path.exit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.local_server.Path.exit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Quits the application</p>
+<dd><p>Quits the application.</p>
 </dd></dl>
 
 <dl class="method">
@@ -184,42 +184,8 @@ parameters in the callback are posted to CloudCV API endpoint.</p>
 <div class="section" id="module-connections.socketConnection">
 <span id="connections-socketconnection-module"></span><h2>connections.socketConnection module<a class="headerlink" href="#module-connections.socketConnection" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="connections.socketConnection.RedisListen">
-<em class="property">class </em><code class="descclassname">connections.socketConnection.</code><code class="descname">RedisListen</code><span class="sig-paren">(</span><em>ps</em>, <em>r</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/socketConnection.html#RedisListen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.socketConnection.RedisListen" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></p>
-<p>Listens to the Redis channel.</p>
-<dl class="method">
-<dt id="connections.socketConnection.RedisListen.listenToChannel">
-<code class="descname">listenToChannel</code><span class="sig-paren">(</span><em>ps</em>, <em>r</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/socketConnection.html#RedisListen.listenToChannel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.socketConnection.RedisListen.listenToChannel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Listens to the Redis channel <code class="docutils literal"><span class="pre">intercomm2</span></code> for messages. Depending on the message content
-either ends the socket connection to the server or poll the CloudCV server for a socketID.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ps</strong> &#8211; A publisher/subscriber instance.</li>
-<li><strong>r</strong> &#8211; A redis object.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A boolean flag denoting the need to end the socket connection.</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="connections.socketConnection.RedisListen.run">
-<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/socketConnection.html#RedisListen.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.socketConnection.RedisListen.run" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
 <dt id="connections.socketConnection.SocketIOConnection">
-<em class="property">class </em><code class="descclassname">connections.socketConnection.</code><code class="descname">SocketIOConnection</code><span class="sig-paren">(</span><em>executable</em>, <em>imagepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/socketConnection.html#SocketIOConnection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.socketConnection.SocketIOConnection" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">connections.socketConnection.</code><code class="descname">SocketIOConnection</code><span class="sig-paren">(</span><em>executable=''</em>, <em>imagepath=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/socketConnection.html#SocketIOConnection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.socketConnection.SocketIOConnection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></p>
 <p>Configures a socket client to connect to CloudCV server so data upload can start. Once the data upload is finished client waits for the result.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -277,7 +243,7 @@ is downloaded from the message received.</p>
 <dl class="method">
 <dt id="connections.socketConnection.SocketIOConnection.setupSocketIO">
 <code class="descname">setupSocketIO</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/socketConnection.html#SocketIOConnection.setupSocketIO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.socketConnection.SocketIOConnection.setupSocketIO" title="Permalink to this definition">¶</a></dt>
-<dd><p>Establishes a socket connection and adds event handlers for <code class="docutils literal"><span class="pre">connet</span></code>, <code class="docutils literal"><span class="pre">message</span></code>, <code class="docutils literal"><span class="pre">error</span></code> events.</p>
+<dd><p>Establishes a socket connection and adds event handlers for <code class="docutils literal"><span class="pre">connect</span></code>, <code class="docutils literal"><span class="pre">message</span></code>, <code class="docutils literal"><span class="pre">error</span></code> events.</p>
 </dd></dl>
 
 </dd></dl>
@@ -285,54 +251,6 @@ is downloaded from the message received.</p>
 </div>
 <div class="section" id="module-connections.uploadData">
 <span id="connections-uploaddata-module"></span><h2>connections.uploadData module<a class="headerlink" href="#module-connections.uploadData" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="connections.uploadData.RedisListenForPostThread">
-<em class="property">class </em><code class="descclassname">connections.uploadData.</code><code class="descname">RedisListenForPostThread</code><span class="sig-paren">(</span><em>ps</em>, <em>r</em>, <em>udobj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#RedisListenForPostThread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.RedisListenForPostThread" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></p>
-<p>Redis Connection for Inter Thread Communication.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>ps</strong> &#8211; Publisher/Subscriber features to communicate in real-time.</li>
-<li><strong>r</strong> &#8211; An Redis instance.</li>
-<li><strong>udobj</strong> (<a class="reference internal" href="#connections.uploadData.UploadData" title="connections.uploadData.UploadData"><code class="xref py py-class docutils literal"><span class="pre">connections.uploadData.UploadData</span></code></a>) &#8211; An instance of UploadData class.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="connections.uploadData.RedisListenForPostThread.listenToChannel">
-<code class="descname">listenToChannel</code><span class="sig-paren">(</span><em>ps</em>, <em>r</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#RedisListenForPostThread.listenToChannel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.RedisListenForPostThread.listenToChannel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Listens to channel <code class="docutils literal"><span class="pre">intercomm</span></code>. If it has an end flag ( <code class="docutils literal"><span class="pre">***end***</span></code>) then a message containing another end flag ( <code class="docutils literal"><span class="pre">***endcomplete***</span></code>) is pushed to the
-channel <code class="docutils literal"><span class="pre">intercomm2</span></code> else a <code class="docutils literal"><span class="pre">SocketID</span></code> is assigned to the data uploading instance.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ps</strong> &#8211; A publisher/subscriber object.</li>
-<li><strong>r</strong> &#8211; A Redis instance.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A boolean flag denoting the need to end the thread for HTTP POST requests.</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="connections.uploadData.RedisListenForPostThread.run">
-<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#RedisListenForPostThread.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.RedisListenForPostThread.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Entry point for Redis channel listening thread. Thread is ended depending on the current message across the channel.</p>
-</dd></dl>
-
-</dd></dl>
-
 <dl class="class">
 <dt id="connections.uploadData.UploadData">
 <em class="property">class </em><code class="descclassname">connections.uploadData.</code><code class="descname">UploadData</code><span class="sig-paren">(</span><em>config_parser</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/connections/uploadData.html#UploadData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#connections.uploadData.UploadData" title="Permalink to this definition">¶</a></dt>
@@ -377,7 +295,7 @@ is updated with the binary data of the image files.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>source</strong> (<em>str</em>) &#8211; Source of the input images. (dropbox/local)</li>
 <li><strong>source_path</strong> (<em>str</em>) &#8211; In case of local directory, this contains the absolute path of input folder. In case of input from Dropbox, the path is relative to <code class="docutils literal"><span class="pre">/Apps/CloudCV</span></code>.</li>
-<li><strong>params_data</strong> (<em>dict</em>) &#8211; Contains payload for the POST request. Contains <code class="docutils literal"><span class="pre">csrf</span> <span class="pre">token</span></code>, <code class="docutils literal"><span class="pre">Dropbox</span> <span class="pre">path</span></code>, <code class="docutils literal"><span class="pre">Dropbox</span> <span class="pre">token</span></code>, <code class="docutils literal"><span class="pre">Google</span> <span class="pre">UserID</span></code>, <code class="docutils literal"><span class="pre">SOcketID</span></code>, and <code class="docutils literal"><span class="pre">Executable</span> <span class="pre">parameters</span></code>.</li>
+<li><strong>params_data</strong> (<em>dict</em>) &#8211; Contains payload for the POST request. Contains <code class="docutils literal"><span class="pre">csrf</span> <span class="pre">token</span></code>, <code class="docutils literal"><span class="pre">Dropbox</span> <span class="pre">path</span></code>, <code class="docutils literal"><span class="pre">Dropbox</span> <span class="pre">token</span></code>, <code class="docutils literal"><span class="pre">Google</span> <span class="pre">UserID</span></code>, <code class="docutils literal"><span class="pre">SocketID</span></code>, and <code class="docutils literal"><span class="pre">Executable</span> <span class="pre">parameters</span></code>.</li>
 </ul>
 </td>
 </tr>

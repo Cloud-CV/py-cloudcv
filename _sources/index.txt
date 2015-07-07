@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to PCloudCV's documentation!
+Welcome to CloudCV-client's documentation!
 ====================================
 **PCloudCV** are the python APIs for CloudCV: Large Scale Distributed Computer Vision as a Cloud Service. Using this package will require a ``config file`` that is located at ``pcloudcv/config.example.json``. Rename it to ``config.json`` after editing with appropriate configuration.
 
@@ -11,7 +11,7 @@ Welcome to PCloudCV's documentation!
 
 
 
-Getting started with PCloudCV:
+Getting started with CloudCV-client:
 
 .. toctree::
    :maxdepth: 1
@@ -19,9 +19,10 @@ Getting started with PCloudCV:
    installation
    Quick-start
    contents
+   new_architecture
 
 
-PCloudCV in Action:
+CloudCV-client in Action:
 
 .. image:: imgs/screenshot.gif
     :alt: API in action.
