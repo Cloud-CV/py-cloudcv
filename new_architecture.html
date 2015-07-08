@@ -118,9 +118,19 @@
 </li>
 </ul>
 <p>New methods :</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">cloudcv</span> <span class="kn">import</span> <span class="n">CloudCV</span>
+
+<span class="n">ccv</span> <span class="o">=</span> <span class="n">CloudCV</span><span class="p">(</span><span class="n">login_required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">config_dict1</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;exec&quot;</span><span class="p">:</span><span class="s">&quot;features&quot;</span><span class="p">,</span><span class="s">&quot;input&quot;</span><span class="p">:</span><span class="s">&quot;path/to/input/folder&quot;</span><span class="p">}</span>
+<span class="n">config_dict2</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;exec&quot;</span><span class="p">:</span><span class="s">&quot;classify&quot;</span><span class="p">,</span><span class="s">&quot;input&quot;</span><span class="p">:</span><span class="s">&quot;another/input/folder&quot;</span><span class="p">}</span>
+<span class="n">ccv</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">config_dict1</span><span class="p">)</span>
+<span class="n">ccv</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">config_dict2</span><span class="p">)</span>
+<span class="n">ccv</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>In the instantiation of CloudCV object user can specify whether he wants to use the services that require authentication using <code class="docutils literal"><span class="pre">login_required</span></code> parameter. Default is set to be <code class="docutils literal"><span class="pre">True</span></code>.
 <code class="docutils literal"><span class="pre">execute</span></code> and <code class="docutils literal"><span class="pre">exit</span></code> are the two new user facing methods that have been added in the new architecture. Now you can submit multiple jobs using same CloudCV instance. You can specify an optional <code class="docutils literal"><span class="pre">timeout</span></code>
-parameter in case you choose not to wait for all the tasks to complete. In case of partial completion, we plan to implement resumability feature soon.</p>
+parameter if you do not want to wait for all the tasks to complete. In case of partial completion, we plan to implement resumability feature soon.</p>
 <ul class="simple">
 <li><strong>Visualize jobs in browser</strong></li>
 </ul>

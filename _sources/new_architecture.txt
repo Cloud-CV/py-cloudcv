@@ -45,15 +45,22 @@ The architecture of the new CloudCV-Client is described below.
 
 New methods :
 
+
 .. code:: python
-		  from cloudcv import CloudCV
+          
+          from cloudcv import CloudCV
+
           ccv = CloudCV(login_required=True)
+          config_dict1 = {"exec":"features","input":"path/to/input/folder"} 
+          config_dict2 = {"exec":"classify","input":"another/input/folder"} 
           ccv.execute(config_dict1)
           ccv.execute(config_dict2)
           ccv.exit(timeout=30)
+
+
 In the instantiation of CloudCV object user can specify whether he wants to use the services that require authentication using ``login_required`` parameter. Default is set to be ``True``. 
 ``execute`` and ``exit`` are the two new user facing methods that have been added in the new architecture. Now you can submit multiple jobs using same CloudCV instance. You can specify an optional ``timeout``
-parameter in case you choose not to wait for all the tasks to complete. In case of partial completion, we plan to implement resumability feature soon. 
+parameter if you do not want to wait for all the tasks to complete. In case of partial completion, we plan to implement resumability feature soon. 
 
 
 * **Visualize jobs in browser**
