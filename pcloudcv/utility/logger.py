@@ -6,9 +6,13 @@ logging.root.setLevel(LOG_LEVEL)
 LOGFORMAT = "%(log_color)s[%(asctime)s] %(levelname)-6s | %(threadName)s | %(message)s%(reset)s"
 formatter = ColoredFormatter(LOGFORMAT,datefmt="%d/"+datetime.now().strftime('%b')+"/%y %H:%M:%S")
 stream = logging.StreamHandler()
+hdlr = logging.FileHandler('tests/cloudcv.log')
 stream.setLevel(LOG_LEVEL)
 stream.setFormatter(formatter)
 log = logging.getLogger('pythonConfig')
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+hdlr.setFormatter(formatter)
+log.addHandler(hdlr) 
 log.setLevel(LOG_LEVEL)
 log.addHandler(stream)
 
