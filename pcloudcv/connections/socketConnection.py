@@ -2,7 +2,6 @@ import threading
 
 from socketIO_client import SocketIO
 import redis
-from colorama import init
 import requests
 from utility.logger import info, debug, warn, error
 import utility.job as job
@@ -15,7 +14,6 @@ from utility import conf
 import json
 from prettytable import PrettyTable
 import ast
-init()
 socketio = None
 
 
@@ -42,20 +40,10 @@ class SocketIOConnection(threading.Thread):
 
         self._executable = str(executable)
         self._imagepath = str(imagepath)
-        self.setupRedis()
         
-
-    def setupRedis(self):
-        """
-        Instantiates a Redis object at specfied port and starts listening to the ``intercomm2`` channel. 
-
-        :return: A thread containing listner for the Redis channel.  
-        """
         self._redis_obj = redis.StrictRedis(host='localhost', port=6379, db=0)
-        self._pubsub_obj = self._redis_obj.pubsub()
-        self._pubsub_obj.subscribe('intercomm2')
-
-       
+        self._redis_obj.set("received_counter",0)
+        debug("Socket Constructor...")
         
 
     def run(self):
@@ -65,6 +53,8 @@ class SocketIOConnection(threading.Thread):
         info('Starting Socket Connection Thread')
         self.setupSocketIO()
         info('Exiting Socket Connection Thread')
+        
+
 
     def connection(self, *args):
         """
@@ -114,7 +104,9 @@ class SocketIOConnection(threading.Thread):
 
         if ('data' in message):
             data = ast.literal_eval(message['data'])
-            table = PrettyTable(["Image","Prediction","Probability"])
+           
+           
+            table = PrettyTable(["Image","Class","Confidence"])
             for imageName in data.keys():
                 # x.add_row([str(imageName),*data[i]])
 
@@ -132,8 +124,9 @@ class SocketIOConnection(threading.Thread):
             job.job.resultpath = resultpath
             job.job.executable = self._executable
             debug("Data Received from Server")
-
-            self._redis_obj.publish('intercomm', '***end***')
+            self._redis_obj.incr("received_count")
+            info("Received : "+str(self._redis_obj.get("received_count")))
+            # self._redis_obj.publish('intercomm', '***end***')
 
         if ('picture' in message):
             debug(message['picture'])
@@ -184,7 +177,8 @@ class SocketIOConnection(threading.Thread):
 
         if ('exit' in message):
             warn(message['exit'])
-            self._redis_obj.publish('intercomm', '***end***')
+            # self._redis_obj.publish('intercomm', '***end***')
+        
 
     def setupSocketIO(self):
         """
@@ -206,3 +200,4 @@ class SocketIOConnection(threading.Thread):
         except Exception as e:
             warn(str(e))
             raise SystemExit
+

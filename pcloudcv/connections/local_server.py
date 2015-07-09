@@ -173,7 +173,8 @@ class HTTPServer(threading.Thread):
         config = {'global': {
                                    'log.screen': False,
                                    'log.error_file': '',
-                                   'log.access_file': ''
+                                   'log.access_file': '',
+                                   'server.socket_host': '0.0.0.0'
                             }
                  }
         cherrypy.quickstart(Path(),'',config)

@@ -10,7 +10,6 @@ from concurrent.futures import ThreadPoolExecutor
 
 import redis
 import requests
-from colorama import init
 from utility.logger import debug, info, warn, error
 from utility import accounts
 
@@ -19,7 +18,6 @@ from PIL import Image
 import utility.job as job
 
 exitFlag = 0
-init()
 
 
 class UploadData(threading.Thread):

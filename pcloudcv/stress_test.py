@@ -36,10 +36,9 @@ if __name__ == "__main__":
     
     config_dict = {'input':'local: /home/shubham/Pictures/test_download/4','output':'/home/shubham/Pictures/test_download/','exec':'classify'}
     
-
-    ccv.execute(os.getcwd() + '/' + str(config_file), parsedDict)
-    ccv.execute(os.getcwd() + '/' + str(config_file), config_dict)
-   
+    for i in range(50):
+        ccv.execute(os.getcwd() + '/' + str(config_file), parsedDict)
+        ccv.execute(os.getcwd() + '/' + str(config_file), config_dict)
 
     ccv.exit()
     

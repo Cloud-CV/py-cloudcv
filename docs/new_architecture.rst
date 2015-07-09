@@ -1,0 +1,88 @@
+New Architecture
+****************
+.. toctree::
+   :maxdepth: 1
+
+  
+We are adding some new features in the current CloudCV-Client. You can keep track of the new features by cloning the development branch.
+
+The features you may expect in the next release of CloudCV-Client are :
+
+
+#. Submit multiple CV jobs in parallel.
+#. Visualize jobs in a browser. 
+#. Keep track of the job history and re-run the aborted jobs.
+#. Resume the upload of large data-sets in case of failure.   
+#. Improved logging of results. 
+
+The architecture of the new CloudCV-Client is described below. 
+
+.. figure:: imgs/ccv_arch.png
+    :align: center
+    :alt: alternate text
+    :figclass: align-center
+
+    **CloudCV-Client Architecture**
+
+* **Submit multiple jobs in parallel**
+
+		When a user submits jobs to CloudCV servers. Client follows these steps :
+
+
+	* **1** : User specifies multiple jobs with appropriate :doc:`Config <configfile>` details and submits them to the client(CloudCV-Client).                                                          
+	* **2** : Client checks if the user has access tokens stored for third party API access (Google, Dropbox). If not then a new tab opens up in browser prompting user to login.                       
+
+	* **3** : Once the user submits correct authentication details, the login redirects to local server and the access credentials are stored locally to avoid future login.                            
+
+	* **4** : Local server sends these details to CloudCV server and user user registration completes.                                                                                                                                
+	* **5A**: The details of submitted jobs are stored in a local database and their status is set to `Queued`. If a job finds an empty slot in thread pool then it's status is set to `launched`.      
+	* **5a b c d e** : Upload tasks are submitted to the server. Server starts the execution of tasks.                                                                                                        
+	* **6** : A task waiting for an empty slot in thread pool.                                                                                                                                                 
+	* **6A**: Socket connection is established for two-way event driven communication between client and server.                                                                                        
+	* **6B**: Server starts sending job execution results over the socket connection.                                                                                                               
+	* **7** : The status of a job that is being executed by server is obtained by client over the socket connection, and corresponding local database entry is updated.                               
+	* **8** : Main thread marks the completion of submitted job and once the data corresponding to all the jobs is received from server, the main CloudCV thread exits.                                 
+
+New methods :
+
+
+.. code:: python
+          
+          from cloudcv import CloudCV
+
+          ccv = CloudCV(login_required=True)
+          config_dict1 = {'input':'local: /home/inp/4/','output':'/home/results/','exec':'classify'}
+          config_dict2 = {'input':'local: /home/5/','output':'/home/results/','exec':'features'}
+          ccv.execute(config_dict1)
+          ccv.execute(config_dict2)
+          ccv.exit(timeout=30)
+
+
+In the instantiation of CloudCV object user can specify whether he wants to use the services that require authentication using ``login_required`` parameter. Default is set to be ``True``. 
+``execute`` and ``exit`` are the two new user facing methods that have been added in the new architecture. Now you can submit multiple jobs using same CloudCV instance. You can specify an optional ``timeout``
+parameter if you do not want to wait for all the tasks to complete. In case of partial completion, we plan to implement resumability feature soon. 
+
+
+* **Visualize jobs in browser**
+
+.. figure:: http://i.imgur.com/YLHHBO1.png
+    :align: center
+    :alt: alternate text
+    :figclass: align-center
+
+    **Job visualization**
+This is a concept image of how the visualization will look like. `view` section will have different plots to analyze the results closely.
+
+Feature 3 and 4 can be integrated in the webUI or can be launched through terminal.
+
+
+* **Improved logging**
+
+.. figure:: http://i.imgur.com/CCm9lTX.png
+    :align: center
+    :alt: alternate text
+    :figclass: align-center
+
+    **Logging output**
+Logging ouput is well formatted and user also has an option to see the results in tabular form on terminal itself.
+
