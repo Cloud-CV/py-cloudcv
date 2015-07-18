@@ -7,11 +7,11 @@ from os import listdir, makedirs, chmod
 from os.path import isfile, join, exists
 
 from concurrent.futures import ThreadPoolExecutor 
-
+import shortuuid
 import redis
 import requests
 from utility.logger import debug, info, warn, error
-from utility import accounts
+from utility import accounts, conf
 
 from PIL import Image
 
@@ -171,7 +171,7 @@ class UploadData(threading.Thread):
             params_for_request = {}
             params_data = {}
 
-            token = self.getRequest('http://cloudcv.org/api')
+            token = self.getRequest(conf.BASE_URL+'/api')
             
             if token is None:
                 warn('token not found')
@@ -183,7 +183,8 @@ class UploadData(threading.Thread):
 
 
             job.job.imagepath = source_path
-
+            params_data['jobid'] = shortuuid.uuid()
+            debug('JobID assigned :'+params_data['jobid'])
             params_data['token'] = token
             params_data['socketid'] = ''
             params_data['executable'] = self.exec_name
@@ -207,7 +208,7 @@ class UploadData(threading.Thread):
             debug('Starting The POST request')
             for i in range(1,5):
                 try:
-                    request = requests.post("http://cloudcv.org/api/", data=params_data,
+                    request = requests.post(conf.BASE_URL+'/api/', data=params_data,
                                             files=params_for_request)
 
                     warn('Please wait while CloudCV runs your job request')
@@ -225,6 +226,6 @@ class UploadData(threading.Thread):
         Sets a CSRF token as a session cookie. 
         """
         client = requests.session()
-        client.get('http://cloudcv.org/classify')
+        client.get(conf.BASE_URL+'/classify')
         token = client.cookies['csrftoken']
         return token

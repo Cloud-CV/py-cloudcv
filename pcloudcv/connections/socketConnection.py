@@ -88,7 +88,7 @@ class SocketIOConnection(threading.Thread):
 
         if ('jobid' in message):
 
-            info('Received JobID: ' + message['jobid'])
+            debug('JobID received : ' + message['jobid'])
             job.job.jobid = message['jobid']
 
         if ('name' in message):
@@ -187,7 +187,7 @@ class SocketIOConnection(threading.Thread):
         global socketio
 
         try:
-            self.socket_io = SocketIO(conf.SOCKET_URL, 80)
+            self.socket_io = SocketIO(conf.SOCKET_URL, 8600)
             self.socket_io.on('connect', self.connection)
             self.socket_io.on('message', self.on_aaa_response)
             self.socket_io.on('error', self.on_error_response)
