@@ -18,10 +18,10 @@ import utility.job as job
 from connections.uploadData import UploadData
 from connections.socketConnection import SocketIOConnection , socketio
 import redis
+import signal
 
 class CloudCV():
-    """Creates a PCloudCV instance in a new thread.
-
+    """
     :param file: Path to :doc:`config <configfile>` file.
     :type file:  str
     :param list: Config input from user to override the :doc:`Config file <configfile>` defaults.(Pass an empty dict to use defaults from config.json )
@@ -53,6 +53,7 @@ class CloudCV():
         # self.sioc.setDaemon(True)
         # Daemon threads give warnings on unexpected exit. 
         self.socket_started = False 
+        signal.signal(signal.SIGINT, self.signal_handler)
         
         
     def execute(self, file, dict):
@@ -63,11 +64,15 @@ class CloudCV():
         self.upld_launched+=1
         
         if not self.socket_started:
-            self.sioc = SocketIOConnection(self.config_obj.exec_name, self.config_obj.output_path)
-            self.sioc.start()
-            self.socket_started = True
-            time.sleep(4)
-        
+            try :
+                self.sioc = SocketIOConnection(self.config_obj.exec_name, self.config_obj.output_path)
+                self.sioc.start()
+                self.socket_started = True
+                time.sleep(4)
+            except(KeyboardInterrupt, SystemExit):
+                self.sioc.socket_io.disconnect()
+                local_server.server.stop()
+
         self._cursor.execute("INSERT INTO Jobs (uid, status, input, output, exec, login_required)VALUES (?,?,?,?,?,?)",(str(uuid.uuid1()),"queued",self.config_obj.source_path,self.config_obj.output_path,self.config_obj.exec_name,self.login_required,))
         self._connection.commit() 
         udobj = UploadData(self.config_obj)
@@ -103,6 +108,7 @@ class CloudCV():
         An Alias for :func:`connections.local_server.server.stop`.
         """
         
+
         if timeout is not None:
             time.sleep(timeout)
             self.sioc.socket_io.disconnect()
@@ -116,15 +122,18 @@ class CloudCV():
                     local_server.server.stop()
                     self._redis_obj.set('received_count',0) 
                     self._redis_obj.set('socketid','') 
-                    break 
+                    break
+    
 
-           
 
-
-        # here socket is closed but we need to care about the upload threads running 
-        # by closing sockets we do not want results but upload is still working
-        # or they get killed once the main thread is killed (daemons)
-
+    def signal_handler(self, signal, frame):
+        """
+        A call back function for receiving a 'Ctrl+C' KeyboardInterrupt.
+        """
+        print '\nYou pressed Ctrl+C! Exiting Now'
+        local_server.server.stop()
+        self.sioc.socket_io.disconnect()
+        sys.exit(0)
 
     def dropbox_authenticate(self):
         """
@@ -137,10 +146,3 @@ class CloudCV():
         An Alias for :func:`utility.accounts.authenticate`.
         """
         accounts.authenticate()
-
-    def run(self):
-        """
-        Entry point for the thread containing a CloudCV instance. Starts Auth process and uploads the data to the servers in a child thread.
-        """
-
-        #communication with socketio via redis (if number_of_launched_jobs = number_of_results_recieved then close the socket )    
