@@ -13,7 +13,7 @@ MarkupSafe==0.23
 pyparsing==2.0.3
 python-dateutil==2.4.0
 pytz==2014.10
-requests==2.5.1
+requests==2.20.0
 simplejson==3.6.5
 six==1.9.0
 socketIO-client==0.4
