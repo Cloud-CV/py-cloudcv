@@ -7,7 +7,7 @@ CloudCV - Python API's
 These are the python APIs for CloudCV: Large Scale Distributed Computer Vision as a Cloud Service.
 Using this package will require a config file that is located at `pcloudcv/config.example.json`. Rename it to `config.json` after editing with appropriate configuration.
 
-**Please note that the API's are going through major overhaul. You can follow the progress by cloning the development branch.**  <br>
+**Please note that the APIs are going through major overhaul. You can follow the progress by cloning the development branch.**  <br>
 Instructions for cloning [here](https://github.com/batra-mlp-lab/pcloudcv/wiki/Setup).
 <br>
 Refer [Documentation](https://github.com/batra-mlp-lab/pcloudcv/wiki) for a quick-start tutorial and details regarding functionalities.
