@@ -8,7 +8,7 @@ colorama>=0.2.5
 poster>=0.8.1
 CherryPy>=3.2.4
 Jinja2==2.7.3
-Mako==1.0.1
+Mako==1.2.2
 MarkupSafe==0.23
 pyparsing==2.0.3
 python-dateutil==2.4.0
